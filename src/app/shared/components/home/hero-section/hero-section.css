@@ -1,0 +1,136 @@
+/* Section */
+.hero-section {
+  position: relative;
+  height: 625px;
+  overflow: hidden;
+}
+
+/* Slider */
+.hero-slider {
+  position: absolute;
+  inset: 0;
+}
+
+/* Image Wrapper */
+.hero-image-wrapper {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.hero-image {
+  width: 100%;
+  height: 625px;
+  object-fit: cover;
+}
+
+/* Dark Overlay */
+.hero-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+}
+
+/* Content Positioning */
+.hero-content {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 4rem; /* bottom-16 */
+  padding: 0 1.5rem;
+}
+
+.hero-inner {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+  max-width: 1024px; /* max-w-4xl */
+}
+
+/* Title */
+.hero-title {
+  font-family: 'Rubik', sans-serif;
+  font-size: 48px;
+  font-weight: 700;
+  color: white;
+  margin-bottom: 1.5rem;
+}
+
+@media (max-width: 768px) {
+  .hero-title {
+    font-size: 36px;
+  }
+}
+
+/* Description */
+.hero-description {
+  font-size: 20px;
+  color: rgba(255, 255, 255, 0.9);
+  margin-bottom: 2rem;
+  max-width: 640px;
+}
+
+/* Button Wrapper */
+.hero-button-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2.5rem;
+}
+
+.hero-button-wrapper a {
+  text-decoration: none;
+}
+
+@media (min-width: 640px) {
+  .hero-button-wrapper {
+    flex-direction: row;
+  }
+}
+
+/* Button */
+.hero-button {
+  width: 200px;
+  padding: 0.5rem 0;
+  background-color: #3b82f6;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  border-radius: 25px;
+  color: white;
+  font-size: 20px;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  overflow: hidden;
+}
+
+.hero-button:hover {
+  background-color: #2563eb;
+}
+
+/* Button Text Animation */
+.hero-button-text {
+  margin-left: 0;
+  transition: all 0.3s ease;
+}
+
+.hero-button:hover .hero-button-text {
+  margin-left: 1.5rem;
+}
+
+/* Arrow Icon Animation */
+.hero-button-icon {
+  opacity: 0;
+  transform: translateX(-8px);
+  transition: all 0.3s ease;
+}
+
+.hero-button:hover .hero-button-icon {
+  opacity: 1;
+  transform: translateX(0);
+}
