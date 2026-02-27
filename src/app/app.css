@@ -1,0 +1,19 @@
+.title {
+    font-family: var(--font-rubik);
+    font-size: 32px;
+    color: var(--primary-text-color);
+    font-variant-ligatures: none;
+}
+
+.subtitle {
+    font-family: var(--font-lato);
+    font-size: 16px;
+    font-weight: 400;
+    color: var(--primary-subtitle-color);
+}
+
+.description {
+    font-family: var(--font-lato);
+    font-size: 20px;
+    color: var(--secondary-text-color);
+}

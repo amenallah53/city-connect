@@ -1,1 +1,21 @@
 /* You can add global styles to this file, and also import other style files */
+:root {
+  --primary-text-color: #262626;
+  --secondary-text-color: #565656;
+  --primary-subtitle-color: #8C8C8C;
+
+  --font-lato: 'Lato', sans-serif;
+  --font-rubik: 'Rubik', sans-serif;
+
+  --font-family-base: var(--font-lato);
+}
+
+* {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: var(--font-family-base);
+  color: var(--primary-text-color);
+}
