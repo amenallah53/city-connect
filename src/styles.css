@@ -1,21 +1,38 @@
 /* You can add global styles to this file, and also import other style files */
 :root {
-  --primary-text-color: #262626;
-  --secondary-text-color: #565656;
-  --primary-subtitle-color: #8C8C8C;
+    /** Text colors */
+    --primary-text-color: #262626;
+    --secondary-text-color: #565656;
+    --primary-subtitle-color: #8C8C8C;
 
-  --font-lato: 'Lato', sans-serif;
-  --font-rubik: 'Rubik', sans-serif;
+    /** Background colors */
+    --background-color: #E8ECF1;
+    --secondary-background-color: #0D2A3A;
+    
+    /** Primary & Secondary colors */
+    --primary-color: #07839B;
+    --secondary-color: #FFFFFF;
 
-  --font-family-base: var(--font-lato);
+    /** Card colors */
+    --card-color: #FFFFFF;
+    --border-color: #F0F0F0;
+
+    /** Font families */
+    --font-lato: 'Lato', sans-serif;
+    --font-rubik: 'Rubik', sans-serif;
+
+    --font-family-base: var(--font-lato);
 }
 
 * {
-  margin: 0;
-  padding: 0;
+    margin: 0;
+    padding: 0;
+    scroll-behavior: smooth;
 }
 
 body {
-  font-family: var(--font-family-base);
-  color: var(--primary-text-color);
+    /** Global styles for the entire application */
+    font-family: var(--font-family-base);
+    color: var(--primary-text-color);
+    background-color: var(--background-color);
 }
