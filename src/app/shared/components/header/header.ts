@@ -1,19 +1,17 @@
-import { NgClass } from '@angular/common';
+import { CommonModule, NgClass, NgIf } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { Router, NavigationEnd, RouterLink } from '@angular/router';
 import { filter } from 'rxjs/operators';
+import { UserAuthService } from '../../../core/services/auth.service'; // adjust path
 
 @Component({
   selector: 'app-header',
   standalone: true,
-  imports: [RouterLink, NgClass],
+  imports: [RouterLink, NgClass, NgIf, CommonModule],
   templateUrl: './header.html',
   styleUrls: ['./header.css'],
 })
 export class Header implements OnInit {
-
-  constructor(private router: Router) {}
-
   links = [
     { track: 0, name: 'Home', path: '/' },
     { track: 1, name: 'Jobs', path: '/jobs' },
@@ -23,12 +21,12 @@ export class Header implements OnInit {
   ];
 
   currentLink: number = 0;
+  showProfileMenu: boolean = false;
+
+  constructor(private router: Router, private auth: UserAuthService) {}
 
   ngOnInit() {
-    // set correct active link on refresh
     this.setActiveFromRoute(this.router.url);
-
-    // update on route change
     this.router.events
       .pipe(filter(event => event instanceof NavigationEnd))
       .subscribe((event: NavigationEnd) => {
@@ -45,5 +43,18 @@ export class Header implements OnInit {
     if (found) {
       this.currentLink = found.track;
     }
+  }
+
+  toggleProfileMenu() {
+    this.showProfileMenu = !this.showProfileMenu;
+  }
+
+  closeProfileMenu() {
+    this.showProfileMenu = false;
+  }
+
+  logout() {
+    this.auth.logout(); // remove token and simulate logout
+    this.router.navigate(['/login']);
   }
 }
