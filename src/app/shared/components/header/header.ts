@@ -42,6 +42,8 @@ export class Header implements OnInit {
     const found = this.links.find(link => link.path === url);
     if (found) {
       this.currentLink = found.track;
+    } else {
+      this.currentLink = -1; // No link active
     }
   }
 

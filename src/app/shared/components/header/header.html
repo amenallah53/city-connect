@@ -1,5 +1,5 @@
 <header class="flex flex-col">
-  <div 
+  <!--<div 
     class="bg-[var(--secondary-background-color)] px-4 py-2
     flex flex-row items-center justify-between">
     <div class="flex flex-row gap-4 items-center">
@@ -16,6 +16,7 @@
         +216 99 999 999 | +216 77 777 777
       </span>
     </div>
+
     <div class="flex flex-row gap-4 items-center">
       <div class="relative">
         <div class="absolute p-[6px] rounded-full bg-[#FF0000] top-0 left-0"></div>
@@ -27,7 +28,7 @@
             <path d="M10.268 21a2 2 0 0 0 3.464 0"/><path d="M3.262 15.326A1 1 0 0 0 4 17h16a1 1 0 0 0 .74-1.673C19.41 13.956 18 12.499 18 8A6 6 0 0 0 6 8c0 4.499-1.411 5.956-2.738 7.326"/>
         </svg>
       </div>
-      <!-- Avatar wrapper -->
+      <-- Avatar wrapper --
       <div 
         class="relative group"
         (click)="toggleProfileMenu()"
@@ -44,7 +45,7 @@
           <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-down-icon lucide-chevron-down"><path d="m6 9 6 6 6-6"/></svg>
         </div>
 
-        <!-- Dropdown menu -->
+        <-- Dropdown menu --
         <div 
           *ngIf="showProfileMenu"
           class="absolute right-0 mt-2 w-36 bg-white rounded-lg shadow-lg border border-gray-200 z-50"
@@ -66,7 +67,8 @@
         </div>
       </div>
     </div>
-  </div>
+  </div>-->
+
   <nav class="flex justify-between items-center p-4 bg-[var(--secondary-color)]">
 
     <!-- Logo -->
@@ -83,31 +85,90 @@
       </div>
     </a>
 
-    <!-- Links -->
-    <div class="flex items-center gap-1">
-      @for (link of links; track link.track) {
-        <a
-          [routerLink]="link.path"
-          (click)="setCurrentLink(link.track)"
-        >
-          <div
-            class="px-6 py-2 rounded-t-lg flex items-center text-[20px] font-medium
-            transition-colors duration-300
-            hover:border-b-2 hover:border-[var(--primary-color)]
-            hover:text-[var(--primary-text-color)]
-            hover:bg-[#EDF3FF]/50"
-            [ngClass]="{
-              'border-b-2 border-[var(--primary-color)] bg-[#EDF3FF]/50 text-[var(--primary-text-color)]':
-                link.track === currentLink,
-              'text-[var(--primary-subtitle-color)]':
-                link.track !== currentLink
-            }"
+    <div class="flex flex-row items-center gap-6">
+      <!-- Links -->
+      <div class="flex items-center gap-1">
+        @for (link of links; track link.track) {
+          <a
+            [routerLink]="link.path"
+            (click)="setCurrentLink(link.track)"
           >
-            {{ link.name }}
-          </div>
-        </a>
-      }
-    </div>
+            <div
+              class="px-6 py-2 rounded-t-lg flex items-center text-[20px] font-medium
+              transition-colors duration-300
+              hover:border-b-2 hover:border-[var(--primary-color)]
+              hover:text-[var(--primary-text-color)]
+              hover:bg-[#EDF3FF]/50"
+              [ngClass]="{
+                'border-b-2 border-[var(--primary-color)] bg-[#EDF3FF]/50 text-[var(--primary-text-color)]':
+                  link.track === currentLink,
+                'text-[var(--primary-subtitle-color)]':
+                  link.track !== currentLink
+              }"
+            >
+              {{ link.name }}
+            </div>
+          </a>
+        }
+      </div>
 
+      <!-- Actions-->
+      <div class="flex flex-row gap-4 items-center">
+        <div class="p-2 rounded-full transition-all duration-200 
+        hover:bg-[#EDF3FF]/50 hover:border-[var(--primary-color)]
+        cursor-pointer border border-transparent 
+        group focus:outline-none focus:ring-2 focus:ring-[var(--primary-color)]">
+          <div class="relative">
+            <div class="absolute p-[6px] rounded-full bg-[#FF0000] top-0 left-0"></div>
+            <svg 
+              xmlns="http://www.w3.org/2000/svg" 
+              width="24" height="24" viewBox="0 0 24 24" fill="none" 
+              stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" 
+              class="text-[var(--primary-text-color)] lucide lucide-bell-icon lucide-bell">
+                <path d="M10.268 21a2 2 0 0 0 3.464 0"/><path d="M3.262 15.326A1 1 0 0 0 4 17h16a1 1 0 0 0 .74-1.673C19.41 13.956 18 12.499 18 8A6 6 0 0 0 6 8c0 4.499-1.411 5.956-2.738 7.326"/>
+            </svg>
+          </div>
+        </div>
+        <!-- Avatar wrapper -->
+        <div 
+          class="relative group"
+          (click)="toggleProfileMenu()"
+        >
+          <div 
+            class="border-2 border-[#5D7786] bg-[#445A67] w-[40px] h-[40px] 
+            rounded-full overflow-hidden group-hover:cursor-pointer">
+            <img src="/assets/avatar.png" alt="avatar" class="w-full h-full object-cover">
+          </div>
+          <div 
+            class="absolute h-[20px] w-[20px] p-[4px] rounded-full 
+            flex items-center justify-center 
+            bg-[var(--secondary-color)] group-hover:cursor-pointer
+            bottom-0 left-0 translate-y-1/4 border-2 border-[var(--border-color)]">
+            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-down-icon lucide-chevron-down"><path d="m6 9 6 6 6-6"/></svg>
+          </div>
+
+          <!-- Dropdown menu -->
+          <div 
+            *ngIf="showProfileMenu"
+            class="absolute right-0 mt-2 w-36 bg-white rounded-lg shadow-lg border border-gray-200 z-50"
+          >
+            <a 
+              routerLink="/profile" 
+              class="block px-4 py-2 text-gray-800 hover:bg-gray-100 hover:rounded-t-lg"
+              (click)="closeProfileMenu()"
+            >
+              Profile
+            </a>
+            <button 
+              (click)="logout()" 
+              class="w-full text-left px-4 py-2 text-gray-800 
+              hover:cursor-pointer hover:bg-gray-100 hover:rounded-b-lg"
+            >
+              Logout
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
   </nav>
 </header>
