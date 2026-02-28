@@ -1,5 +1,45 @@
-<nav>
-  <a routerLink="/faq">
-    <div>SIDIBOU</div>
-  </a>
-</nav>
+<header class="p-4 bg-[var(--secondary-color)]">
+  <nav class="flex justify-between items-center">
+
+    <!-- Logo -->
+    <a routerLink="/">
+      <div class="flex gap-4 items-center cursor-pointer">
+        <div class="bg-[var(--secondary-background-color)] rounded-lg 
+          w-[50px] h-[50px] flex items-center justify-center
+          text-[28px] font-medium text-[var(--secondary-color)] font-rubik">
+          C
+        </div>
+        <h1 class="text-[var(--secondary-background-color)] font-rubik text-[32px] font-medium">
+          CityConnect
+        </h1>
+      </div>
+    </a>
+
+    <!-- Links -->
+    <div class="flex items-center gap-1">
+      @for (link of links; track link.track) {
+        <a
+          [routerLink]="link.path"
+          (click)="setCurrentLink(link.track)"
+        >
+          <div
+            class="px-6 py-2 rounded-t-lg flex items-center text-[20px] font-medium
+            transition-colors duration-300
+            hover:border-b-2 hover:border-[var(--primary-color)]
+            hover:text-[var(--primary-text-color)]
+            hover:bg-[#EDF3FF]/50"
+            [ngClass]="{
+              'border-b-2 border-[var(--primary-color)] bg-[#EDF3FF]/50 text-[var(--primary-text-color)]':
+                link.track === currentLink,
+              'text-[var(--primary-subtitle-color)]':
+                link.track !== currentLink
+            }"
+          >
+            {{ link.name }}
+          </div>
+        </a>
+      }
+    </div>
+
+  </nav>
+</header>
