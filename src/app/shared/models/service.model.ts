@@ -3,6 +3,6 @@ export interface Service {
   title: string;
   type: string;
   badges: string[];
-  //icon?: string;
+  description?: string;
   featured?: boolean;
 }
