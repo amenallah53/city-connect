@@ -23,7 +23,7 @@ export class Services implements OnInit {
   searchQuery: string = '';
   showFiltersPanel = signal<boolean>(false);
   selectedCategories = signal<Set<string>>(new Set());
-  selectedTags = signal<Set<string>>(new Set());
+  selectedBadges = signal<Set<string>>(new Set());
 
   constructor(public router: Router) {}
 
@@ -111,14 +111,14 @@ export class Services implements OnInit {
     return Array.from(categories).sort();
   });
 
-  allTags = computed(() => {
-    const tags = new Set<string>();
+  allBadges = computed(() => {
+    const badges = new Set<string>();
     this.services().forEach(service => {
-      service.badges.forEach(tag => {
-        tags.add(tag);
+      service.badges.forEach(badge => {
+        badges.add(badge);
       });
     });
-    return Array.from(tags).sort();
+    return Array.from(badges).sort();
   });
 
   // Filtered services based on search and filters
@@ -132,10 +132,10 @@ export class Services implements OnInit {
       );
     }
 
-    // Apply tag filter
-    if (this.selectedTags().size > 0) {
+    // Apply badge filter
+    if (this.selectedBadges().size > 0) {
       filtered = filtered.filter(service =>
-        service.badges.some(tag => this.selectedTags().has(tag))
+        service.badges.some(badge => this.selectedBadges().has(badge))
       );
     }
 
@@ -145,7 +145,7 @@ export class Services implements OnInit {
       filtered = filtered.filter(service =>
         service.title.toLowerCase().includes(query) ||
         service.type.toLowerCase().includes(query) ||
-        service.badges.some(tag => tag.toLowerCase().includes(query))
+        service.badges.some(badge => badge.toLowerCase().includes(query))
       );
     }
 
@@ -181,31 +181,31 @@ export class Services implements OnInit {
     this.selectedCategories.set(categories);
   }
 
-  toggleTag(tag: string): void {
-    const tags = new Set(this.selectedTags());
-    if (tags.has(tag)) {
-      tags.delete(tag);
+  toggleBadge(badge: string): void {
+    const badges = new Set(this.selectedBadges());
+    if (badges.has(badge)) {
+      badges.delete(badge);
     } else {
-      tags.add(tag);
+      badges.add(badge);
     }
-    this.selectedTags.set(tags);
+    this.selectedBadges.set(badges);
   }
 
   isCategorySelected(category: string): boolean {
     return this.selectedCategories().has(category);
   }
 
-  isTagSelected(tag: string): boolean {
-    return this.selectedTags().has(tag);
+  isBadgeSelected(badge: string): boolean {
+    return this.selectedBadges().has(badge);
   }
 
   clearFilters(): void {
     this.selectedCategories.set(new Set());
-    this.selectedTags.set(new Set());
+    this.selectedBadges.set(new Set());
     this.searchQuery = '';
   }
 
   hasActiveFilters(): boolean {
-    return this.selectedCategories().size > 0 || this.selectedTags().size > 0 || this.searchQuery.trim() !== '';
+    return this.selectedCategories().size > 0 || this.selectedBadges().size > 0 || this.searchQuery.trim() !== '';
   }
 }

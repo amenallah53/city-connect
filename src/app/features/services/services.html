@@ -45,18 +45,18 @@
             </div>
           </div>
 
-          <!-- Tags Filter -->
+          <!-- Badges Filter -->
           <div class="filter-section">
-            <h3 class="filter-section-title">Tags</h3>
+            <h3 class="filter-section-title">Badges</h3>
             <div class="filter-items">
-              <label class="filter-item" *ngFor="let tag of allTags()">
+              <label class="filter-item" *ngFor="let badge of allBadges()">
                 <input
                   type="checkbox"
                   class="filter-checkbox"
-                  [checked]="isTagSelected(tag)"
-                  (change)="toggleTag(tag)"
+                  [checked]="isBadgeSelected(badge)"
+                  (change)="toggleBadge(badge)"
                 />
-                <span class="filter-item-text">{{ tag }}</span>
+                <span class="filter-item-text">{{ badge }}</span>
               </label>
             </div>
           </div>
