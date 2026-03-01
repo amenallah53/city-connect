@@ -1,6 +1,6 @@
 import { Component, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Service } from '../../../shared/models/service.model';
 import { ServiceCard } from "../../../shared/components/cards/service-card/service-card";
 
@@ -81,6 +81,7 @@ const SERVICES_DATA: { [key: string]: ServiceDetails } = {
 export class DetailsPage implements OnInit {
   serviceName: string = 'Issuing a Building Permit';
   serviceDescription: string = 'An electronic service available on the Balady platform that enables beneficiaries to apply for a Building Permit or a Fencing Permit.';
+  serviceId: string = '';
   
   categoryBadges: string[] = [
     'Construction licenses',
@@ -134,11 +135,12 @@ export class DetailsPage implements OnInit {
 
   activeTab = signal<'requirements' | 'fines' | 'faq'>('requirements');
 
-  constructor(private route: ActivatedRoute) {}
+  constructor(private route: ActivatedRoute, private router: Router) {}
 
   ngOnInit(): void {
     this.route.params.subscribe(params => {
       const serviceId = params['serviceId'];
+      this.serviceId = serviceId;
       const serviceData = SERVICES_DATA[serviceId];
       
       if (serviceData) {
@@ -152,5 +154,9 @@ export class DetailsPage implements OnInit {
 
   selectTab(tab: 'requirements' | 'fines' | 'faq'): void {
     this.activeTab.set(tab);
+  }
+
+  startService(): void {
+    this.router.navigate(['/services', this.serviceId, 'start']);
   }
 }
