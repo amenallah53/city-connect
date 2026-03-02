@@ -16,7 +16,7 @@
 
 .page-title {
   font-family: var(--font-rubik);
-  font-size: 40px;
+  font-size: 28px;
   font-weight: 500;
   color: var(--primary-text-color);
   margin: 0 0 16px 0;
@@ -42,7 +42,7 @@
 
 .steps-header h2 {
   font-family: var(--font-rubik);
-  font-size: 32px;
+  font-size: 26px;
   font-weight: 500;
   color: var(--primary-text-color);
   margin: 0;
