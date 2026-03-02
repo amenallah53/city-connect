@@ -1,0 +1,55 @@
+<div class="horizontal-div main-card">
+    @if (status==='pending') {
+        <div class="vertical-div report-status">
+        <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="#0095AC" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-alarm-clock-icon lucide-alarm-clock"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2 2"/><path d="M5 3 2 6"/><path d="m22 6-3-3"/><path d="M6.38 18.7 4 21"/><path d="M17.64 18.67 20 21"/></svg>
+        <p class="status-text-pending">Pending</p>
+    </div>
+    }
+
+    @if (status==='approved') {
+        <div class="vertical-div report-status">
+            <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="#4AB900" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-check-icon lucide-check"><path d="M20 6 9 17l-5-5"/></svg>
+            <p class="status-text-approved">Approved</p>
+        </div>
+    }
+
+    @if (status==='ongoing') {
+        <div class="vertical-div report-status">
+            <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="#E79A01" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-clock-check-icon lucide-clock-check"><path d="M12 6v6l4 2"/><path d="M22 12a10 10 0 1 0-11 9.95"/><path d="m22 16-5.5 5.5L14 19"/></svg>
+            <p class="status-text-ongoing">Ongoing</p>
+        </div>
+    }
+
+    @if (status==='rejected') {
+        <div class="vertical-div report-status">
+            <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="#D40000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-x-icon lucide-x"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+            <p class="status-text-rejected">Rejected</p>
+        </div>
+    }
+
+    <div class="vertical-div report-infos">
+        <div class="vertical-div report-specifics">
+            <p class="report-title">Broken street lights</p>
+            <p class="report-description">The street lights are broken in my neighborhood, please fix them asap</p>
+            <div class="horizontal-div username-and-city">
+                <div class="icon-text">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#B4B4B4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-user-icon lucide-user"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                    Ghazi Meddeb
+                </div>
+                <div class="icon-text">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#B4B4B4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-map-pin-icon lucide-map-pin"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"/><circle cx="12" cy="10" r="3"/></svg>
+                    Gafsa Sud
+                </div>
+            </div>
+        </div>
+            <div class="horizontal-div tags">
+                <p class="tag">Tag 1</p>
+                <p class="tag">Tag 2</p>
+                <p class="tag">Tag 3</p>
+                <p class="tag">Tag 4</p>
+            </div>
+    </div>
+    <div class="vertical-div ticket-date-time">
+        27/02/2026 <br> 15:35
+    </div>
+</div>
