@@ -1,0 +1,2 @@
+this folder is used to store small, reusable helper functions that perform generic,
+common tasks across an entire application
