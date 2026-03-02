@@ -1,0 +1,66 @@
+<div
+    class="p-6 bg-[var(--card-color)] border border-[var(--border-color)]
+    rounded-[25px] flex flex-col gap-4 w-[300px]
+    shadow-[0px_2px_15px_0px_rgba(0,0,0,0.1)]">
+
+    <div class="flex flex-col gap-3">
+        <div class="flex flex-row items-center gap-2">
+            <div 
+                class="rounded-full h-[60px] w-[60px] 
+                border border-[#F0F0F0]">
+                <img class=" rounded-full h-full w-full" src="/assets/avatar.png" alt="avatar">
+            </div>
+            <h3 class="text-[18px] font-semibold text-[var(--primary-text-color)]">
+                {{job.name}} {{job.surname}}
+            </h3>
+        </div>
+        <div class="flex flex-row items-center justify-between">
+            <h3 class="text-[18px] font-medium text-[var(--primary-subtitle-color)]">
+                {{job.profession}}
+            </h3>
+            <div class="flex flex-row items-center gap-1">
+                <svg 
+                    xmlns="http://www.w3.org/2000/svg" 
+                    width="20" height="20" viewBox="0 0 24 24" fill="yes" 
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" 
+                    class="text-[#F8BD1C] fill-[#F8BD1C] lucide lucide-star-icon lucide-star">
+                    <path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/>
+                </svg>
+                <h3 class="text-[18px] font-medium text-[var(--primary-subtitle-color)]">
+                    {{job.rating}}
+                </h3>
+            </div>
+        </div>
+        <div class="flex flex-row items-center gap-2">
+            <svg 
+                xmlns="http://www.w3.org/2000/svg" 
+                width="24" height="24" viewBox="0 0 24 24" fill="none" 
+                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" 
+                class="text-[var(--primary-subtitle-color)] lucide lucide-phone-icon lucide-phone">
+                <path d="M13.832 16.568a1 1 0 0 0 1.213-.303l.355-.465A2 2 0 0 1 17 15h3a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2A18 18 0 0 1 2 4a2 2 0 0 1 2-2h3a2 2 0 0 1 2 2v3a2 2 0 0 1-.8 1.6l-.468.351a1 1 0 0 0-.292 1.233 14 14 0 0 0 6.392 6.384"/>
+            </svg>
+            <h3 class="text-[18px] font-medium text-[var(--primary-subtitle-color)]">
+                {{job.phone}}
+            </h3>
+        </div>
+        <div 
+            class="bg-[var(--background-color)] text-[var(--secondary-text-color)] 
+            rounded-[12px] px-2 py-[6px] text-[16px] font-medium w-fit">
+            {{job.reach}}
+        </div>
+    </div>
+
+    <!-- CTA -->
+    <a [routerLink]="['/jobs', job.id]" class="block w-full">
+        <button class="flex flex-row items-center gap-2 justify-center
+        py-2 px-4 rounded-[24px] bg-[var(--primary-color)] w-full
+        hover:bg-[#005E71] hover:cursor-pointer transition-colors duration-300">
+        <span class="text-white text-[18px] font-medium">View Details</span>
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
+            fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+            stroke-linejoin="round" class="text-white">
+            <path d="M5 12h14"/><path d="m12 5 7 7-7 7"/>
+        </svg>
+        </button>
+    </a>
+</div>
