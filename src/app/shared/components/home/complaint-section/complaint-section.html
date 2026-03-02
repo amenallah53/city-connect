@@ -1,0 +1,53 @@
+<section class="relative h-[400px] overflow-hidden">
+
+    <!-- Background Image -->
+    <img 
+        src="/assets/hero3.jpg" 
+        alt="complaint background"
+        class="absolute inset-0 w-full h-full object-cover"
+    />
+
+    <!-- Dark Overlay -->
+    <div class="absolute inset-0 bg-black/60"></div>
+
+    <!-- Content -->
+    <div class="absolute top-1/2 -translate-y-1/2 left-0 right-0 px-16">
+        <div class="flex flex-col items-start max-w-4xl">
+
+        <h2 class="[font-variant-ligatures:none] font-rubik text-[48px] font-bold text-[var(--secondary-color)] mb-6 line-clamp-3">
+            Can't find the service you need?
+        </h2>
+
+        <p class="text-[20px] text-white/90 mb-8 max-w-[640px]">
+            Help us improve our city. Submit your complaints and we will review them to enhance our services.
+        </p>
+
+        <a href="#" class="no-underline">
+            <div class="flex items-center gap-[2px] group">
+            <!-- Circle -->
+            <div class="p-[10px] bg-[var(--primary-color)] text-[var(--secondary-color)]
+                        rounded-full flex items-center justify-center
+                        group-hover:bg-[#005E71] group-hover:cursor-pointer">
+                <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="24" height="24" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                class="rotate-[-15deg] translate-y-[2px]">
+                <path d="M5 12h14"/><path d="m12 5 7 7-7 7"/>
+                </svg>
+            </div>
+
+            <!-- Button -->
+            <button
+                class="bg-[var(--primary-color)] text-[var(--secondary-color)] text-[20px]
+                    font-medium px-4 py-2 rounded-[25px]
+                    group-hover:bg-[#005E71] group-hover:cursor-pointer">
+                Make a Complaint!
+            </button>
+            </div>
+        </a>
+
+        </div>
+    </div>
+
+</section>

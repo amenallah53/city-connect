@@ -1,0 +1,32 @@
+<div 
+  class="rounded-[25px] w-[350px] h-full flex flex-col
+  shadow-[0px_2px_15px_0px_rgba(0,0,0,0.1)]
+  bg-[var(--card-color)]">
+    <div class="h-[200px] w-full rounded-t-[25px]">
+        <img [src]="news.imageUrl" alt="News Image" class="h-full w-full object-cover rounded-t-[25px]">
+    </div>
+    <div 
+        class="py-6 px-4 flex flex-col flex-grow justify-between gap-3
+        rounded-b-[25px]
+        ring-1 ring-inset ring-[var(--border-color)]">
+        <div class="flex flex-col gap-2">
+            <h3 class="text-[18px] font-semibold text-[var(--primary-text-color)] line-clamp-2">
+                {{ news.title }}
+            </h3>
+            <p class="text-[var(--primary-subtitle-color)] text-[16px] font-regular line-clamp-3">
+                {{ news.description }}
+            </p>
+        </div>
+        <a routerLink="news/{{ news.id }}">
+            <button 
+                class="border border-[var(--primary-color)] text-[16px] font-medium 
+                py-2 px-4 rounded-[12px] shadow-[0px_2px_15px_0px_rgba(0,0,0,0.1)]
+                bg-[var(--primary-color)] text-[var(--secondary-color)] 
+                hover:bg-[var(--secondary-color)]
+                hover:text-[var(--primary-color)]
+                hover:cursor-pointer transition-colors duration-300">
+                See More
+            </button>
+        </a>
+    </div>
+</div>
