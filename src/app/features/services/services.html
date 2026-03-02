@@ -1,1 +1,96 @@
-<p>services works!</p>
+<div class="services-container">
+
+  <!-- Title Section -->
+  <div class="title-section">
+    <h1>Services</h1>
+    <p>You can learn about municipal products, as well as view the target groups for each product and more.</p>
+  </div>
+
+  <!-- Search and Filters -->
+  <div class="search-section">
+    <div class="search-container">
+      <input
+        type="text"
+        class="search-input"
+        placeholder="Search for ..."
+        [(ngModel)]="searchQuery"
+        (keyup)="onSearch()"
+      />
+      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-search-icon lucide-search"><path d="m21 21-4.34-4.34"/><circle cx="11" cy="11" r="8"/></svg>
+    </div>
+    
+    <!-- Filter Button Wrapper -->
+    <div class="filter-btn-wrapper">
+      <button class="filter-btn" [class.active]="hasActiveFilters()" (click)="onShowFilters()">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-settings2-icon lucide-settings-2"><path d="M14 17H5"/><path d="M19 7h-9"/><circle cx="17" cy="17" r="3"/><circle cx="7" cy="7" r="3"/></svg>
+        Show filters
+      </button>
+
+      <!-- Filter Dropdown Menu -->
+      <div class="filter-dropdown" [class.open]="showFiltersPanel()" (click)="$event.stopPropagation()">
+        <div class="filter-dropdown-content">
+          <!-- Categories Filter -->
+          <div class="filter-section">
+            <h3 class="filter-section-title">Categories</h3>
+            <div class="filter-items">
+              <label class="filter-item" *ngFor="let category of allCategories()">
+                <input
+                  type="checkbox"
+                  class="filter-checkbox"
+                  [checked]="isCategorySelected(category)"
+                  (change)="toggleCategory(category)"
+                />
+                <span class="filter-item-text">{{ category }}</span>
+              </label>
+            </div>
+          </div>
+
+          <!-- Badges Filter -->
+          <div class="filter-section">
+            <h3 class="filter-section-title">Badges</h3>
+            <div class="filter-items">
+              <label class="filter-item" *ngFor="let badge of allBadges()">
+                <input
+                  type="checkbox"
+                  class="filter-checkbox"
+                  [checked]="isBadgeSelected(badge)"
+                  (change)="toggleBadge(badge)"
+                />
+                <span class="filter-item-text">{{ badge }}</span>
+              </label>
+            </div>
+          </div>
+
+          <!-- Filter Actions -->
+          <div class="filter-dropdown-actions">
+            <button class="clear-all-btn" (click)="clearFilters()" [disabled]="!hasActiveFilters()">
+              Clear Filters
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Backdrop -->
+    <div class="filter-backdrop" [class.visible]="showFiltersPanel()" (click)="onShowFilters()"></div>
+    
+    <button class="sort-btn" (click)="onSort()">
+      Sort by
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-down-icon lucide-chevron-down"><path d="m6 9 6 6 6-6"/></svg>
+    </button>
+  </div>
+
+  <!-- Services Grid with PrimeNG DataView -->
+  <div class="services-grid-container">
+    <p-dataview #dv [value]="filteredServices()" [rows]="12" [paginator]="true" paginatorPosition="bottom">
+      <ng-template #list let-items>
+        <div class="services-grid">
+          <app-service-card *ngFor="let service of items" [service]="service"></app-service-card>
+        </div>
+      </ng-template>
+    </p-dataview>
+  </div>
+
+  
+</div>
+
