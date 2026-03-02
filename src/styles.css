@@ -64,16 +64,15 @@ body {
 }
 
 
-.title1{
+.title{
     font-family: var(--font-rubik);
     font-size: 40px;
-    font-weight: 400;
+    font-weight: 500;
 }
 
-.title-description{
+.subtitle{
     font-family: var(--font-lato);
     font-size: 20px;
-    font-weight: 400;
 }
 
 .horizontal-div{

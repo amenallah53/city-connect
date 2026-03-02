@@ -1,6 +1,6 @@
 .main-card{
-    max-width: 1226px;
-    min-width: 1226px;
+    width: 70vw;
+    min-width: 470px;
     padding: 16px 24px 16px 24px;
     background-color: white;
     gap: 10px;
