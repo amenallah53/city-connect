@@ -10,14 +10,14 @@
     background-color: white;
     border-radius: 10px;
     width: 30vw;
-    height: 60vh;
+    height: 85vh;
     box-shadow: -5px 10px 20px rgba(0,0,0,0.2);
     display: flex;
     flex-direction: column;
     gap:10px;
 }
 #div1{
-    margin-top: 3%;
+    margin-top: 5%;
     margin-left: 3%;
     color: #0F2030;
     font-weight: 500;
@@ -34,17 +34,13 @@ input{
 #button1{
     border: #C9C9C9 solid 1px;
     border-radius: 10px;
-    margin-left: 8%;
-    width: 85%;
-    height: 8%;
+    width: 20%;
+    height: 100%;
     font-weight: bold;
     font-size: 100%;
     cursor: pointer;
-    display: flex;
-    flex-direction: row;
     align-items: center;
     justify-content: center;
-    gap: 1rem;
 }
 #parent1{
     display: flex;
@@ -67,20 +63,26 @@ input{
     border-radius: 10px;
     margin-left: 3%;
     width: 90%;
-    height: 7%;
+    height: 5%;
     padding-left: 2.5%;
 }
-#parent2{
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-top: 1.5%;
+.file-container{
+    border: #C9C9C9 dashed 1px;
+    border-radius: 10px;
+    color: #4F6370;
     margin-left: 3%;
-    margin-right: 8%;
+    width: 90%;
+    height: 15%;
+    padding-left: 2.5%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
 }
 #pass{
     color: #0F2030;
     font-weight:600;
+    margin-left: 3%;
 }
 #for{
     color: #009966;
@@ -91,12 +93,22 @@ input{
     background-color: #40B28C;
     color: white;
     font-weight: 500;
-    margin-left: 71%;
     border-radius: 10px;
     font-size: 120%;
-    width: 22%;
-    height: 7%;
+    width: 25%;
+    height: 100%;
     cursor: pointer;
+    font-size: 100%;
+    margin-right: 7%;
+}
+#wrap{
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+    align-items: center;
+    height: 5%;
+    width: 100%;
+    gap: 2rem;
     margin-top: 1.5%;
 }
 #parent3{
@@ -109,14 +121,31 @@ input{
     margin-top: 3%;
 }
 #div4{
-    margin-left: 18%;
-}
-#button1 svg {
-    width: 1.25rem;     /* 20px */
-    height: 1.25rem;    /* keeps it square */
+    margin-top: 1.5%;
+    display: flex;
+    justify-content: center;
 }
 #pdiv2{
     color: #009966;
     cursor: pointer;
     text-decoration: underline;
+}
+#wrapp{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    width: 90%;
+}
+#wrapp2{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    height: 5%;
+    width: 90%;
+    margin-left: 3%;
+}
+#wrapp2 input{
+    height: 100%;
+    width: 40%;
+    margin-left: 0%;
 }

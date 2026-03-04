@@ -1,12 +1,13 @@
 import { Component, inject } from '@angular/core';
 import { Router } from '@angular/router';
+import { RouterModule } from '@angular/router';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { UserAuthService } from '../../core/services/auth.service';
-
+import { LoginProjetDescrip } from '../../shared/components/login-projet-descrip/login-projet-descrip';
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [ReactiveFormsModule],
+  imports: [ReactiveFormsModule,LoginProjetDescrip,RouterModule],
   templateUrl: './login.html',
   styleUrl: './login.css',
 })
