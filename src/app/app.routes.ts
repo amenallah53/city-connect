@@ -17,6 +17,21 @@ export const routes: Routes = [
         path: '',
         loadComponent: () =>
           import('./features/login/login').then(m => m.Login)
+      },
+      {
+        path: 'reset',
+        loadComponent: () =>
+          import('./features/reset-password-page/reset-password-page').then(m => m.ResetPasswordPage)
+      },
+      {
+        path: 'reset-page-link',
+        loadComponent: () =>
+          import('./features/reset-password-page-here/reset-password-page-here').then(m => m.ResetPasswordPageHere)
+      },
+      {
+        path: 'create-account',
+        loadComponent: () =>
+          import('./features/create-account/create-account').then(m => m.CreateAccount)
       }
     ]
   },
