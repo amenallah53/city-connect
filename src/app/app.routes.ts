@@ -11,7 +11,7 @@ export const routes: Routes = [
     path: 'login',
     canMatch: [NoUserGuard],
     loadComponent: () =>
-      import('./layouts/simple-layout/simple-layout').then(m => m.SimpleLayout),
+      import('./layouts/default-layout/default-layout').then(m => m.DefaultLayout),
     children: [
       {
         path: '',
@@ -32,6 +32,11 @@ export const routes: Routes = [
         path: 'create-account',
         loadComponent: () =>
           import('./features/create-account/create-account').then(m => m.CreateAccount)
+      },
+      {
+        path: 'faq',
+        loadComponent: () =>
+          import('./features/faq/faq').then(m => m.Faq)
       }
     ]
   },

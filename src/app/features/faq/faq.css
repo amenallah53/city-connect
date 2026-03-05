@@ -1,0 +1,27 @@
+#body{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+#div1 {
+    color : #0F2030;
+    font-weight: bold;
+    font-size: 210%;
+    margin-left: 5%;
+}
+#div2 {
+    color: #4F6370;
+    font-weight: 600;
+    margin-left: 5%;
+}
+#card1,#card2{
+    background-color: white;
+    border-radius: 10px;
+    width: 30vw;
+    height: 60vh;
+    box-shadow: -5px 10px 20px rgba(0,0,0,0.2);
+    display: flex;
+    flex-direction: column;
+    gap:10px;
+    margin: auto;
+}
