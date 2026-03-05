@@ -1,0 +1,28 @@
+<section class="p-6 flex flex-col items-center gap-3">
+    <div class="w-full relative flex flex-col gap-2 items-center">
+        <h2 class="text-center font-rubik text-[32px] font-medium text-[var(--primary-text-color)]">
+            Key Services
+        </h2>
+        <p class="text-center text-[var(--secondary-text-color)] text-[18px] font-medium">
+            You can access all the electronic municipal services offered by the platform for various categories.
+        </p>
+
+        <a routerLink="services">
+            <button 
+                class="absolute right-0 top-1/2 -translate-y-1/2
+                border border-[var(--primary-color)] bg-[var(--secondary-color)]
+                text-[var(--primary-color)] text-[16px] font-medium 
+                py-2 px-4 rounded-[12px] shadow-[0px_2px_15px_0px_rgba(0,0,0,0.1)]
+                hover:bg-[var(--primary-color)] hover:text-[var(--secondary-color)] hover:cursor-pointer transition-colors duration-300">
+                See More
+            </button>
+        </a>
+    </div>
+
+    <div class="w-full p-3 block flex flex-row justify-center items-center gap-8">
+        <app-service-card
+            *ngFor="let service of featuredServices"
+            [service]="service">
+        </app-service-card>
+    </div>
+</section>

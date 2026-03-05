@@ -6,6 +6,32 @@ import { provideClientHydration, withEventReplay } from '@angular/platform-brows
 
 import { providePrimeNG } from 'primeng/config';
 import Aura from '@primeuix/themes/aura';
+import { definePreset } from '@primeuix/themes';
+
+// Create a custom preset that overrides the green accent
+const MyPreset = definePreset(Aura, {
+  semantic: {
+    primary: {
+      // PrimeNG expects a palette — point it to your CSS var
+      // Easiest: override the specific component tokens
+    },
+    colorScheme: {
+      light: {
+        primary: {
+          color: 'var(--primary-color)',
+          hoverColor: 'var(--primary-color)',
+          activeColor: 'var(--primary-color)',
+        },
+        highlight: {
+          background: 'var(--primary-color)',  // <-- this kills the green bg
+          focusBackground: 'color-mix(in srgb, var(--primary-color) 80%, white)',
+          color: '#ffffff',
+          focusColor: '#ffffff',
+        }
+      }
+    }
+  }
+});
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -15,7 +41,8 @@ export const appConfig: ApplicationConfig = {
     provideClientHydration(withEventReplay()),
     providePrimeNG({
         theme: {
-            preset: Aura,
+            preset: MyPreset,
+            //preset: Aura,
             options: {
               darkModeSelector: 'none'
             }

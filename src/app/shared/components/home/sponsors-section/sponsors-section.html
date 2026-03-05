@@ -1,0 +1,18 @@
+<section class="bg-[var(--secondary-color)] p-6 flex flex-col items-center gap-6">
+
+  <div class="w-full flex flex-col gap-2 items-center">
+    <h2 class="text-center font-rubik text-[32px] font-medium text-[var(--primary-text-color)]">
+      Sponsors
+    </h2>
+    <p class="text-center text-[var(--secondary-text-color)] text-[18px] font-medium">
+      Take a look at our sponsors
+    </p>
+  </div>
+
+  <div class="py-3 flex flex-row justify-center items-center gap-8">
+    <div *ngFor="let sponsor of listOfSponsors" class="rounded-[25px] border border-[var(--primary-color)] p-6">
+        <img [src]="sponsor.logoUrl" [alt]="sponsor.name" class="w-[160px] h-[100px] object-contain">
+    </div>
+  </div>
+
+</section>
