@@ -2,10 +2,27 @@
 
 @import "tailwindcss";
 
-@theme {
-  --font-rubik: "Rubik", sans-serif;
-  --font-lato: "Lato", sans-serif;
+@font-face {
+  font-family: 'inter';
+  src: url('/assets/fonts/Inter-VariableFont_opsz,wght.ttf');
 }
+
+@font-face {
+  font-family: 'Rubik';
+  src: url('/assets/fonts/Rubik-VariableFont_wght.ttf');
+}
+
+
+@font-face {
+  font-family: 'Lato';
+  src: url('/assets/fonts/Lato-Regular.ttf');
+}
+
+@font-face {
+  font-family: 'Lato-italic';
+  src: url('/assets/fonts/Lato-Italic.ttf');
+}
+
 
 :root {
     /** Text colors */
@@ -28,8 +45,9 @@
     /** Font families */
     --font-lato: 'Lato', sans-serif;
     --font-rubik: 'Rubik', sans-serif;
-
+    --font-inter: 'inter', sans-serif;
     --font-family-base: var(--font-lato);
+    --font-lato-italic: "Lato-italic", sans-serif;
 }
 
 * {
@@ -43,4 +61,28 @@ body {
     font-family: var(--font-family-base);
     color: var(--primary-text-color);
     background-color: var(--background-color);
+}
+
+
+.title{
+    font-family: var(--font-rubik);
+    font-size: 40px;
+    font-weight: 500;
+}
+
+.subtitle{
+    font-family: var(--font-lato);
+    font-size: 20px;
+}
+
+.horizontal-div{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+}
+
+.vertical-div{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
 }

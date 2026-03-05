@@ -62,9 +62,19 @@ export const routes: Routes = [
           import('./features/jobs/jobs').then(m => m.Jobs)
       },
       {
+        path: 'jobs/:jobsId',
+        loadComponent: () =>
+          import('./features/jobs/details-page/details-page').then(m => m.DetailsPage)
+      },
+      {
         path: 'services',
         loadComponent: () =>
           import('./features/services/services').then(m => m.Services)
+      },
+      {
+        path: 'services/:serviceId',
+        loadComponent: () =>
+          import('./features/services/details-page/details-page').then(m => m.DetailsPage)
       },
       {
         path: 'faq',
@@ -75,6 +85,16 @@ export const routes: Routes = [
         path: 'report',
         loadComponent: () =>
           import('./features/report/report').then(m => m.Report)
+      },
+      {
+        path: 'profile',
+        loadComponent: () =>
+          import('./features/profile/profile').then(m => m.Profile)
+      },
+      {
+        path: 'news/:newsId',
+        loadComponent: () =>
+          import('./features/news-details/news-details').then(m => m.NewsDetails)
       }
     ]
   },
