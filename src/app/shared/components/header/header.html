@@ -112,8 +112,9 @@
         }
       </div>
 
-      <!-- Actions-->
+<!-- Actions-->
       <div class="flex flex-row gap-4 items-center">
+        <!-- bell -->
         <div class="p-2 rounded-full transition-all duration-200 
         hover:bg-[#EDF3FF]/50 hover:border-[var(--primary-color)]
         cursor-pointer border border-transparent 
@@ -132,43 +133,26 @@
         <!-- Avatar wrapper -->
         <div 
           class="relative group"
-          (click)="toggleProfileMenu()"
+          (click)="profileMenu.toggle($event)"
         >
-          <div 
-            class="border-2 border-[#5D7786] bg-[#445A67] w-[40px] h-[40px] 
+          <div class="border-2 border-[#5D7786] bg-[#445A67] w-[40px] h-[40px] 
             rounded-full overflow-hidden group-hover:cursor-pointer">
             <img src="/assets/avatar.png" alt="avatar" class="w-full h-full object-cover">
           </div>
-          <div 
-            class="absolute h-[20px] w-[20px] p-[4px] rounded-full 
+          <div class="absolute h-[20px] w-[20px] p-[4px] rounded-full 
             flex items-center justify-center 
             bg-[var(--secondary-color)] group-hover:cursor-pointer
             bottom-0 left-0 translate-y-1/4 border-2 border-[var(--border-color)]">
-            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-down-icon lucide-chevron-down"><path d="m6 9 6 6 6-6"/></svg>
-          </div>
-
-          <!-- Dropdown menu -->
-          <div 
-            *ngIf="showProfileMenu"
-            class="absolute right-0 mt-2 w-36 bg-white rounded-lg shadow-lg border border-gray-200 z-50"
-          >
-            <a 
-              routerLink="/profile" 
-              class="block px-4 py-2 text-gray-800 hover:bg-gray-100 hover:rounded-t-lg"
-              (click)="closeProfileMenu()"
-            >
-              Profile
-            </a>
-            <button 
-              (click)="logout()" 
-              class="w-full text-left px-4 py-2 text-gray-800 
-              hover:cursor-pointer hover:bg-gray-100 hover:rounded-b-lg"
-            >
-              Logout
-            </button>
+            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
           </div>
         </div>
+
       </div>
     </div>
   </nav>
+
+  <!-- Menu & Dialog OUTSIDE nav, at header root level -->
+  <p-menu #profileMenu [model]="profileMenuItems" [popup]="true" />
+  <p-confirmDialog />
+
 </header>
