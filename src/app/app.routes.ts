@@ -32,7 +32,7 @@ export const routes: Routes = [
         path: 'create-account',
         loadComponent: () =>
           import('./features/create-account/create-account').then(m => m.CreateAccount)
-      }
+      },
     ]
   },
 

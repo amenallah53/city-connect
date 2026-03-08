@@ -8,6 +8,8 @@ import { providePrimeNG } from 'primeng/config';
 import Aura from '@primeuix/themes/aura';
 import { definePreset } from '@primeuix/themes';
 
+import { provideAnimations } from '@angular/platform-browser/animations';
+
 // Create a custom preset that overrides the green accent
 const MyPreset = definePreset(Aura, {
   semantic: {
@@ -39,6 +41,7 @@ export const appConfig: ApplicationConfig = {
     provideZonelessChangeDetection(),
     provideRouter(routes),
     provideClientHydration(withEventReplay()),
+    provideAnimations(),
     providePrimeNG({
         theme: {
             preset: MyPreset,

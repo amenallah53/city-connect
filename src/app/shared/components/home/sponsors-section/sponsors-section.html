@@ -10,8 +10,17 @@
   </div>
 
   <div class="py-3 flex flex-row justify-center items-center gap-8">
-    <div *ngFor="let sponsor of listOfSponsors" class="rounded-[25px] border border-[var(--primary-color)] p-6">
-        <img [src]="sponsor.logoUrl" [alt]="sponsor.name" class="w-[160px] h-[100px] object-contain">
+    <div
+      *ngFor="let sponsor of listOfSponsors"
+      class="group rounded-[25px] border border-[var(--primary-color)]/50 px-6 py-3 overflow-hidden 
+      cursor-pointer transition-shadow duration-300 
+      hover:border-[var(--primary-color)]"
+    >
+      <img
+        [src]="sponsor.logoUrl"
+        [alt]="sponsor.name"
+        class="w-[150px] h-[100px] object-contain transition-all duration-300 [filter:grayscale(50%)_opacity(0.75)] group-hover:[filter:grayscale(0%)_opacity(1)] group-hover:scale-110"
+      >
     </div>
   </div>
 

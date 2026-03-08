@@ -1,211 +1,127 @@
-import { Component, signal, OnInit, computed } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule, NgClass } from '@angular/common';
+import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
-import { ButtonModule } from 'primeng/button';
-import { DataViewModule } from 'primeng/dataview';
-import { TagModule } from 'primeng/tag';
-import { ServiceCard } from "../../shared/components/cards/service-card/service-card";
+import { SelectModule } from 'primeng/select';
+import { PaginatorModule, PaginatorState } from 'primeng/paginator';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Service } from '../../shared/models/service.model';
+import { ServiceCard } from '../../shared/components/cards/service-card/service-card';
+import { allServices } from '../../shared/mock/services.mock';
 
-interface FilterOptions {
-  categories: Set<string>;
-  tags: Set<string>;
+interface ServiceFilter {
+  name: string;
+  code: string;
+}
+
+interface ServiceCategory {
+  name: string;
+  code: string;
 }
 
 @Component({
   selector: 'app-services',
-  imports: [CommonModule, FormsModule, ButtonModule, DataViewModule, TagModule, ServiceCard],
+  imports: [CommonModule, NgClass, FormsModule, SelectModule, PaginatorModule, ServiceCard],
   templateUrl: './services.html',
   styleUrl: './services.css',
+  standalone: true
 })
 export class Services implements OnInit {
-  searchQuery: string = '';
-  showFiltersPanel = signal<boolean>(false);
-  selectedCategories = signal<Set<string>>(new Set());
-  selectedBadges = signal<Set<string>>(new Set());
+  filters: ServiceFilter[] = [];
+  selectedFilter: ServiceFilter = { name: 'All', code: 'all' };
 
-  constructor(public router: Router) {}
+  categories: ServiceCategory[] = [];
+  selectedCategory: ServiceCategory = { name: 'All Services', code: 'all' };
 
-  services = signal<Service[]>([
-    {
-      id: '1',
-      title: 'Issuing a building permit',
-      type: 'Building permits',
-      badges: ['Electronic', 'Not immediate']
-    },
-    {
-      id: '2',
-      title: 'Printing a burial certificate',
-      type: 'Honoring the dead',
-      badges: ['Electronic']
-    },
-    {
-      id: '3',
-      title: 'Renewing a business license',
-      type: 'Business licenses',
-      badges: ['With Fees', 'Not immediate']
-    },
-    {
-      id: '4',
-      title: 'Issuing a building demolition permit',
-      type: 'Building permits',
-      badges: ['Electronic', 'Not immediate']
-    },
-    {
-      id: '5',
-      title: 'Issuing a building permit',
-      type: 'Building permits',
-      badges: ['Electronic', 'Not immediate']
-    },
-    {
-      id: '6',
-      title: 'Printing a burial certificate',
-      type: 'Honoring the dead',
-      badges: ['Electronic']
-    },
-    {
-      id: '7',
-      title: 'Renewing a business license',
-      type: 'Business licenses',
-      badges: ['With Fees', 'Not immediate']
-    },
-    {
-      id: '8',
-      title: 'Issuing a building demolition permit',
-      type: 'Building permits',
-      badges: ['Electronic', 'Not immediate']
-    },
-    {
-      id: '9',
-      title: 'Issuing a building permit',
-      type: 'Building permits',
-      badges: ['Electronic', 'Not immediate']
-    },
-    {
-      id: '10',
-      title: 'Printing a burial certificate',
-      type: 'Honoring the dead',
-      badges: ['Electronic']
-    },
-    {
-      id: '11',
-      title: 'Renewing a business license',
-      type: 'Business licenses',
-      badges: ['With Fees', 'Not immediate']
-    },
-    {
-      id: '12',
-      title: 'Issuing a building demolition permit',
-      type: 'Building permits',
-      badges: ['Electronic', 'Not immediate']
-    }
-  ]);
+  allServicesList: Service[] = allServices;
+  filteredServices: Service[] = [];
+  pagedServices: Service[] = [];
 
-  // Computed signals for filter options
-  allCategories = computed(() => {
-    const categories = new Set<string>();
-    this.services().forEach(service => {
-      categories.add(service.type);
+  // Pagination
+  first: number = 0;
+  rows: number = 12;
+
+  viewMode: 'grid' | 'list' = 'grid';
+
+  setViewMode(mode: 'grid' | 'list') {
+    this.viewMode = mode;
+  }
+
+  constructor(private router: Router, private route: ActivatedRoute) {}
+
+  ngOnInit() {
+    this.filters = [
+      { name: 'All', code: 'all' },
+      { name: 'Electronic', code: 'electronic' },
+      { name: 'With Fees', code: 'with-fees' },
+      { name: 'Not Immediate', code: 'not-immediate' },
+    ];
+
+    this.categories = [
+      { name: 'All Services', code: 'all' },
+      { name: 'Building Permits', code: 'building-permits' },
+      { name: 'Honoring the Dead', code: 'honoring-the-dead' },
+      { name: 'Business Licenses', code: 'business-licenses' },
+    ];
+
+    this.route.queryParams.subscribe(params => {
+      const categoryCode = params['category'] || 'all';
+      const filterCode = params['filter'] || 'all';
+
+      this.selectedCategory = this.categories.find(c => c.code === categoryCode) ?? this.categories[0];
+      this.selectedFilter = this.filters.find(f => f.code === filterCode) ?? this.filters[0];
+
+      this.first = 0; // reset to page 1 on filter change
+      this.applyFilters();
     });
-    return Array.from(categories).sort();
-  });
+  }
 
-  allBadges = computed(() => {
-    const badges = new Set<string>();
-    this.services().forEach(service => {
-      service.badges.forEach(badge => {
-        badges.add(badge);
-      });
+  selectCategory(category: ServiceCategory) {
+    this.selectedCategory = category;
+    this.updateQueryParams();
+  }
+
+  onFilterChange() {
+    this.updateQueryParams();
+  }
+
+  onPageChange(event: PaginatorState) {
+    this.first = event.first ?? 0;
+    this.rows = event.rows ?? 12;
+    this.updatePagedServices();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  private updateQueryParams() {
+    const queryParams: any = {};
+    if (this.selectedCategory.code !== 'all') queryParams['category'] = this.selectedCategory.code;
+    if (this.selectedFilter.code !== 'all') queryParams['filter'] = this.selectedFilter.code;
+
+    this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams,
+      replaceUrl: true,
     });
-    return Array.from(badges).sort();
-  });
-
-  // Filtered services based on search and filters
-  filteredServices = computed(() => {
-    let filtered = this.services();
-
-    // Apply category filter
-    if (this.selectedCategories().size > 0) {
-      filtered = filtered.filter(service =>
-        this.selectedCategories().has(service.type)
-      );
-    }
-
-    // Apply badge filter
-    if (this.selectedBadges().size > 0) {
-      filtered = filtered.filter(service =>
-        service.badges.some(badge => this.selectedBadges().has(badge))
-      );
-    }
-
-    // Apply search filter
-    if (this.searchQuery.trim()) {
-      const query = this.searchQuery.toLowerCase();
-      filtered = filtered.filter(service =>
-        service.title.toLowerCase().includes(query) ||
-        service.type.toLowerCase().includes(query) ||
-        service.badges.some(badge => badge.toLowerCase().includes(query))
-      );
-    }
-
-    return filtered;
-  });
-
-  ngOnInit(): void {
-    // Initialize services data
-    this.services.set(this.services());
   }
 
-  onSearch(): void {
-    // Search is handled by computed signal
-    console.log('Searching for:', this.searchQuery);
+  private applyFilters() {
+    this.filteredServices = this.allServicesList.filter(service => {
+      const matchCategory =
+        this.selectedCategory.code === 'all' ||
+        service.type.toLowerCase().replace(/\s+/g, '-') === this.selectedCategory.code;
+
+      const matchFilter =
+        this.selectedFilter.code === 'all' ||
+        service.badges.some(
+          badge => badge.toLowerCase().replace(/\s+/g, '-') === this.selectedFilter.code
+        );
+
+      return matchCategory && matchFilter;
+    });
+
+    this.updatePagedServices();
   }
 
-  onShowFilters(): void {
-    this.showFiltersPanel.update(value => !value);
-  }
-
-  onSort(): void {
-    // Implement sort logic
-    console.log('Sort');
-  }
-
-  toggleCategory(category: string): void {
-    const categories = new Set(this.selectedCategories());
-    if (categories.has(category)) {
-      categories.delete(category);
-    } else {
-      categories.add(category);
-    }
-    this.selectedCategories.set(categories);
-  }
-
-  toggleBadge(badge: string): void {
-    const badges = new Set(this.selectedBadges());
-    if (badges.has(badge)) {
-      badges.delete(badge);
-    } else {
-      badges.add(badge);
-    }
-    this.selectedBadges.set(badges);
-  }
-
-  isCategorySelected(category: string): boolean {
-    return this.selectedCategories().has(category);
-  }
-
-  isBadgeSelected(badge: string): boolean {
-    return this.selectedBadges().has(badge);
-  }
-
-  clearFilters(): void {
-    this.selectedCategories.set(new Set());
-    this.selectedBadges.set(new Set());
-    this.searchQuery = '';
-  }
-
-  hasActiveFilters(): boolean {
-    return this.selectedCategories().size > 0 || this.selectedBadges().size > 0 || this.searchQuery.trim() !== '';
+  private updatePagedServices() {
+    this.pagedServices = this.filteredServices.slice(this.first, this.first + this.rows);
   }
 }

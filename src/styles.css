@@ -23,9 +23,7 @@
     /** Font families */
     --font-lato: 'Lato', sans-serif;
     --font-rubik: 'Rubik', sans-serif;
-    --font-inter: 'inter', sans-serif;
     --font-family-base: var(--font-lato);
-    --font-lato-italic: "Lato-italic", sans-serif;
 }
 
 * {
@@ -41,6 +39,10 @@ body {
     background-color: var(--background-color);
 }
 
+
+.font-rubik {
+    font-family: var(--font-rubik);
+}
 
 .title{
     font-family: var(--font-rubik);
