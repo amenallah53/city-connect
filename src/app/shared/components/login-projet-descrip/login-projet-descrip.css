@@ -3,13 +3,15 @@
     flex-direction: column;
 }
 #title {
-    color : #0F2030;
-    font-weight: bold;
-    font-size: 310%;
+    color : var(--primary-text-color);
+    font-family: var(--font-rubik);
+    font-weight: 500;
+    font-size: 40px;
 }
 #description{
-    color: #0F2030;
+    color: var(--secondary-text-color);
     margin-top: 1%;
+    font-size: 20px;
 }
 #parent {
     margin-top: 5%;
@@ -32,6 +34,7 @@
     border-radius: 10px;
     width: 15vw;
     height: 15vh;
+    font-size: 110%;
     box-shadow: -5px 10px 20px rgba(0,0,0,0.2);
     gap:10px;
     display: flex;
@@ -40,7 +43,8 @@
     flex-direction: column;
 }
 .dark{
-    color: #0F2030;
-    font-weight: bold;
-    font-size: 140%;
+    color: var(--primary-text-color);
+    font-weight: 500;
+    font-family: var(--font-rubik);
+    font-size: 20px;
 }
