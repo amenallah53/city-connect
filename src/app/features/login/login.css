@@ -4,7 +4,7 @@
     display: flex;
     justify-content: center;
     align-items: center;    
-    gap: 15vw;
+    gap: 10vw;
 }
 .card{
     background-color: white;
