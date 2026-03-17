@@ -6,68 +6,40 @@
     align-items: center;    
     gap: 15vw;
 }
-.card {
+.card{
     background-color: white;
     border-radius: 10px;
-    width: 30vw;
-    min-width: 320px;
-    /* remove height: 60vh */
-    padding: 2% 0 4% 0;
     box-shadow: -5px 10px 20px rgba(0,0,0,0.2);
     display: flex;
     flex-direction: column;
-    gap: 10px;
-}
-
-input {
-    border: #C9C9C9 solid 1px;
-    border-radius: 10px;
-    margin-left: 3%;
-    width: 90%;
-    height: 38px; /* fixed px instead of % of parent height */
-    padding-left: 2.5%;
-    box-sizing: border-box;
-}
-
-#button1 {
-    border: #C9C9C9 solid 1px;
-    border-radius: 10px;
-    margin-left: 8%;
-    width: 85%;
-    height: 42px; /* fixed px */
-    font-weight: bold;
-    font-size: 100%;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 1rem;
-}
-
-#button2 {
-    background-color: #40B28C;
-    color: white;
-    font-weight: 500;
-    margin-left: 71%;
-    border-radius: 10px;
-    font-size: 120%;
-    width: 22%;
-    height: 38px; /* fixed px */
-    cursor: pointer;
-    margin-top: 1.5%;
+    gap:10px;
+    padding-bottom: 2%;
+    padding-top: 2%;
+    padding-left: 2%;
+    padding-right: 2%;
+    
 }
 #div1{
-    margin-top: 3%;
-    margin-left: 3%;
-    color: #0F2030;
+    color: var(--primary-text-color);
     font-weight: 500;
     font-size: 170%;
 }
 #div2{
-    color: var(--secondary-text-color);
-    margin-left: 3%;    
+    color: var(--secondary-text-color);    
 }
-
+#button1{
+    border: #C9C9C9 solid 1px;
+    border-radius: 10px;
+    font-weight: bold;
+    font-size: 100%;
+    padding: 1.5%;
+    cursor: pointer;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+}
 #parent1{
     display: flex;
     align-items: center;
@@ -81,46 +53,56 @@ input {
 }
 #div3{
     font-weight:600;
-    margin-left: 3%;
-    color: #0F2030;
+    color: var(--primary-text-color);
 }
-
+input{
+    border: #C9C9C9 solid 1px;
+    border-radius: 10px;
+    padding: 1.5%;
+    padding-left: 2.5%;
+    width: 100%;
+}
 #parent2{
     display: flex;
     justify-content: space-between;
     align-items: center;
     margin-top: 1.5%;
-    margin-left: 3%;
-    margin-right: 8%;
 }
 #pass{
-    color: #0F2030;
+    color: var(--primary-text-color);
     font-weight:600;
 }
 #for{
-    color: #009966;
+    color: var(--primary-color);
     cursor: pointer;
     text-decoration: underline;
 }
-
+#button2{
+    background-color: var(--primary-color);
+    color: white;
+    font-weight: medium;
+    padding: 8px 16px;
+    border-radius: 12px;
+    font-size: 100%;
+    cursor: pointer;
+    margin-top: 1.5%;
+    box-shadow: 0px 2px 15px 0px rgba(0, 0, 0, 0.1);
+}
 #parent3{
     display: flex;
     justify-content: row;
     gap: 8px;
     font-size: 110%;
     font-weight: 400;
-    margin-left: 27%;
     margin-top: 3%;
-}
-#div4{
-    margin-left: 18%;
+    margin-left: 14%;
 }
 #button1 svg {
-    width: 1.25rem;     /* 20px */
-    height: 1.25rem;    /* keeps it square */
+    width: 1.25rem;
+    height: 1.25rem;
 }
 #pdiv2{
-    color: #009966;
+    color: var(--primary-color);
     cursor: pointer;
     text-decoration: underline;
 }
