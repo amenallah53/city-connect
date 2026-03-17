@@ -4,7 +4,7 @@
     display: flex;
     justify-content: center;
     align-items: center;    
-    gap: 15vw;
+    gap: 10vw;
 }
 .card{
     background-color: white;
@@ -13,15 +13,12 @@
     display: flex;
     flex-direction: column;
     gap:10px;
-    padding-bottom: 2%;
-    padding-top: 2%;
-    padding-left: 2%;
-    padding-right: 2%;
-    
+    padding: 2%;
 }
 #div1{
     color: var(--primary-text-color);
-    font-weight: 500;
+    font-family: var(--font-rubik);
+    font-weight: 400;
     font-size: 170%;
 }
 #div2{
@@ -32,7 +29,7 @@
     border-radius: 10px;
     font-weight: bold;
     font-size: 100%;
-    padding: 1.5%;
+    padding: 2%;
     cursor: pointer;
     display: flex;
     flex-direction: row;
@@ -44,6 +41,8 @@
     display: flex;
     align-items: center;
     gap: 1rem;
+    color: var(--secondary-text-color);
+    font-family: var(--font-lato);
 }
 #parent1 hr {
     flex: 1;
@@ -51,14 +50,15 @@
     height: 1px;
     background-color: rgba(0,0,0,0.1);
 }
-#div3{
-    font-weight:600;
+#div3,#pass {
+    font-weight: 410;
+    font-family: var(--font-rubik);
     color: var(--primary-text-color);
 }
 input{
     border: #C9C9C9 solid 1px;
     border-radius: 10px;
-    padding: 1.5%;
+    padding: 2.2%;
     padding-left: 2.5%;
     width: 100%;
 }
@@ -68,25 +68,24 @@ input{
     align-items: center;
     margin-top: 1.5%;
 }
-#pass{
-    color: var(--primary-text-color);
-    font-weight:600;
-}
 #for{
     color: var(--primary-color);
     cursor: pointer;
     text-decoration: underline;
 }
 #button2{
-    background-color: var(--primary-color);
+    background-color: #0F2A3F;
     color: white;
-    font-weight: medium;
-    padding: 8px 16px;
-    border-radius: 12px;
-    font-size: 100%;
+    font-weight: 500;
+    margin-left: 68%;
+    padding-top: 2.5%;
+    padding-bottom: 2.5%;
+    padding-left: 8.5%;
+    padding-right: 8.5%;
+    border-radius: 10px;
     cursor: pointer;
     margin-top: 1.5%;
-    box-shadow: 0px 2px 15px 0px rgba(0, 0, 0, 0.1);
+    align-self: end;
 }
 #parent3{
     display: flex;
