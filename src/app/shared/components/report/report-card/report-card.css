@@ -59,13 +59,11 @@
 }
 
 .report-title{
-    font-family: var(--font-inter);
     font-size: 18px;
     font-weight: 500;
 }
 
 .report-description{
-    font-family: var(--font-inter);
     font-size: 14px;
     font-weight: 400;
     color: var(--secondary-text-color);
@@ -74,7 +72,6 @@
 
 .username-and-city{
     gap: 32px;
-    font-family: var(--font-inter);
     font-size: 14px;
     font-weight: 600;
     color: var(--primary-subtitle-color);
@@ -99,7 +96,6 @@
     padding: 8px;
     border-radius: 100px;
     border: 1px solid var(--secondary-text-color);
-    font-family: var(--font-inter);
     font-weight: 400;
     font-size: 12px;
 }

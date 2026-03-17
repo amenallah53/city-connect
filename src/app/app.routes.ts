@@ -72,6 +72,11 @@ export const routes: Routes = [
           import('./features/services/details-page/details-page').then(m => m.DetailsPage)
       },
       {
+        path: 'services/:serviceId/start',
+        loadComponent: () =>
+          import('./features/services/start-service/start-service').then(m => m.StartService)
+      },
+      {
         path: 'faq',
         loadComponent: () =>
           import('./features/faq/faq').then(m => m.Faq)

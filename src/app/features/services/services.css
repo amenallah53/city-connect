@@ -1,0 +1,256 @@
+/* ============================================
+   SERVICES PAGE - services.css
+   ============================================ */
+
+/* Container */
+.services-container {
+  width: 100%;
+  background-color: var(--background-color);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ============================================
+   CATEGORY BAR
+   ============================================ */
+.category-bar {
+  padding: 16px 24px;
+  background-color: var(--primary-color);
+  color: var(--secondary-color);
+  font-size: 18px;
+  font-weight: 500;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 16px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.category-item {
+  padding: 12px;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  color: var(--secondary-color);
+}
+
+.category-item:hover {
+  background-color: rgba(0, 94, 113, 0.5);
+}
+
+.category-item.active {
+  background-color: rgba(0, 94, 113, 0.5);
+  color: #ffffff;
+}
+
+/* ============================================
+   HEADER + TOOLBAR
+   ============================================ */
+.services-header {
+  padding: 24px 24px 8px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.services-title {
+  font-family: 'Rubik', sans-serif;
+  font-size: 32px;
+  font-weight: 400;
+  color: var(--primary-text-color);
+  margin: 0;
+}
+
+.services-toolbar {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.services-count {
+  font-size: 18px;
+  color: var(--primary-subtitle-color);
+  margin: 0;
+}
+
+.toolbar-actions {
+  display: flex;
+  flex-direction: row;
+  gap: 12px;
+  align-items: center;
+}
+
+/* ============================================
+   FILTER SELECT
+   ============================================ */
+.filter-select-wrapper {
+  display: flex;
+  justify-content: center;
+  border-radius: 25px;
+  box-shadow: 0px 2px 15px 0px rgba(0, 0, 0, 0.1);
+  width: 150px;
+}
+
+.filter-select-wrapper p-select {
+  width: 100%;
+  color: var(--secondary-text-color);
+}
+
+/* ============================================
+   VIEW TOGGLE BUTTONS
+   ============================================ */
+.view-toggle {
+  display: flex;
+  flex-direction: row;
+  gap: 8px;
+  align-items: center;
+}
+
+.view-btn {
+  border-radius: 50%;
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0px 2px 15px 0px rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+  transition: background-color 0.3s;
+  background-color: var(--secondary-color);
+}
+
+.view-btn svg {
+  color: var(--secondary-text-color);
+}
+
+.view-btn:hover {
+  background-color: #f0f0f0;
+}
+
+.view-btn.active {
+  background-color: var(--primary-color);
+}
+
+.view-btn.active svg {
+  color: #ffffff;
+}
+
+.view-btn.active:hover {
+  background-color: #005e71;
+}
+
+/* ============================================
+   SERVICES GRID CONTAINER
+   ============================================ */
+.services-grid-container {
+  padding: 16px 24px;
+  display: flex;
+  justify-content: center;
+}
+
+.services-grid {
+  display: grid;
+  grid-template-columns: repeat(4, auto);
+  gap: 24px;
+  width: fit-content;
+}
+
+.services-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  width: 100%;
+  max-width: 1200px;
+}
+
+/* ============================================
+   EMPTY STATE
+   ============================================ */
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 80px 0;
+  gap: 16px;
+  color: var(--primary-subtitle-color);
+}
+
+.empty-state-icon {
+  color: var(--secondary-text-color);
+}
+
+.empty-state-text {
+  font-size: 18px;
+  font-weight: 500;
+  color: var(--primary-subtitle-color);
+  margin: 0;
+}
+
+/* ============================================
+   PAGINATOR
+   ============================================ */
+.paginator-wrapper {
+  display: flex;
+  justify-content: center;
+  padding: 24px 0;
+}
+
+.paginator-wrapper ::ng-deep .p-paginator {
+  background-color: #e8ecf1;
+  border: none;
+  padding: 16px 24px;
+}
+
+.paginator-wrapper ::ng-deep .p-paginator-current {
+  font-family: 'Lato', sans-serif;
+  font-size: 16px;
+  color: #565656;
+}
+
+.paginator-wrapper ::ng-deep .p-paginator-page {
+  background-color: var(--background-color);
+  border: 1px solid #d9d9d9;
+  color: #565656;
+}
+
+.paginator-wrapper ::ng-deep .p-paginator-page.p-highlight {
+  background-color: var(--primary-color);
+  border-color: var(--primary-color);
+  color: #ffffff;
+}
+
+/* ============================================
+   RESPONSIVE
+   ============================================ */
+@media (max-width: 1280px) {
+  .services-grid {
+    grid-template-columns: repeat(3, auto);
+  }
+}
+
+@media (max-width: 1024px) {
+  .services-grid {
+    grid-template-columns: repeat(2, auto);
+  }
+}
+
+@media (max-width: 640px) {
+  .services-grid {
+    grid-template-columns: 1fr;
+    width: 100%;
+  }
+
+  .services-toolbar {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .category-bar {
+    justify-content: flex-start;
+  }
+}

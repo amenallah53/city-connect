@@ -1,0 +1,100 @@
+<!-- Toggle Button -->
+<div
+    [@toggleBtn]="fullDisplay ? 'hidden' : 'visible'"
+    (click)="toggleDisplay()"
+    class="rounded-full w-[60px] h-[60px]
+    flex justify-center items-center
+    bg-[var(--primary-color)] text-[var(--secondary-color)] 
+    cursor-pointer hover:bg-[#005E71] transition-colors duration-300"
+    [class.pointer-events-none]="fullDisplay">
+    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none"
+        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M12 6V2H8"/><path d="M15 11v2"/><path d="M2 12h2"/><path d="M20 12h2"/>
+        <path d="M20 16a2 2 0 0 1-2 2H8.828a2 2 0 0 0-1.414.586l-2.202 2.202A.71.71 0 0 1 4 20.286V8a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2z"/>
+        <path d="M9 11v2"/>
+    </svg>
+</div>
+
+<!-- Chat Window -->
+<div
+    *ngIf="fullDisplay"
+    [@chatWindow]="'visible'"
+    class="fixed bottom-4 left-4 w-[350px] h-[500px]
+    bg-[var(--background-color)] rounded-lg shadow-[0px_2px_15px_0px_rgba(0,0,0,0.1)]
+    flex flex-col">
+
+    <!-- Header -->
+    <div class="flex justify-between items-center bg-[var(--primary-color)] text-[var(--secondary-color)] p-4 rounded-t-lg shrink-0">
+        <div class="flex items-center gap-2">
+            <div class="shrink-0 rounded-full w-[40px] h-[40px] bg-[var(--secondary-color)] flex justify-center items-center">
+                <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                    class="text-[var(--primary-color)]">
+                    <path d="M12 6V2H8"/><path d="M15 11v2"/><path d="M2 12h2"/><path d="M20 12h2"/>
+                    <path d="M20 16a2 2 0 0 1-2 2H8.828a2 2 0 0 0-1.414.586l-2.202 2.202A.71.71 0 0 1 4 20.286V8a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2z"/>
+                    <path d="M9 11v2"/>
+                </svg>
+            </div>
+            <h2 class="font-rubik text-[24px] font-medium">City Bot</h2>
+        </div>
+        <button (click)="toggleDisplay()" class="text-white/75 hover:text-white cursor-pointer">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M18 6 6 18"/><path d="m6 6 12 12"/>
+            </svg>
+        </button>
+    </div>
+
+    <!-- Messages -->
+    <div class="flex-1 flex flex-col gap-3 p-4 overflow-y-auto">
+        <ng-container *ngFor="let message of messages">
+            <!-- Bot message (left) -->
+            <div *ngIf="message.sender === 'bot'" class="flex justify-start">
+                <div class="rounded-t-lg rounded-br-lg w-fit max-w-[75%]
+                    bg-[var(--primary-color)] text-[var(--secondary-color)] p-3 text-[14px]">
+                    {{ message.text }}
+                </div>
+            </div>
+
+            <!-- User message (right) -->
+            <div *ngIf="message.sender === 'user'" class="flex justify-end">
+                <div class="rounded-t-lg rounded-bl-lg w-fit max-w-[75%]
+                    bg-[var(--secondary-color)] text-[var(--primary-text-color)] p-3 text-[14px]">
+                    {{ message.text }}
+                </div>
+            </div>
+        </ng-container>
+        <!-- Typing indicator -->
+        <div *ngIf="isTyping" class="flex justify-start">
+            <div class="rounded-t-lg rounded-br-lg
+                bg-[var(--primary-color)] p-3 flex items-center gap-1">
+                <span class="w-2 h-2 rounded-full bg-[var(--secondary-color)] animate-bounce [animation-delay:0ms]"></span>
+                <span class="w-2 h-2 rounded-full bg-[var(--secondary-color)] animate-bounce [animation-delay:150ms]"></span>
+                <span class="w-2 h-2 rounded-full bg-[var(--secondary-color)] animate-bounce [animation-delay:300ms]"></span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Input -->
+    <div class="shrink-0 p-3 border-t border-gray-200 flex items-center gap-2">
+        <input
+            type="text"
+            placeholder="Type a message..."
+            [(ngModel)]="userInput"
+            class="flex-1 rounded-full px-4 py-2 text-[14px]
+            bg-[var(--secondary-color)] outline-none text-[var(--primary-text-color)]
+            focus:ring-2 focus:ring-[var(--primary-color)] transition"/>
+        <button
+            (click)="sendMessage()"
+            class="shrink-0 w-[38px] h-[38px] rounded-full flex justify-center items-center
+            bg-[var(--primary-color)] text-[var(--secondary-color)]
+            hover:bg-[#005E71] transition-colors duration-300 cursor-pointer">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M14.536 21.686a.5.5 0 0 0 .937-.024l6.5-19a.496.496 0 0 0-.635-.635l-19 6.5a.5.5 0 0 0-.024.937l7.93 3.18a2 2 0 0 1 1.112 1.11z"/>
+                <path d="m21.854 2.147-10.94 10.939"/>
+            </svg>
+        </button>
+    </div>
+
+</div>

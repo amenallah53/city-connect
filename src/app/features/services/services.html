@@ -1,1 +1,102 @@
-<p>services works!</p>
+<section class="services-container">
+
+  <!-- Category Bar -->
+  <div class="category-bar">
+    <div
+      *ngFor="let category of categories"
+      (click)="selectCategory(category)"
+      [ngClass]="{ 'active': selectedCategory?.code === category.code }"
+      class="category-item">
+      {{ category.name }}
+    </div>
+  </div>
+
+  <!-- Header + Filter row -->
+  <div class="services-header">
+    <h1 class="services-title">{{ selectedCategory.name }}</h1>
+    <div class="services-toolbar">
+      <p class="services-count">{{ filteredServices.length }} service(s) found</p>
+      <div class="toolbar-actions">
+
+        <!-- Filter Select -->
+        <div class="filter-select-wrapper">
+          <p-select
+            [options]="filters"
+            [(ngModel)]="selectedFilter"
+            optionLabel="name"
+            placeholder="Select a Filter"
+            (onChange)="onFilterChange()"
+          />
+        </div>
+
+        <!-- View toggle -->
+        <div class="view-toggle">
+          <div
+            (click)="setViewMode('grid')"
+            [ngClass]="{ 'active': viewMode === 'grid' }"
+            class="view-btn">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+              fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect width="7" height="7" x="3" y="3" rx="1"/>
+              <rect width="7" height="7" x="14" y="3" rx="1"/>
+              <rect width="7" height="7" x="14" y="14" rx="1"/>
+              <rect width="7" height="7" x="3" y="14" rx="1"/>
+            </svg>
+          </div>
+
+          <div
+            (click)="setViewMode('list')"
+            [ngClass]="{ 'active': viewMode === 'list' }"
+            class="view-btn">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+              fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect width="7" height="7" x="3" y="3" rx="1"/>
+              <rect width="7" height="7" x="3" y="14" rx="1"/>
+              <path d="M14 4h7"/><path d="M14 9h7"/>
+              <path d="M14 15h7"/><path d="M14 20h7"/>
+            </svg>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- Services Grid / List -->
+  <div class="services-grid-container">
+    <div *ngIf="viewMode === 'grid'" class="services-grid">
+      <app-service-card *ngFor="let service of pagedServices" [service]="service" />
+    </div>
+
+    <div *ngIf="viewMode === 'list'" class="services-list">
+      <app-service-card *ngFor="let service of pagedServices" [service]="service" />
+    </div>
+  </div>
+
+  <!-- Empty state -->
+  <div *ngIf="filteredServices.length === 0" class="empty-state">
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="64" height="64" viewBox="0 0 24 24" fill="none"
+      stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+      class="empty-state-icon">
+      <path d="m21 21-4.34-4.34"/><circle cx="11" cy="11" r="8"/>
+    </svg>
+    <p class="empty-state-text">No results found for the selected filters.</p>
+  </div>
+
+  <!-- Paginator -->
+  <div class="paginator-wrapper" *ngIf="filteredServices.length > 0">
+    <p-paginator
+      (onPageChange)="onPageChange($event)"
+      [first]="first"
+      [rows]="rows"
+      [totalRecords]="filteredServices.length"
+      [showCurrentPageReport]="true"
+      [showPageLinks]="true"
+      [showJumpToPageDropdown]="false"
+      currentPageReportTemplate="Showing {first} to {last} of {totalRecords}"
+    />
+  </div>
+
+</section>

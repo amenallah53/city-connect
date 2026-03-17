@@ -1,0 +1,94 @@
+<div class="start-service-container">
+  <!-- Page Header -->
+  <div class="page-header">
+    <h1 class="page-title">License requirements</h1>
+    <p class="page-description">You can submit and track your license application remotely.</p>
+  </div>
+
+  <!-- Steps Header -->
+  <div class="steps-header">
+    <h2>Follow these steps to submit your application.</h2>
+  </div>
+
+  <!-- Tabs Navigation -->
+  <div class="tabs-wrapper">
+    <div class="tabs">
+      <button 
+        class="tab" 
+        [class.active]="currentStep === 1"
+        (click)="selectStep(1)">
+        Personal Information
+      </button>
+      <button 
+        class="tab" 
+        [class.active]="currentStep === 2"
+        (click)="selectStep(2)">
+        Required data
+      </button>
+      <button 
+        class="tab" 
+        [class.active]="currentStep === 3"
+        (click)="selectStep(3)">
+        Required documents
+      </button>
+    </div>
+  </div>
+
+  <!-- Form Container -->
+  <div class="form-container">
+    <!-- Step 1: Personal Information -->
+    <div class="step-content" [class.active]="currentStep === 1">
+      <form [formGroup]="personalInfoForm">
+        <div class="form-row">
+          <div class="form-group">
+            <label for="name">Name</label>
+            <input 
+              id="name" 
+              type="text" 
+              placeholder="name" 
+              formControlName="name"
+              class="form-input">
+          </div>
+          <div class="form-group">
+            <label for="phone">Phone number</label>
+            <input 
+              id="phone" 
+              type="tel" 
+              placeholder="phone number" 
+              formControlName="phone"
+              class="form-input">
+          </div>
+        </div>
+        <div class="form-row" id = "cin-row">
+          <div class="form-group">
+            <label for="cin">CIN</label>
+            <input 
+              id="cin" 
+              type="text" 
+              placeholder="cin" 
+              formControlName="cin"
+              class="form-input">
+          </div>
+        </div>
+      </form>
+    </div>
+
+    <!-- Step 2: Required Data -->
+    <div class="step-content" [class.active]="currentStep === 2">
+      <p>Required data information to be added</p>
+    </div>
+
+    <!-- Step 3: Required Documents -->
+    <div class="step-content" [class.active]="currentStep === 3">
+      <p>Required documents information to be added</p>
+    </div>
+    <!-- Action Buttons -->
+    <div class="action-buttons">
+        <button class="btn btn-continue" (click)="onContinue()">Continue</button>
+        <button class="btn btn-return" (click)="onReturn()">Return</button>
+    </div>
+  </div>
+
+
+  
+</div>
