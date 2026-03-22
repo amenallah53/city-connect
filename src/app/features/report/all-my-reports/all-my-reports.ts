@@ -1,6 +1,8 @@
-import { CommonModule } from '@angular/common';
-import { Component, Input, input } from '@angular/core';
-import { FormsModule, NgForm } from '@angular/forms';
+import { Component } from '@angular/core';
+import { NgForm } from '@angular/forms';
+import { ReportCard } from '../../../shared/components/cards/report-card/report-card';
+import { SelectModule } from 'primeng/select';
+import { PaginatorModule, PaginatorState } from 'primeng/paginator';
 
 interface ReportFormData {
   city: string;
@@ -11,14 +13,12 @@ interface ReportFormData {
 }
 
 @Component({
-  selector: 'app-report',
-  imports: [FormsModule,CommonModule],
-  templateUrl: './report.html',
-  styleUrl: './report.css',
+  selector: 'app-all-my-reports',
+  imports: [ReportCard,SelectModule, PaginatorModule],
+  templateUrl: './all-my-reports.html',
+  styleUrl: './all-my-reports.css',
 })
-
-export class Report {
-
+export class AllMyReports {
   cities: string[] = [
     'Ariana',
     'Beja',
@@ -54,6 +54,7 @@ export class Report {
     'Public transport',
     'Other',
   ];
+  
 
   formData: ReportFormData = {
     city: '',

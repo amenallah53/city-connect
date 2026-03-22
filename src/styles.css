@@ -23,6 +23,7 @@
     /** Font families */
     --font-lato: 'Lato', sans-serif;
     --font-rubik: 'Rubik', sans-serif;
+    --font-inter: 'Inter', sans-serif;
     --font-family-base: var(--font-lato);
 }
 
@@ -46,6 +47,7 @@ body {
 
 .title{
     font-family: var(--font-rubik);
+    color: #262626;
     font-size: 40px;
     font-weight: 500;
 }
@@ -53,6 +55,8 @@ body {
 .subtitle{
     font-family: var(--font-lato);
     font-size: 20px;
+    font-weight: 400;
+    color: var(--secondary-text-color);
 }
 
 .horizontal-div{
