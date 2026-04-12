@@ -82,12 +82,12 @@ export const routes: Routes = [
           import('./features/faq/faq').then(m => m.Faq)
       },
       {
-        path: 'report',
+        path: 'complaints/new',
         loadComponent: () =>
           import('./features/report/report').then(m => m.Report)
       },
       {
-        path: 'my-reports',
+        path: 'complaints',
         loadComponent: () =>
           import('./features/report/all-my-reports/all-my-reports').then(m => m.AllMyReports)
       },

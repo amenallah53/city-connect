@@ -21,7 +21,7 @@ export class Header implements OnInit {
     { track: 1, name: 'Jobs', path: '/jobs' },
     { track: 2, name: 'Services', path: '/services' },
     { track: 3, name: 'FAQ', path: '/faq' },
-    { track: 4, name: 'Report', path: '/report' },
+    { track: 4, name: 'Complaints', path: '/complaints' },
   ];
 
   currentLink: number = 0;

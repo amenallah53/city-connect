@@ -3,7 +3,7 @@
   shadow-[0px_2px_15px_0px_rgba(0,0,0,0.1)]
   bg-[var(--card-color)]">
     <div class="h-[200px] w-full rounded-t-[25px]">
-        <img [src]="news.imageUrl" alt="News Image" class="h-full w-full object-cover rounded-t-[25px]">
+        <img [src]="news.heroImg" alt="News Image" class="h-full w-full object-cover rounded-t-[25px]">
     </div>
     <div 
         class="py-6 px-4 flex flex-col flex-grow justify-between gap-3
@@ -11,10 +11,10 @@
         ring-1 ring-inset ring-[var(--border-color)]">
         <div class="flex flex-col gap-2">
             <h3 class="text-[18px] font-semibold text-[var(--primary-text-color)] line-clamp-2">
-                {{ news.title }}
+                {{ news.heroTitle }}
             </h3>
             <p class="text-[var(--primary-subtitle-color)] text-[16px] font-regular line-clamp-3">
-                {{ news.description }}
+                {{ news.heroSubtitle }}
             </p>
         </div>
         <a routerLink="news/{{ news.id }}">
