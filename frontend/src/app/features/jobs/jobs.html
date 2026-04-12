@@ -1,0 +1,126 @@
+<section>
+    <!-- Category Bar -->
+    <div
+        class="px-6 py-4 bg-[var(--primary-color)] text-[var(--secondary-color)]
+        text-[18px] font-medium flex flex-row items-center gap-4 justify-center flex-wrap">
+        <div
+        *ngFor="let category of categories"
+        (click)="selectCategory(category)"
+        [ngClass]="{
+            'text-white bg-[#005E71]/50': selectedCategory?.code === category.code,
+            'hover:bg-[#005E71]/50': selectedCategory?.code !== category.code
+        }"
+        class="p-3 rounded-[12px] hover:cursor-pointer transition-colors duration-300">
+        {{ category.name }}
+        </div>
+    </div>
+
+    <!-- Header + Filter row -->
+    <div class="px-6 pt-6 pb-2 flex flex-col gap-1">
+        <h1 class="font-rubik text-[32px] font-regular">
+        {{ selectedCategory.name }}
+        </h1>
+        <div class="flex flex-row items-center justify-between">
+        <p class="text-[18px] text-[var(--primary-subtitle-color)]">
+            {{ filteredJobs.length }} prestataire(s) found
+        </p>
+        <div class="flex flex-row gap-3 items-center">
+            <!-- Filter Select -->
+            <div class="card flex justify-center rounded-[25px] shadow-[0px_2px_15px_0px_rgba(0,0,0,0.1)]">
+            <p-select
+                [options]="filters"
+                [(ngModel)]="selectedFilter"
+                optionLabel="name"
+                placeholder="Select a Filter"
+                class="w-full md:w-[150px] text-[var(--secondary-text-color)]"
+                (onChange)="onFilterChange()"
+            />
+            </div>
+            <!-- View toggle -->
+            <div class="flex flex-row gap-2 items-center">
+            <!-- Grid btn -->
+            <div 
+                (click)="setViewMode('grid')"
+                [ngClass]="viewMode === 'grid' 
+                ? 'bg-[var(--primary-color)] hover:bg-[#005E71]' 
+                : 'bg-[var(--secondary-color)] hover:bg-[#F0F0F0]'"
+                class="rounded-full w-[48px] h-[48px]
+                flex items-center justify-center shadow-[0px_2px_15px_0px_rgba(0,0,0,0.1)]
+                hover:cursor-pointer transition-colors duration-300">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                stroke-linejoin="round"
+                [ngClass]="viewMode === 'grid' ? 'text-white' : 'text-[var(--secondary-text-color)]'">
+                <rect width="7" height="7" x="3" y="3" rx="1"/>
+                <rect width="7" height="7" x="14" y="3" rx="1"/>
+                <rect width="7" height="7" x="14" y="14" rx="1"/>
+                <rect width="7" height="7" x="3" y="14" rx="1"/>
+                </svg>
+            </div>
+
+            <!-- List btn -->
+            <div 
+                (click)="setViewMode('list')"
+                [ngClass]="viewMode === 'list' 
+                ? 'bg-[var(--primary-color)] hover:bg-[#005E71]' 
+                : 'bg-[var(--secondary-color)] hover:bg-[#F0F0F0]'"
+                class="rounded-full w-[48px] h-[48px]
+                flex items-center justify-center shadow-[0px_2px_15px_0px_rgba(0,0,0,0.1)]
+                hover:cursor-pointer transition-colors duration-300">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                stroke-linejoin="round"
+                [ngClass]="viewMode === 'list' ? 'text-white' : 'text-[var(--secondary-text-color)]'">
+                <rect width="7" height="7" x="3" y="3" rx="1"/>
+                <rect width="7" height="7" x="3" y="14" rx="1"/>
+                <path d="M14 4h7"/><path d="M14 9h7"/>
+                <path d="M14 15h7"/><path d="M14 20h7"/>
+                </svg>
+            </div>
+            </div>
+        </div>
+        </div>
+    </div>
+
+    <!-- Jobs Grid / List -->
+    <div class="px-6 py-4 flex justify-center">
+        <!-- Grid view -->
+        <div *ngIf="viewMode === 'grid'" class="grid grid-cols-4 gap-6" style="width: fit-content;">
+            <app-job-card *ngFor="let job of pagedJobs" [job]="job" />
+        </div>
+
+        <!-- List view -->
+        <div *ngIf="viewMode === 'list'" class="flex flex-col gap-4 w-full max-w-[1200px]">
+            <app-job-card *ngFor="let job of pagedJobs" [job]="job" />
+        </div>
+    </div>
+
+    <!-- Empty state -->
+    <div
+        *ngIf="filteredJobs.length === 0"
+        class="flex flex-col items-center justify-center py-20 gap-4 text-[var(--primary-subtitle-color)]">
+        <svg 
+            xmlns="http://www.w3.org/2000/svg" 
+            width="64" height="64" viewBox="0 0 24 24" fill="none" 
+            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" 
+            class="text-[var(--secondary-text-color)] lucide lucide-search-icon lucide-search">
+            <path d="m21 21-4.34-4.34"/><circle cx="11" cy="11" r="8"/></svg>
+        <p class="text-[18px] text-[var(--primary-subtitle-color)] font-medium">
+            No results found for the selected filters.
+        </p>
+    </div>
+
+    <!-- Paginator -->
+    <div class="flex justify-center py-6" *ngIf="filteredJobs.length > 0">
+        <p-paginator
+        (onPageChange)="onPageChange($event)"
+        [first]="first"
+        [rows]="rows"
+        [totalRecords]="filteredJobs.length"
+        [showCurrentPageReport]="true"
+        [showPageLinks]="true"
+        [showJumpToPageDropdown]="false"
+        currentPageReportTemplate="Showing {first} to {last} of {totalRecords}"
+        />
+    </div>
+</section>

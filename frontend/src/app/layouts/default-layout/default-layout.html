@@ -1,0 +1,11 @@
+<!-- Layout with header -->
+<div class="min-h-screen flex flex-col">
+  <app-header class="sticky top-0 z-50"></app-header>
+
+  <main class="flex-1">
+    <router-outlet></router-outlet>
+  </main>
+
+  <app-footer class="mt-auto"></app-footer>
+  <app-city-bot class="fixed bottom-4 left-4"></app-city-bot>
+</div>

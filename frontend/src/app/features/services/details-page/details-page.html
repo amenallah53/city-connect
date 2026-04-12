@@ -1,0 +1,67 @@
+<div class="details-container">
+  <!-- Service Header -->
+  <div class="service-header">
+    <div class="service-header-content">
+      <h1 class="service-title">{{ serviceName }}</h1>
+      <button class="start-service-btn" (click)="startService()">Start Service</button>
+    </div>
+
+    <!-- Category Badges -->
+    <div class="badges-container">
+      <span class="category-badge" *ngFor="let badge of categoryBadges">{{ badge }}</span>
+    </div>
+
+    <!-- Description -->
+    <p class="service-description">{{ serviceDescription }}</p>
+  </div>
+
+  <!-- Tabs Section -->
+  <div class="tabs-section">
+    <div class="tabs">
+      <button 
+        class="tab" 
+        [class.active]="activeTab() === 'requirements'"
+        (click)="selectTab('requirements')">
+        Requirements
+      </button>
+      <button 
+        class="tab" 
+        [class.active]="activeTab() === 'fines'"
+        (click)="selectTab('fines')">
+        Requirements and fines
+      </button>
+      <button 
+        class="tab" 
+        [class.active]="activeTab() === 'faq'"
+        (click)="selectTab('faq')">
+        Service FAQ
+      </button>
+    </div>
+
+    <!-- Tab Content -->
+    <div class="tab-content">
+      <div class="requirements-list" *ngIf="activeTab() === 'requirements'">
+        <ul>
+          <li *ngFor="let requirement of requirements">{{ requirement }}</li>
+        </ul>
+      </div>
+      <div class="fines-list" *ngIf="activeTab() === 'fines'">
+        <p>Requirements and fines information to be added</p>
+      </div>
+      <div class="faq-list" *ngIf="activeTab() === 'faq'">
+        <p>FAQ information to be added</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Related Services Section -->
+  <div class="related-services-section">
+    <h2 class="related-services-title">Related Services</h2>
+    <p class="related-services-description">
+      You can access all the municipal e-services provided by the Balady platform for various groups: individuals, businesses, and government.
+    </p>
+    <div class="services-carousel">
+      <app-service-card *ngFor="let service of relatedServices" [service]="service"></app-service-card>
+    </div>
+  </div>
+</div>

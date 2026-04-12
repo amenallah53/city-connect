@@ -1,0 +1,11 @@
+/*.home-wrapper {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  overflow-x: hidden;
+}
+
+.section-wrap {
+  width: 100%;
+  will-change: opacity, transform;
+}*/
