@@ -100,7 +100,14 @@ export const routes: Routes = [
         path: 'news/:newsId',
         loadComponent: () =>
           import('./features/news-details/news-details').then(m => m.NewsDetails)
-      }
+      },
+      {
+        path: 'schedules',
+        loadComponent: () =>
+          import('./features/schedules/schedule-page/schedule-page').then(
+            (m) => m.SchedulePage
+          ),
+      },
     ]
   },
 
