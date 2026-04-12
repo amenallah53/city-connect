@@ -4,15 +4,12 @@
 </div>
 
 <div class="report-cards-container horizontal-div">
-    <app-report-card status="pending"></app-report-card>
-    <app-report-card status="approved"></app-report-card>
-    <app-report-card status="rejected"></app-report-card>
-    <app-report-card status="pending"></app-report-card>
-    <app-report-card status="approved"></app-report-card>
-    <app-report-card status="rejected"></app-report-card>
-    <app-report-card status="pending"></app-report-card>
-    <app-report-card status="approved"></app-report-card>
-    <app-report-card status="rejected"></app-report-card>
+    <div *ngIf="loading" class="loading-state">Loading your reports...</div>
+    <div *ngIf="!loading && tickets.length === 0" class="empty-state">No reports found.</div>
+    <app-report-card 
+        *ngFor="let t of tickets" 
+        [ticket]="t"
+    ></app-report-card>
 </div>
 
 <div class="horizontal-div page-selector">

@@ -1,129 +1,38 @@
-import { Component } from '@angular/core';
-import { NgForm } from '@angular/forms';
+import { Component, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { ReportCard } from '../../../shared/components/cards/report-card/report-card';
+import { TicketService } from '../../../core/services/ticket.service';
+import { Ticket } from '../../../shared/models/ticket.model';
 import { SelectModule } from 'primeng/select';
-import { PaginatorModule, PaginatorState } from 'primeng/paginator';
-
-interface ReportFormData {
-  city: string;
-  category: string;
-  title: string;
-  description: string;
-  agreed: boolean;
-}
+import { PaginatorModule } from 'primeng/paginator';
 
 @Component({
   selector: 'app-all-my-reports',
-  imports: [ReportCard,SelectModule, PaginatorModule],
+  imports: [CommonModule, ReportCard, SelectModule, PaginatorModule],
   templateUrl: './all-my-reports.html',
   styleUrl: './all-my-reports.css',
 })
-export class AllMyReports {
-  cities: string[] = [
-    'Ariana',
-    'Beja',
-    'Ben Arous',
-    'Bizerte',
-    'Gabes',
-    'Gafsa',
-    'Jendouba',
-    'Kairouan',
-    'Kasserine',
-    'Kebili',
-    'Kef',
-    'Mahdia',
-    'Manouba',
-    'Medenine',
-    'Monastir',
-    'Nabeul',
-    'Sfax',
-    'Sidi Bouzid',
-    'Siliana',
-    'Sousse',
-    'Tataouine',
-    'Tozeur',
-    'Tunis',
-    'Zaghouan',
-  ];
+export class AllMyReports implements OnInit {
+  tickets: Ticket[] = [];
+  loading: boolean = false;
 
-  categories: string[] = [
-    'Street lighting',
-    'Traffic lights',
-    'Potholes',
-    'Sanitation',
-    'Public transport',
-    'Other',
-  ];
-  
+  constructor(private ticketService: TicketService) {}
 
-  formData: ReportFormData = {
-    city: '',
-    category: '',
-    title: '',
-    description: '',
-    agreed: false,
-  };
-
-  // File state
-  fileName: string = '';
-  imagePreview: string | null = null;
-  fileError: string = '';
-  selectedFile: File | null = null;
-
-  onFileChange(event: Event): void {
-    const input = event.target as HTMLInputElement;
-    this.fileError = '';
-
-    if (!input.files || input.files.length === 0) {
-      this.resetFile();
-      return;
-    }
-
-    const file = input.files[0];
-
-    if (!file.type.startsWith('image/')) {
-      this.fileError = 'Only image files are allowed.';
-      this.resetFile();
-      return;
-    }
-
-    if (file.size > 1 * 1024 * 1024) {
-      this.fileError = 'File size must be less than 1MB.';
-      this.resetFile();
-      return;
-    }
-
-    this.selectedFile = file;
-    this.fileName = file.name;
-
-    const reader = new FileReader();
-    reader.onload = () => {
-      this.imagePreview = reader.result as string;
-    };
-    reader.readAsDataURL(file);
+  ngOnInit(): void {
+    this.loadTickets();
   }
 
-  private resetFile(): void {
-    this.selectedFile = null;
-    this.fileName = '';
-    this.imagePreview = null;
-  }
-
-  onSubmit(form: NgForm): void {
-    if (form.invalid || this.fileError) {
-      form.form.markAllAsTouched();
-      return;
-    }
-
-    const payload = {
-      ...this.formData,
-      file: this.selectedFile,
-    };
-
-    console.log('Form submitted:', payload);
-    // TODO: inject your service and call e.g. this.reportService.submit(payload)
-
-    form.resetForm();
-    this.resetFile();
+  loadTickets(): void {
+    this.loading = true;
+    this.ticketService.getAllTickets().subscribe({
+      next: (data) => {
+        this.tickets = data;
+        this.loading = false;
+      },
+      error: (err) => {
+        console.error('Error loading tickets:', err);
+        this.loading = false;
+      }
+    });
   }
 }

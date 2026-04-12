@@ -1,31 +1,32 @@
 <div class="service-card">
     <div class="service-card-header">
-        <div class="service-card-icon" *ngIf="status=='approved'">
+        <div class="service-card-icon" *ngIf="cardStatus=='approved'">
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-circle-check-big-icon lucide-circle-check-big"><path d="M21.801 10A10 10 0 1 1 17 3.335"/><path d="m9 11 3 3L22 4"/></svg>    
         </div>
-        <div class="service-card-icon" *ngIf="status=='rejected'">
+        <div class="service-card-icon" *ngIf="cardStatus=='rejected'">
             <!-- SVG Icon -->
            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-x-icon lucide-x"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
         </div>
-        <div class="service-card-icon" *ngIf="status=='pending'">
+        <div class="service-card-icon" *ngIf="cardStatus=='pending'">
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-loader-icon lucide-loader"><path d="M12 2v4"/><path d="m16.2 7.8 2.9-2.9"/><path d="M18 12h4"/><path d="m16.2 16.2 2.9 2.9"/><path d="M12 18v4"/><path d="m4.9 19.1 2.9-2.9"/><path d="M2 12h4"/><path d="m4.9 4.9 2.9 2.9"/></svg>
         </div>
         
         <h3 class="service-card-title">
-            <!-- Service Title -->Broken street lights
+            {{ ticket?.title || 'Untitled Report' }}
         </h3>
-        <p style="justify-self: flex-end; color: var(--secondary-text-color);">1 week ago</p>
+        <p style="justify-self: flex-end; color: var(--secondary-text-color);">
+            {{ ticket?.createdAt | date:'shortDate' }}
+        </p>
     </div>
     <span class="service-card-type">
-        The lights in my street are broken, and my 12 year old daughter needs them to go home late at night, need them fixed asap
+        {{ ticket?.description }}
     </span>
     <div class="service-card-badges">
-        <!-- Repeat for each badge -->
-        <div class="service-card-badge">
-            Very urgent
+        <div class="service-card-badge" *ngIf="ticket?.urgency">
+            {{ ticket?.urgency }}
         </div>
-        <div class="service-card-badge">
-            street lights
+        <div class="service-card-badge" *ngIf="ticket?.category">
+            {{ ticket?.category }}
         </div>
     </div>
     <button class="service-card-button">
@@ -34,4 +35,4 @@
         </span>
         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="service-card-arrow"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
     </button>
-</div>
+</div>
