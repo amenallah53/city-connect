@@ -5,24 +5,25 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "concurrently \"npm:gateway\" \"npm:users\" \"npm:auth\" \"npm:admin\" \"npm:complaints\" \"npm:news\" \"npm:notifications\" \"npm:services\" \"npm:faq\"",
-
+    "dev": "concurrently \"npm:gateway\" \"npm:users\" \"npm:auth\" \"npm:admin\" \"npm:news\" \"npm:notifications\" \"npm:services\" \"npm:tickets\" \"npm:uploads\"",
     "gateway": "cd api-gateway && npm run dev",
-    
     "admin": "cd services/admin-service && npm run dev",
     "auth": "cd services/auth-service && npm run dev",
-    "complaints": "cd services/complaints-service && npm run dev",
     "news": "cd services/news-service && npm run dev",
     "notifications": "cd services/notifications-service && npm run dev",
     "services": "cd services/services-service && npm run dev",
-    "users": "cd services/users-service && npm run dev",
-    "faq": "cd services/faq-service && npm run dev"
+    "tickets": "cd services/tickets-service && npm run dev",
+    "uploads": "cd services/upload-service && npm run dev",
+    "users": "cd services/users-service && npm run dev"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "type": "commonjs",
   "dependencies": {
-    "concurrently": "^9.2.1"
+    "concurrently": "^9.2.1",
+    "dotenv": "^17.4.2",
+    "pg": "^8.20.0",
+    "pg-format": "^1.0.4"
   }
 }

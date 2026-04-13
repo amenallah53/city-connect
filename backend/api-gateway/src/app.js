@@ -1,7 +1,11 @@
 const express = require("express");
+const cors = require("cors");
 const { createProxyMiddleware } = require("http-proxy-middleware");
 
 const app = express();
+
+app.use(cors());
+app.use(express.json());
 
 app.use("/api/users", createProxyMiddleware({
   target: "http://localhost:5001",
@@ -18,10 +22,6 @@ app.use("/api/admin", createProxyMiddleware({
   changeOrigin: true
 }));
 
-app.use("/api/complaints", createProxyMiddleware({
-  target: "http://localhost:5004",
-  changeOrigin: true
-}));
 
 app.use("/api/news", createProxyMiddleware({
   target: "http://localhost:5005",
@@ -37,6 +37,16 @@ app.use("/api/faqs", createProxyMiddleware({
   target: "http://localhost:5007",
   changeOrigin: true
 }));
+app.use("/api/tickets", createProxyMiddleware({
+  target: "http://localhost:5004",
+  changeOrigin: true
+}));
+
+app.use("/api/uploads", createProxyMiddleware({
+  target: "http://localhost:5008",
+  changeOrigin: true
+}));
+
 
 
 app.get("/", (req, res) => {

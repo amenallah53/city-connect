@@ -27,10 +27,16 @@ export class Login {
 
     const { email, password } = this.form.value;
 
-    const success = this.auth.login(email!, password!);
-
-    if (success) {
-      this.router.navigate(['/']);
-    }
+    this.auth.login(email!, password!).subscribe({
+      next: (res) => {
+        if (res.token) {
+          this.router.navigate(['/']);
+        }
+      },
+      error: (err) => {
+        console.error('Login failed:', err);
+        // Optionally add an error message to the UI
+      }
+    });
   }
 }
