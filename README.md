@@ -26,18 +26,22 @@
 ## Quick start
 
 ```bash
-# Clone the project
+#1) Clone the project
 git clone [repo-url]
 cd city-connect
 
-# Install dependencies
+#2) Install dependencies
 npm install
 
-# Start the frontend
+#3) Start the frontend
+cd ./frontend
 ng s -o
 
-# Access the frontend app
+#4) Access the frontend app
 # http://localhost:4200
-```
-# run the backend (in a seperate terminal)
+
+#5) run the backend (in a seperate terminal)
+#open another terminal
+cd ./city-connect/backend
 npm run start:dev
+```
