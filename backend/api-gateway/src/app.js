@@ -33,6 +33,10 @@ app.use("/api/services", createProxyMiddleware({
   changeOrigin: true
 }));
 
+app.use("/api/faqs", createProxyMiddleware({
+  target: "http://localhost:5007",
+  changeOrigin: true
+}));
 
 
 app.get("/", (req, res) => {
