@@ -1,15 +1,15 @@
-.title{
+.title {
     margin: 0;
     padding: 0;
 }
 
-.titles{
+.titles {
     padding: 24px;
-    gap:8px
+    gap: 8px
 }
 
-.report-cards-container{
-    margin:0;
+.report-cards-container {
+    margin: 0 10vw;
     padding: 16px 0 16px 0;
     align-items: flex-start;
     justify-content: center;
@@ -18,12 +18,12 @@
 }
 
 
-.page-selector{
-    gap:16px;
+.page-selector {
+    gap: 16px;
     margin-bottom: 16px;
 }
 
-.current-page-number{
+.current-page-number {
     font-family: var(--font-rubik);
     font-size: 24px;
     height: 48px;
@@ -37,8 +37,9 @@
     color: white;
 }
 
-.page-number, .three-dots{
-     font-family: var(--font-rubik);
+.page-number,
+.three-dots {
+    font-family: var(--font-rubik);
     font-size: 24px;
     height: 48px;
     width: 48px;
@@ -71,7 +72,7 @@
     width: 100%;
     overflow: hidden;
     border-radius: 12px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
 }
 
 .dialog-image {
@@ -100,14 +101,17 @@
     font-weight: 600;
     text-transform: capitalize;
 }
+
 .dialog-status-badge.pending {
     background-color: #fff3cd;
     color: #856404;
 }
+
 .dialog-status-badge.approved {
     background-color: #d4edda;
     color: #155724;
 }
+
 .dialog-status-badge.rejected {
     background-color: #f8d7da;
     color: #721c24;
@@ -143,7 +147,8 @@
     color: #333;
     word-break: break-word;
     white-space: pre-wrap;
-    overflow-wrap: break-word; /* Fix scroll if description is too big */
+    overflow-wrap: break-word;
+    /* Fix scroll if description is too big */
 }
 
 .dialog-meta-grid {

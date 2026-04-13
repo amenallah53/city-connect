@@ -82,12 +82,12 @@ export const routes: Routes = [
           import('./features/faq/faq').then(m => m.Faq)
       },
       {
-        path: 'report',
+        path: 'complaints/new',
         loadComponent: () =>
           import('./features/report/report').then(m => m.Report)
       },
       {
-        path: 'my-reports',
+        path: 'complaints',
         loadComponent: () =>
           import('./features/report/all-my-reports/all-my-reports').then(m => m.AllMyReports)
       },
@@ -100,7 +100,14 @@ export const routes: Routes = [
         path: 'news/:newsId',
         loadComponent: () =>
           import('./features/news-details/news-details').then(m => m.NewsDetails)
-      }
+      },
+      {
+        path: 'schedules',
+        loadComponent: () =>
+          import('./features/schedules/schedule-page/schedule-page').then(
+            (m) => m.SchedulePage
+          ),
+      },
     ]
   },
 

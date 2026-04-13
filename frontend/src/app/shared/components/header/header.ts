@@ -21,7 +21,7 @@ export class Header implements OnInit {
     { track: 1, name: 'Jobs', path: '/jobs' },
     { track: 2, name: 'Services', path: '/services' },
     { track: 3, name: 'FAQ', path: '/faq' },
-    { track: 4, name: 'Report', path: '/report' },
+    { track: 4, name: 'Complaints', path: '/complaints' },
   ];
 
   currentLink: number = 0;
@@ -30,10 +30,10 @@ export class Header implements OnInit {
   profileMenuItems: MenuItem[] = [];
 
   constructor(
-    private router: Router, 
+    private router: Router,
     private auth: UserAuthService,
     private confirmationService: ConfirmationService
-  ) {}
+  ) { }
 
   ngOnInit() {
     this.setActiveFromRoute(this.router.url);
@@ -73,22 +73,43 @@ export class Header implements OnInit {
     this.currentLink = index;
   }
 
-  private setActiveFromRoute(url: string) {
+  /*private setActiveFromRoute(url: string) {
     const found = this.links.find(link => link.path === url);
     if (found) {
       this.currentLink = found.track;
     } else {
       this.currentLink = -1; // No link active
     }
+  }*/
+
+  private setActiveFromRoute(url: string) {
+    // strip query params then check startsWith
+    const path = url.split('?')[0];
+    const found = this.links
+      .filter(link => link.path !== '/')
+      .find(link => path.startsWith(link.path));
+
+    if (found) {
+      this.currentLink = found.track;
+    } else if (path === '/') {
+      this.currentLink = 0;
+    } else {
+      this.currentLink = -1;
+    }
   }
 
-  toggleProfileMenu() {
+  isProfileOpen = false;
+
+  toggleProfile() { this.isProfileOpen = !this.isProfileOpen; }
+  closeProfile() { this.isProfileOpen = false; }
+
+  /*toggleProfileMenu() {
     this.showProfileMenu = !this.showProfileMenu;
   }
 
   closeProfileMenu() {
     this.showProfileMenu = false;
-  }
+  }*/
 
   logout() {
     this.auth.logout(); // remove token and simulate logout
