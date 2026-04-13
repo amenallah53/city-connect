@@ -1,19 +1,11 @@
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
-import { RouterLink } from '@angular/router';
-import { PaginatorModule, PaginatorState } from 'primeng/paginator';
 import { ReportCard } from '../../../shared/components/cards/report-card/report-card';
-
-type ReportStatus = 'pending' | 'approved' | 'rejected';
-
-interface Report {
-  id: string;
-  title: string;
-  category: string;
-  city: string;
-  status: ReportStatus;
-  date: string;
-}
+import { TicketService } from '../../../core/services/ticket.service';
+import { Ticket } from '../../../shared/models/ticket.model';
+import { SelectModule } from 'primeng/select';
+import { PaginatorModule } from 'primeng/paginator';
+import { DialogModule } from 'primeng/dialog';
 
 const mockReports: Report[] = [
   { id: '1',  title: 'Broken streetlight',       category: 'Street lighting',  city: 'Tunis',    status: 'pending',  date: '2025-03-01' },
@@ -34,24 +26,62 @@ const mockReports: Report[] = [
 
 @Component({
   selector: 'app-all-my-reports',
-  standalone: true,
-  imports: [CommonModule, ReportCard, PaginatorModule, RouterLink],
+  imports: [CommonModule, ReportCard, SelectModule, PaginatorModule, DialogModule],
   templateUrl: './all-my-reports.html',
   styleUrl: './all-my-reports.css',
 })
-export class AllMyReports {
-  allReports: Report[] = mockReports;
+export class AllMyReports implements OnInit {
+  tickets: Ticket[] = [];
+  errorMessage: string | null = null;
+  loading: boolean = false;
 
-  first = 0;
-  rows = 9;
+  first: number = 0;
+  rows: number = 12;
+  totalRecords: number = 0;
 
-  get pagedReports(): Report[] {
-    return this.allReports.slice(this.first, this.first + this.rows);
+  selectedTicket: Ticket | null = null;
+  displayDialog: boolean = false;
+
+  constructor(
+    private ticketService: TicketService,
+    private cdr: ChangeDetectorRef
+  ) {}
+
+  ngOnInit(): void {
+    this.loadTickets();
   }
 
-  onPageChange(event: PaginatorState) {
-    this.first = event.first ?? 0;
-    this.rows = event.rows ?? 9;
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+  openTicketDetails(ticket: Ticket): void {
+    this.selectedTicket = ticket;
+    this.displayDialog = true;
+  }
+
+  loadTickets(): void {
+    this.loading = true;
+    this.errorMessage = null;
+    
+    const page = Math.floor(this.first / this.rows) + 1;
+
+    this.ticketService.getAllTickets({ page, limit: this.rows }).subscribe({
+      next: (response) => {
+        console.log('Tickets received in AllMyReports:', response);
+        this.tickets = response.data;
+        this.totalRecords = response.total;
+        this.loading = false;
+        this.cdr.detectChanges(); // Manual trigger to fix NG0100
+      },
+      error: (err) => {
+        console.error('Error loading tickets:', err);
+        this.errorMessage = `Failed to load reports: ${err.message || 'Unknown error'}`;
+        this.loading = false;
+        this.cdr.detectChanges();
+      }
+    });
+  }
+
+  onPageChange(event: any) {
+    this.first = event.first;
+    this.rows = event.rows;
+    this.loadTickets();
   }
 }

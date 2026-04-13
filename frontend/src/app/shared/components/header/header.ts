@@ -30,10 +30,10 @@ export class Header implements OnInit {
   profileMenuItems: MenuItem[] = [];
 
   constructor(
-    private router: Router, 
+    private router: Router,
     private auth: UserAuthService,
     private confirmationService: ConfirmationService
-  ) {}
+  ) { }
 
   ngOnInit() {
     this.setActiveFromRoute(this.router.url);
@@ -101,7 +101,7 @@ export class Header implements OnInit {
   isProfileOpen = false;
 
   toggleProfile() { this.isProfileOpen = !this.isProfileOpen; }
-  closeProfile()  { this.isProfileOpen = false; }
+  closeProfile() { this.isProfileOpen = false; }
 
   /*toggleProfileMenu() {
     this.showProfileMenu = !this.showProfileMenu;

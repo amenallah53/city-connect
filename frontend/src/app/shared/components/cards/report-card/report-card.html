@@ -1,52 +1,50 @@
-<div
-  class="p-6 bg-[var(--card-color)] border border-[var(--border-color)]
-  rounded-[25px] flex flex-col gap-4 w-[300px]
-  shadow-[0px_2px_15px_0px_rgba(0,0,0,0.1)]">
-
-  <!-- Header -->
-  <div class="flex flex-row items-center gap-3">
-    <div class="rounded-full w-[50px] h-[50px] flex-shrink-0
-      bg-[var(--primary-color)] flex items-center justify-center">
-      <svg *ngIf="status === 'approved'" xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.801 10A10 10 0 1 1 17 3.335"/><path d="m9 11 3 3L22 4"/></svg>
-      <svg *ngIf="status === 'rejected'" xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
-      <svg *ngIf="status === 'pending'" xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v4"/><path d="m16.2 7.8 2.9-2.9"/><path d="M18 12h4"/><path d="m16.2 16.2 2.9 2.9"/><path d="M12 18v4"/><path d="m4.9 19.1 2.9-2.9"/><path d="M2 12h4"/><path d="m4.9 4.9 2.9 2.9"/></svg>
+<div class="service-card">
+    <div class="service-card-image" *ngIf="ticket?.image">
+        <img [src]="ticket?.image" alt="Report image" />
     </div>
-
-    <div class="flex flex-col flex-1 min-w-0">
-      <h3 class="text-[18px] font-semibold text-[var(--primary-text-color)] leading-snug">
-        Broken street lights
-      </h3>
-      <p class="text-[14px] text-[var(--primary-subtitle-color)]">1 week ago</p>
+    <div class="service-card-image placeholder" *ngIf="!ticket?.image">
+        <div class="placeholder-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-image-off"><line x1="2" x2="22" y1="2" y2="22"/><path d="M10.41 10.41a2 2 0 1 1-2.82-2.82"/><path d="M8 21h12a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2H4.35"/><polyline points="21 15 16 10 5 21"/><path d="M16 4.35V4a2 2 0 0 1 2-2"/></svg>
+        </div>
+        <p>No Image Available</p>
     </div>
-  </div>
-
-  <!-- Description -->
-  <p class="text-[16px] font-medium text-[var(--primary-subtitle-color)] leading-snug line-clamp-3">
-    The lights in my street are broken, and my 12 year old daughter needs them to go home late at night.
-  </p>
-
-  <!-- Badges -->
-  <div class="flex flex-wrap gap-2">
-    <div class="bg-[var(--background-color)] text-[var(--secondary-text-color)]
-      rounded-[12px] px-3 py-[6px] text-[14px] font-medium w-fit">
-      Very urgent
+    <div class="service-card-header">
+        <div class="service-card-icon" *ngIf="cardStatus=='approved'">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-circle-check-big-icon lucide-circle-check-big"><path d="M21.801 10A10 10 0 1 1 17 3.335"/><path d="m9 11 3 3L22 4"/></svg>    
+        </div>
+        <div class="service-card-icon" *ngIf="cardStatus=='rejected'">
+            <!-- SVG Icon -->
+           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-x-icon lucide-x"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+        </div>
+        <div class="service-card-icon" *ngIf="cardStatus=='pending'">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-loader-icon lucide-loader"><path d="M12 2v4"/><path d="m16.2 7.8 2.9-2.9"/><path d="M18 12h4"/><path d="m16.2 16.2 2.9 2.9"/><path d="M12 18v4"/><path d="m4.9 19.1 2.9-2.9"/><path d="M2 12h4"/><path d="m4.9 4.9 2.9 2.9"/></svg>
+        </div>
+        
+        <h3 class="service-card-title">
+            {{ ticket?.title || 'Untitled Report' }}
+        </h3>
+        <p style="justify-self: flex-end; color: var(--secondary-text-color);">
+            {{ ticket?.createdAt | date:'shortDate' }}
+        </p>
     </div>
-    <div class="bg-[var(--background-color)] text-[var(--secondary-text-color)]
-      rounded-[12px] px-3 py-[6px] text-[14px] font-medium w-fit">
-      Street lights
+    <span class="service-card-type">
+        {{ ticket?.description }}
+    </span>
+    <div class="service-card-badges">
+        <div class="service-card-badge" *ngIf="ticket?.urgency">
+            {{ ticket?.urgency }}
+        </div>
+        <div class="service-card-badge" *ngIf="ticket?.category">
+            {{ ticket?.category }}
+        </div>
+        <div class="service-card-badge" *ngIf="ticket?.city">
+            {{ ticket?.city }}
+        </div>
     </div>
-  </div>
-
-  <!-- CTA -->
-  <button
-    class="flex flex-row items-center gap-2 justify-center
-    py-2 px-4 rounded-[24px] bg-[var(--primary-color)] w-full border-none
-    hover:bg-[#005E71] hover:cursor-pointer transition-colors duration-300">
-    <span class="text-white text-[18px] font-medium">View Details</span>
-    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
-      fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-      class="text-white">
-      <path d="M5 12h14"/><path d="m12 5 7 7-7 7"/>
-    </svg>
-  </button>
+    <button class="service-card-button" (click)="onViewClick()">
+        <span class="service-card-button-text">
+            View Details
+        </span>
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="service-card-arrow"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+    </button>
 </div>
