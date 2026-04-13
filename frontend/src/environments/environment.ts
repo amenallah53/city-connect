@@ -1,4 +1,6 @@
 export const environment = {
   production: false,
-  apiUrl: 'http://localhost:3000/api'
+  authUrl: 'http://localhost:5002/api/auth',
+  ticketsUrl: 'http://localhost:5004/api/tickets',
+  uploadsUrl: 'http://localhost:5008/api/uploads'
 };

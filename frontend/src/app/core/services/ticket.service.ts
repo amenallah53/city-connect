@@ -7,6 +7,11 @@ import { environment } from '../../../environments/environment';
 import { UploadService } from './upload.service';
 import { of } from 'rxjs';
 
+export interface PaginatedTickets {
+  data: Ticket[];
+  total: number;
+}
+
 export interface TicketFilters {
   city?: string;
   category?: string;
@@ -20,14 +25,16 @@ export interface TicketFilters {
 })
 export class TicketService {
 
-  private apiUrl = `${environment.apiUrl}/tickets`;
+  private apiUrl = environment.ticketsUrl;
 
   constructor(
     private http: HttpClient,
     private uploadService: UploadService
-  ) {}
+  ) {
+    console.log('TicketService initialized with apiUrl:', this.apiUrl);
+  }
 
-  getAllTickets(filters?: TicketFilters): Observable<Ticket[]> {
+  getAllTickets(filters?: TicketFilters): Observable<PaginatedTickets> {
     let params = new HttpParams();
 
     if (filters) {
@@ -38,7 +45,7 @@ export class TicketService {
       if (filters.limit) params = params.set('limit', filters.limit.toString());
     }
 
-    return this.http.get<Ticket[]>(this.apiUrl, { params })
+    return this.http.get<PaginatedTickets>(this.apiUrl, { params })
       .pipe(
         retry(1),
         catchError(this.handleError)
