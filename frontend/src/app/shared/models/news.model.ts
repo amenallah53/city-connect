@@ -1,9 +1,18 @@
 export interface News {
   id: string;
-  title: string;
+  slug: string;
   author?: string;
-  description: string;
   date: Date;
-  imageUrl: string;
-  featured?: boolean;
+  badges: string[];
+  heroImg: string;
+  heroTitle: string;
+  heroSubtitle: string;
+  subArticles: Article[];
+}
+
+interface Article {
+  title: String;
+  content: String;
+  media?: String;
+  mediaType?: String;
 }

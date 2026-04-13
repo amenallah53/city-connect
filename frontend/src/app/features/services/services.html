@@ -86,15 +86,13 @@
   </div>
 
   <!-- Paginator -->
-  <div class="paginator-wrapper" *ngIf="filteredServices.length > 0">
+  <div class="flex justify-center py-6" *ngIf="filteredServices.length > 0">
     <p-paginator
       (onPageChange)="onPageChange($event)"
       [first]="first"
       [rows]="rows"
       [totalRecords]="filteredServices.length"
       [showCurrentPageReport]="true"
-      [showPageLinks]="true"
-      [showJumpToPageDropdown]="false"
       currentPageReportTemplate="Showing {first} to {last} of {totalRecords}"
     />
   </div>
