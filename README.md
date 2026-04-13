@@ -23,19 +23,21 @@
 - **Node Version**: >=18.19.1
 
 
-## Quick start: Frontend
+## Quick start
 
 ```bash
 # Clone the project
 git clone [repo-url]
-cd artisanart
+cd city-connect
 
 # Install dependencies
 npm install
 
-# Lancer l'application en développement
-npm start
+# Start the frontend
+ng s -o
 
-# Accéder à l'application
+# Access the frontend app
 # http://localhost:4200
 ```
+# run the backend (in a seperate terminal)
+npm run start:dev
