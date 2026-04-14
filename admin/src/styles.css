@@ -55,7 +55,8 @@ body {
 .subtitle {
     font-family: var(--font-lato);
     font-size: 20px;
-    font-weight: 400;
+    font-weight: 500;
+    font-style: italic;
     color: var(--secondary-text-color);
 }
 
