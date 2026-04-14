@@ -45,14 +45,14 @@ CREATE TABLE prestataire (
     submission_date     TIMESTAMP       NOT NULL DEFAULT NOW()
 );
 
-CREATE TABLE auth_session (
+/*CREATE TABLE auth_session (
     id                  UUID            PRIMARY KEY DEFAULT gen_random_uuid(),
     token               TEXT            NOT NULL,
     expiration_date     TIMESTAMP       NOT NULL,
     user_id             UUID            NOT NULL
                             REFERENCES users(id) ON DELETE CASCADE,
     created_at          TIMESTAMP       NOT NULL DEFAULT NOW()
-);
+);*/
 
 CREATE TABLE notification (
     id                  UUID            PRIMARY KEY DEFAULT gen_random_uuid(),

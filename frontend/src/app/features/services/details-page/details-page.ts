@@ -46,6 +46,6 @@ export class DetailsPage implements OnInit {
 
   startService(): void {
     if (!this.service) return;
-    this.router.navigate(['/services', this.service.id, 'start']);
+    this.router.navigate(['/services', this.service.id, 'request']);
   }
 }
