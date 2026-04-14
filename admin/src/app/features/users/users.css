@@ -1,11 +1,11 @@
 .users-page {
     padding: 10px;
-    gap: 48px;
+    gap: 24px;
 }
 
 
 .titles {
-    padding: 24px;
+    padding: 0 24px;
 }
 
 .search-filters {
@@ -99,4 +99,25 @@
 
 .users-list {
     gap: 16px;
+}
+
+
+/*paginator styling*/
+:host ::ng-deep .p-paginator {
+    background: transparent;
+    border: none;
+}
+
+:host ::ng-deep .p-paginator-page {
+    width: 36px;
+    height: 36px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+}
+
+:host ::ng-deep .p-paginator-page.p-highlight {
+    background: #6366f1;
+    color: #fff;
 }

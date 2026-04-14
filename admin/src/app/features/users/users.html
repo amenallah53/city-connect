@@ -32,10 +32,17 @@
         <button class="add-user-btn">Add user</button>
     </div>
     <div class="users-list vertical-div">
+        <!--only place 6 cards max so that the navigation is easy-->
         <app-user-card></app-user-card>
         <app-user-card></app-user-card>
         <app-user-card></app-user-card>
         <app-user-card></app-user-card>
-
+        <app-user-card></app-user-card>
+        <app-user-card></app-user-card>
     </div>
-</div>
+    <div class="card flex justify-center">
+        <div class="card flex justify-center">
+            <p-paginator (onPageChange)="onPageChange($event)" [first]="first" [rows]="rows" [totalRecords]="120"
+                [rowsPerPageOptions]="[10, 20, 30]" />
+        </div>
+    </div>
