@@ -19,17 +19,28 @@ export class Login {
 
   form = this.fb.group({
     email: ['', [Validators.required, Validators.email]],
-    password: ['', Validators.required]
+    password: ['', Validators.required],
+    cin: ['', [Validators.required, Validators.pattern(/^\d{8}$/)]]
   });
 
   submit() {
     if (this.form.invalid) return;
 
-    const { email, password } = this.form.value;
+    const { email, password, cin } = this.form.value;
 
     const success = this.auth.login(email!, password!);
 
     if (success) {
+      // Extract the name from email (before @) for display
+      const nameFromEmail = email!.split('@')[0];
+      
+      // Store user data in auth service for use throughout the app
+      this.auth.setCurrentUser({
+        cin: parseInt(cin!, 10),
+        name: nameFromEmail,
+        email: email!
+      });
+
       this.router.navigate(['/']);
     }
   }

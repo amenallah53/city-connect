@@ -24,18 +24,6 @@
         (click)="selectTab('requirements')">
         Requirements
       </button>
-      <button 
-        class="tab" 
-        [class.active]="activeTab() === 'fines'"
-        (click)="selectTab('fines')">
-        Requirements and fines
-      </button>
-      <button 
-        class="tab" 
-        [class.active]="activeTab() === 'faq'"
-        (click)="selectTab('faq')">
-        Service FAQ
-      </button>
     </div>
 
     <!-- Tab Content -->
@@ -44,12 +32,6 @@
         <ul>
           <li *ngFor="let requirement of requirements">{{ requirement }}</li>
         </ul>
-      </div>
-      <div class="fines-list" *ngIf="activeTab() === 'fines'">
-        <p>Requirements and fines information to be added</p>
-      </div>
-      <div class="faq-list" *ngIf="activeTab() === 'faq'">
-        <p>FAQ information to be added</p>
       </div>
     </div>
   </div>

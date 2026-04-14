@@ -1,162 +1,118 @@
-import { Component, OnInit, signal } from '@angular/core';
+import { Component, OnInit, OnDestroy, signal, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Service } from '../../../shared/models/service.model';
 import { ServiceCard } from "../../../shared/components/cards/service-card/service-card";
+import { ServicesService } from '../../../core/services/services.service';
+import { Subscription } from 'rxjs';
+import { switchMap } from 'rxjs/operators';
 
 interface ServiceDetails extends Service {
   description?: string;
-  requirements?: string[];
+  requirementsList?: string[];
 }
 
-const SERVICES_DATA: { [key: string]: ServiceDetails } = {
-  '1': {
-    id: '1',
-    title: 'Issuing a building permit',
-    type: 'Building permits',
-    badges: ['Electronic', 'Not immediate'],
-    description: 'An electronic service available on the Balady platform that enables beneficiaries to apply for a Building Permit or a Fencing Permit.',
-    requirements: [
-      'Updated Electronic Title Deed from the Ministry of Justice, Housing Contract, or Investment Contract.',
-      'Valid Cadastral Report (for construction purposes).',
-      'Contract with an Engineering Office for architectural designs.',
-      'Contract with a Supervising Engineering Office and a Construction Contractor.',
-      'Latent Defects Insurance for the building.',
-      'Soil Study Report.',
-      'Traffic Study Report (if required based on project activity).',
-      'Declarations and Commitments.',
-      'Payment of Service Fees.'
-    ]
-  },
-  '2': {
-    id: '2',
-    title: 'Printing a burial certificate',
-    type: 'Honoring the dead',
-    badges: ['Electronic'],
-    description: 'An electronic service for printing burial certificates.',
-    requirements: ['Proof of death', 'Identification document']
-  },
-  '3': {
-    id: '3',
-    title: 'Renewing a business license',
-    type: 'Business licenses',
-    badges: ['With Fees', 'Not immediate'],
-    description: 'Service for renewing business licenses.',
-    requirements: ['Current business license', 'Business registration', 'Tax certificate']
-  },
-  '4': {
-    id: '4',
-    title: 'Issuing a building demolition permit',
-    type: 'Building permits',
-    badges: ['Electronic', 'Not immediate'],
-    description: 'Service for issuing building demolition permits.',
-    requirements: ['Building ownership proof', 'Structural assessment', 'Environmental clearance']
-  },
-  '5': {
-    id: '5',
-    title: 'Issuing a building permit',
-    type: 'Building permits',
-    badges: ['Electronic', 'Not immediate'],
-    description: 'An electronic service available on the Balady platform that enables beneficiaries to apply for a Building Permit or a Fencing Permit.',
-    requirements: [
-      'Updated Electronic Title Deed from the Ministry of Justice, Housing Contract, or Investment Contract.',
-      'Valid Cadastral Report (for construction purposes).',
-      'Contract with an Engineering Office for architectural designs.',
-      'Contract with a Supervising Engineering Office and a Construction Contractor.',
-      'Latent Defects Insurance for the building.',
-      'Soil Study Report.',
-      'Traffic Study Report (if required based on project activity).',
-      'Declarations and Commitments.',
-      'Payment of Service Fees.'
-    ]
-  }
-};
+// Service data is now fetched from the API - see ngOnInit() for details loading logic
 
 @Component({
   selector: 'app-details-page',
   imports: [CommonModule, ServiceCard],
   templateUrl: './details-page.html',
   styleUrl: './details-page.css',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class DetailsPage implements OnInit {
-  serviceName: string = 'Issuing a Building Permit';
-  serviceDescription: string = 'An electronic service available on the Balady platform that enables beneficiaries to apply for a Building Permit or a Fencing Permit.';
+export class DetailsPage implements OnInit, OnDestroy {
+  serviceName: string = '';
+  serviceDescription: string = '';
   serviceId: string = '';
   
-  categoryBadges: string[] = [
-    'Construction licenses',
-    'Construction Permit',
-    'Issue Building Permit',
-    'Structural Permit',
-    'Renovation Permit',
-    'Expansion Permit',
-    'Building License',
-    'New Building Permit'
-  ];
+  categoryBadges: string[] = [];
 
-  requirements: string[] = [
-    'Updated Electronic Title Deed from the Ministry of Justice, Housing Contract, or Investment Contract.',
-    'Valid Cadastral Report (for construction purposes).',
-    'Contract with an Engineering Office for architectural designs.',
-    'Contract with a Supervising Engineering Office and a Construction Contractor.',
-    'Latent Defects Insurance for the building.',
-    'Soil Study Report.',
-    'Traffic Study Report (if required based on project activity).',
-    'Declarations and Commitments.',
-    'Payment of Service Fees.'
-  ];
+  requirements: string[] = [];
 
-  relatedServices: Service[] = [
-    {
-      id: '1',
-      title: 'Issuing a building permit',
-      type: 'Building permits',
-      badges: ['Electronic', 'Not immediate']
-    },
-    {
-      id: '2',
-      title: 'Printing a burial certificate',
-      type: 'Honoring the dead',
-      badges: ['Electronic']
-    },
-    {
-      id: '3',
-      title: 'Renewing a business license',
-      type: 'Business licenses',
-      badges: ['With Fees', 'Not immediate']
-    },
-    {
-      id: '4',
-      title: 'Issuing a building demolition permit',
-      type: 'Building permits',
-      badges: ['Electronic', 'Not immediate']
-    }
-  ];
+  relatedServices: Service[] = [];
 
-  activeTab = signal<'requirements' | 'fines' | 'faq'>('requirements');
+  activeTab = signal<'requirements'>('requirements');
+  private subscriptions = new Subscription();
 
-  constructor(private route: ActivatedRoute, private router: Router) {}
+  constructor(
+    private route: ActivatedRoute,
+    private router: Router,
+    private servicesService: ServicesService,
+    private cdr: ChangeDetectorRef
+  ) {}
 
   ngOnInit(): void {
-    this.route.params.subscribe(params => {
-      const serviceId = params['serviceId'];
-      this.serviceId = serviceId;
-      const serviceData = SERVICES_DATA[serviceId];
-      
-      if (serviceData) {
-        this.serviceName = serviceData.title;
-        this.serviceDescription = serviceData.description || '';
-        this.requirements = serviceData.requirements || [];
-        this.categoryBadges = serviceData.badges;
-      }
-    });
+    // Subscribe to param changes and load service data whenever serviceId changes
+    const serviceSub = this.route.paramMap
+      .pipe(
+        switchMap(paramMap => {
+          const serviceId = paramMap.get('serviceId') || '';
+          console.log('Loading service:', serviceId);
+          this.serviceId = serviceId;
+          return this.servicesService.getServiceById(serviceId);
+        })
+      )
+      .subscribe({
+        next: (serviceData) => {
+          console.log('Service data received:', serviceData);
+          if (serviceData) {
+            this.serviceName = serviceData.name || serviceData.title || 'Service Details';
+            this.serviceDescription = serviceData.description || '';
+            this.categoryBadges = serviceData.badges || [];
+            
+            // Parse requirements if they exist
+            if (serviceData.requirements) {
+              if (Array.isArray(serviceData.requirements)) {
+                this.requirements = serviceData.requirements;
+              } else if (typeof serviceData.requirements === 'string') {
+                this.requirements = serviceData.requirements.split('\n').filter(r => r.trim());
+              }
+            }
+            
+            // Trigger change detection to update template
+            this.cdr.markForCheck();
+            
+            // Load related services AFTER main service is loaded
+            const currentServiceId = parseInt(this.serviceId, 10);
+            const relatedSub = this.servicesService.getAllServices().subscribe({
+              next: (services) => {
+                this.relatedServices = services
+                  .filter(s => {
+                    const sId = typeof s.id === 'string' ? parseInt(s.id, 10) : s.id;
+                    return sId !== currentServiceId;
+                  })
+                  .slice(0, 4);
+                this.cdr.markForCheck();
+              },
+              error: (error) => {
+                console.error('Error loading related services:', error);
+              }
+            });
+            this.subscriptions.add(relatedSub);
+          }
+        },
+        error: (error) => {
+          console.error('Error loading service details:', error);
+          this.serviceName = 'Service not found';
+          this.serviceDescription = 'Unable to load service details.';
+          this.cdr.markForCheck();
+        }
+      });
+    this.subscriptions.add(serviceSub);
   }
 
-  selectTab(tab: 'requirements' | 'fines' | 'faq'): void {
+  ngOnDestroy(): void {
+    this.subscriptions.unsubscribe();
+  }
+
+  selectTab(tab: 'requirements'): void {
     this.activeTab.set(tab);
   }
 
   startService(): void {
-    this.router.navigate(['/services', this.serviceId, 'start']);
+    if (this.serviceId) {
+      this.router.navigate(['/services', this.serviceId, 'start']);
+    }
   }
 }

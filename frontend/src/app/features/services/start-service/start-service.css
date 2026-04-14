@@ -150,6 +150,17 @@
   box-shadow: 0 0 0 3px rgba(7, 131, 155, 0.1);
 }
 
+.form-input:disabled {
+  background-color: #f5f5f5;
+  color: #999;
+  cursor: not-allowed;
+  border-color: #ddd;
+}
+
+.form-input:disabled::placeholder {
+  color: #bbb;
+}
+
 /* Action Buttons */
 .action-buttons {
   display: flex;
@@ -187,6 +198,48 @@
 .btn-return:hover {
   background-color: #bb2d3b;
 }
+
+.btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Alert Styles */
+.alert {
+  margin: 16px 70px 0 70px;
+  padding: 16px 20px;
+  border-radius: 8px;
+  font-family: var(--font-lato);
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.alert-success {
+  background-color: #d4edda;
+  color: #155724;
+  border: 1px solid #c3e6cb;
+}
+
+.alert-error {
+  background-color: #f8d7da;
+  color: #721c24;
+  border: 1px solid #f5c6cb;
+}
+
+/* Info Message */
+.info-message {
+  background-color: #e7f3ff;
+  color: #004085;
+  border: 1px solid #b3d9ff;
+  padding: 12px 16px;
+  border-radius: 6px;
+  margin-bottom: 20px;
+  font-family: var(--font-lato);
+  font-size: 14px;
+}
+
 #cin-row{
     padding: 0px 300px;
 }
@@ -228,3 +281,182 @@
     width: 100%;
   }
 }
+
+/* Requirements List Styling */
+.loading-state {
+  padding: 48px 24px;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  text-align: center;
+  color: var(--secondary-text-color);
+  font-family: var(--font-lato);
+  font-size: 16px;
+}
+
+.no-requirements {
+  padding: 24px;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  text-align: center;
+}
+
+.requirements-list {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.requirement-item {
+  display: flex;
+  flex-direction: column;
+}
+
+.requirement-item .form-group {
+  gap: 8px;
+}
+
+.form-error {
+  color: #dc3545;
+  font-family: var(--font-lato);
+  font-size: 12px;
+  margin-top: 4px;
+}
+
+/* Document Upload Styling */
+.documents-section {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+.document-upload {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.upload-label {
+  font-family: var(--font-lato);
+  font-size: 16px;
+  font-weight: 500;
+  color: var(--primary-text-color);
+}
+
+.upload-area {
+  border: 2px dashed #c9c9c9;
+  border-radius: 8px;
+  padding: 48px 24px;
+  text-align: center;
+  background-color: #f8f9fa;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  position: relative;
+}
+
+.upload-area:hover {
+  border-color: var(--primary-color);
+  background-color: rgba(7, 131, 155, 0.05);
+}
+
+.file-input {
+  display: none;
+}
+
+.upload-instructions {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-items: center;
+}
+
+.upload-instructions p {
+  font-family: var(--font-lato);
+  font-size: 16px;
+  font-weight: 500;
+  color: var(--primary-text-color);
+  margin: 0;
+}
+
+.upload-instructions small {
+  color: var(--secondary-text-color);
+  font-size: 12px;
+}
+
+/* Uploaded Documents List */
+.uploaded-documents {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.uploaded-documents h3 {
+  font-family: var(--font-rubik);
+  font-size: 18px;
+  font-weight: 500;
+  color: var(--primary-text-color);
+  margin: 0 0 16px 0;
+}
+
+.documents-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+.document-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 16px;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  border-left: 4px solid var(--primary-color);
+}
+
+.document-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex: 1;
+}
+
+.document-name {
+  font-family: var(--font-lato);
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--primary-text-color);
+  word-break: break-word;
+}
+
+.document-size {
+  font-family: var(--font-lato);
+  font-size: 12px;
+  color: var(--secondary-text-color);
+}
+
+.btn-remove {
+  background-color: #dc3545;
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 4px;
+  font-family: var(--font-lato);
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  white-space: nowrap;
+  margin-left: 12px;
+}
+
+.btn-remove:hover:not(:disabled) {
+  background-color: #bb2d3b;
+}
+
+.btn-remove:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+

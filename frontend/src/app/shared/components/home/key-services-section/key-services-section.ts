@@ -15,28 +15,28 @@ export class KeyServicesSection {
   featuredServices: Service[] = [
     {
       id: 'building-permit',
-      title: 'Building Permit',
+      name: 'Building Permit',
       type: 'Urban Planning',
       badges: ['Online', 'Not immediate'],
       featured: true
     },
     {
       id: 'garbage-collection',
-      title: 'Garbage Collection',
+      name: 'Garbage Collection',
       type: 'Sanitation',
       badges: ['Scheduled', 'Public Service'],
       featured: true
     },
     {
       id: 'complaint',
-      title: 'Complaint Submission',
+      name: 'Complaint Submission',
       type: 'Citizen Service',
       badges: ['Online', 'Immediate'],
       featured: true
     },
     {
       id: 'birth-certificate',
-      title: 'Birth Certificate',
+      name: 'Birth Certificate',
       type: 'Civil Status',
       badges: ['Online', 'Official'],
       featured: true

@@ -1,8 +1,18 @@
 <div class="start-service-container">
   <!-- Page Header -->
   <div class="page-header">
-    <h1 class="page-title">License requirements</h1>
-    <p class="page-description">You can submit and track your license application remotely.</p>
+    <h1 class="page-title">{{ serviceName || 'Service Requirements' }}</h1>
+    <p class="page-description">You can submit and track your service request remotely.</p>
+  </div>
+
+  <!-- Success Message -->
+  <div *ngIf="successMessage" class="alert alert-success">
+    {{ successMessage }}
+  </div>
+
+  <!-- Error Message -->
+  <div *ngIf="errorMessage" class="alert alert-error">
+    {{ errorMessage }}
   </div>
 
   <!-- Steps Header -->
@@ -38,36 +48,57 @@
   <div class="form-container">
     <!-- Step 1: Personal Information -->
     <div class="step-content" [class.active]="currentStep === 1">
-      <form [formGroup]="personalInfoForm">
+      <p class="info-message">
+        <span *ngIf="personalInfoForm.get('cin')?.disabled">Your CIN and Name are automatically filled from your account.</span>
+        <span *ngIf="!personalInfoForm.get('cin')?.disabled">Please enter your CIN and Name to submit the service request.</span>
+      </p>
+      <form *ngIf="personalInfoForm" [formGroup]="personalInfoForm">
         <div class="form-row">
-          <div class="form-group">
-            <label for="name">Name</label>
-            <input 
-              id="name" 
-              type="text" 
-              placeholder="name" 
-              formControlName="name"
-              class="form-input">
-          </div>
-          <div class="form-group">
-            <label for="phone">Phone number</label>
-            <input 
-              id="phone" 
-              type="tel" 
-              placeholder="phone number" 
-              formControlName="phone"
-              class="form-input">
-          </div>
-        </div>
-        <div class="form-row" id = "cin-row">
           <div class="form-group">
             <label for="cin">CIN</label>
             <input 
               id="cin" 
               type="text" 
-              placeholder="cin" 
+              placeholder="12345678" 
               formControlName="cin"
               class="form-input">
+          </div>
+          <div class="form-group">
+            <label for="name">Name</label>
+            <input 
+              id="name" 
+              type="text" 
+              placeholder="Full Name" 
+              formControlName="name"
+              class="form-input">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="phone">Phone number</label>
+            <input 
+              id="phone" 
+              type="tel" 
+              placeholder="Phone number" 
+              formControlName="phone"
+              class="form-input">
+            <small class="form-error" *ngIf="personalInfoForm.get('phone')?.hasError('required') && personalInfoForm.get('phone')?.touched">
+              Phone number is required
+            </small>
+            <small class="form-error" *ngIf="personalInfoForm.get('phone')?.hasError('pattern') && personalInfoForm.get('phone')?.touched">
+              Phone must be 8 digits
+            </small>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="description">Description (optional)</label>
+            <textarea 
+              id="description" 
+              placeholder="Additional information..." 
+              formControlName="requestdescription"
+              class="form-input"
+              rows="4"></textarea>
           </div>
         </div>
       </form>
@@ -75,20 +106,87 @@
 
     <!-- Step 2: Required Data -->
     <div class="step-content" [class.active]="currentStep === 2">
-      <p>Required data information to be added</p>
+      <div *ngIf="!formReady" class="loading-state">
+        <p>Loading service details...</p>
+      </div>
+      <div *ngIf="formReady && requirements.length === 0" class="no-requirements">
+        <p>No additional data required for this service.</p>
+      </div>
+      <form *ngIf="formReady && requirements.length > 0 && requiredDataForm" [formGroup]="requiredDataForm">
+        <div class="requirements-list">
+          <div class="requirement-item" *ngFor="let req of requirements; let i = index">
+            <div class="form-group">
+              <label [for]="'requirement_' + i">{{ req }}</label>
+              <input 
+                [id]="'requirement_' + i"
+                type="text" 
+                [placeholder]="'Enter ' + req" 
+                [formControlName]="'requirement_' + i"
+                class="form-input">
+              <small class="form-error" *ngIf="requiredDataForm.get('requirement_' + i)?.hasError('required') && requiredDataForm.get('requirement_' + i)?.touched">
+                This field is required
+              </small>
+            </div>
+          </div>
+        </div>
+      </form>
     </div>
 
     <!-- Step 3: Required Documents -->
     <div class="step-content" [class.active]="currentStep === 3">
-      <p>Required documents information to be added</p>
+      <div class="documents-section">
+        <div class="document-upload">
+          <label for="fileUpload" class="upload-label">Upload Required Documents</label>
+          <div class="upload-area" (click)="fileInput.click()">
+            <input 
+              #fileInput
+              id="fileUpload"
+              type="file" 
+              multiple 
+              (change)="onFileSelect($event)"
+              class="file-input"
+              accept=".pdf,.doc,.docx,.jpg,.jpeg,.png">
+            <div class="upload-instructions">
+              <p>Click to upload or drag and drop</p>
+              <small>PDF, DOC, DOCX, JPG, JPEG, or PNG (Max 5MB each)</small>
+            </div>
+          </div>
+        </div>
+
+        <!-- Uploaded Documents List -->
+        <div class="uploaded-documents" *ngIf="uploadedDocuments.length > 0">
+          <h3>Uploaded Documents ({{ uploadedDocuments.length }})</h3>
+          <div class="documents-list">
+            <div class="document-item" *ngFor="let doc of uploadedDocuments; let i = index">
+              <div class="document-info">
+                <span class="document-name">{{ doc.name }}</span>
+                <span class="document-size">({{ (doc.size / 1024).toFixed(2) }} KB)</span>
+              </div>
+              <button 
+                type="button"
+                class="btn-remove"
+                (click)="removeDocument(i)">
+                Remove
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
+    
     <!-- Action Buttons -->
     <div class="action-buttons">
-        <button class="btn btn-continue" (click)="onContinue()">Continue</button>
-        <button class="btn btn-return" (click)="onReturn()">Return</button>
+        <button 
+          class="btn btn-continue" 
+          (click)="onContinue()"
+          [disabled]="isSubmitting">
+          {{ isSubmitting ? 'Processing...' : (currentStep === 3 ? 'Submit Service Request' : 'Continue') }}
+        </button>
+        <button 
+          class="btn btn-return" 
+          (click)="onReturn()">
+          Return
+        </button>
     </div>
   </div>
-
-
-  
 </div>
