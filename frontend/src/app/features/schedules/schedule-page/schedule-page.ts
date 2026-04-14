@@ -11,17 +11,18 @@ import { allHoraires } from '../../../shared/mock/horaires.mock';
   templateUrl: './schedule-page.html',
   styleUrl: './schedule-page.css',
 })
-export class SchedulePage {
-  readonly days = ['Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi', 'Dimanche'];
 
-  activeFilter = 'Tous';
+export class SchedulePage {
+  readonly days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+
+  activeFilter = 'All';
 
   get filters(): string[] {
-    return ['Tous', ...new Set(allHoraires.map((h) => h.type))];
+    return ['All', ...new Set(allHoraires.map((h) => h.type ?? 'Other'))];
   }
 
   get filtered(): HoraireService[] {
-    if (this.activeFilter === 'Tous') return allHoraires;
+    if (this.activeFilter === 'All') return allHoraires;
     return allHoraires.filter((h) => h.type === this.activeFilter);
   }
 
@@ -32,7 +33,7 @@ export class SchedulePage {
   }
 
   hasDay(h: HoraireService, day: string): boolean {
-    return h.jour.split(',').map((d) => d.trim()).includes(day);
+    return h.days?.includes(day) ?? false;
   }
 
   goBack(): void {

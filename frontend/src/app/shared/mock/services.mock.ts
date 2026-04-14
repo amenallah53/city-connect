@@ -1,77 +1,76 @@
 import { Service } from "../models/service.model";
 
-
-export const allServices : Service[] = [
-    {
-      id: '1',
-      title: 'Issuing a building permit',
-      type: 'Building permits',
-      badges: ['Electronic', 'Not immediate']
-    },
-    {
-      id: '2',
-      title: 'Printing a burial certificate',
-      type: 'Honoring the dead',
-      badges: ['Electronic']
-    },
-    {
-      id: '3',
-      title: 'Renewing a business license',
-      type: 'Business licenses',
-      badges: ['With Fees', 'Not immediate']
-    },
-    {
-      id: '4',
-      title: 'Issuing a building demolition permit',
-      type: 'Building permits',
-      badges: ['Electronic', 'Not immediate']
-    },
-    {
-      id: '5',
-      title: 'Issuing a building permit',
-      type: 'Building permits',
-      badges: ['Electronic', 'Not immediate']
-    },
-    {
-      id: '6',
-      title: 'Printing a burial certificate',
-      type: 'Honoring the dead',
-      badges: ['Electronic']
-    },
-    {
-      id: '7',
-      title: 'Renewing a business license',
-      type: 'Business licenses',
-      badges: ['With Fees', 'Not immediate']
-    },
-    {
-      id: '8',
-      title: 'Issuing a building demolition permit',
-      type: 'Building permits',
-      badges: ['Electronic', 'Not immediate']
-    },
-    {
-      id: '9',
-      title: 'Issuing a building permit',
-      type: 'Building permits',
-      badges: ['Electronic', 'Not immediate']
-    },
-    {
-      id: '10',
-      title: 'Printing a burial certificate',
-      type: 'Honoring the dead',
-      badges: ['Electronic']
-    },
-    {
-      id: '11',
-      title: 'Renewing a business license',
-      type: 'Business licenses',
-      badges: ['With Fees', 'Not immediate']
-    },
-    {
-      id: '12',
-      title: 'Issuing a building demolition permit',
-      type: 'Building permits',
-      badges: ['Electronic', 'Not immediate']
-    }
+export const allServices: Service[] = [
+  {
+    id: '1',
+    name: 'Issuing a building permit',
+    type: 'Building permits',
+    badges: ['Electronic', 'Not immediate'],
+    description: 'Request authorization to start construction work.',
+    requirements: ['Identity document', 'land ownership proof', 'architectural plans'],
+    municipaliteId: 1,
+  },
+  {
+    id: '2',
+    name: 'Printing a burial certificate',
+    type: 'Honoring the dead',
+    badges: ['Electronic'],
+    description: 'Obtain an official burial certificate.',
+    requirements: ['Death certificate', 'ID of requester'],
+    municipaliteId: 1,
+  },
+  {
+    id: '3',
+    name: 'Renewing a business license',
+    type: 'Business licenses',
+    badges: ['With Fees', 'Not immediate'],
+    description: 'Renew your commercial activity authorization.',
+    requirements: ['Old license', 'tax clearance, ID'],
+    municipaliteId: 1,
+  },
+  {
+    id: '4',
+    name: 'Issuing a demolition permit',
+    type: 'Building permits',
+    badges: ['Electronic', 'Not immediate'],
+    description: 'Request authorization to demolish a structure.',
+    requirements: ['Ownership proof', 'demolition plan', 'safety report'],
+    municipaliteId: 1,
+  },
+  {
+    id: '5',
+    name: 'Request for civil status certificate',
+    type: 'Administration',
+    badges: ['Electronic', 'Immediate'],
+    description: 'Get birth, marriage, or residence certificate.',
+    requirements: ['National ID'],
+    municipaliteId: 1,
+  },
+  {
+    id: '6',
+    name: 'Garbage collection complaint',
+    type: 'Public Services',
+    badges: ['Free', 'Quick'],
+    description: 'Report missed or delayed waste collection.',
+    requirements: ['Address details'],
+    municipaliteId: 1,
+  },
+  {
+    id: '7',
+    name: 'Apply for parking permit',
+    type: 'Transport',
+    badges: ['With Fees'],
+    description: 'Get residential or commercial parking authorization.',
+    requirements: ['Vehicle registration', 'ID, proof of address'],
+    municipaliteId: 1,
+  },
+  {
+    id: '8',
+    name: 'Report road damage',
+    type: 'Infrastructure',
+    badges: ['Free'],
+    description: 'Notify municipality about damaged roads or sidewalks.',
+    requirements: ['Location details', 'optional photos'],
+    municipaliteId: 1,
+  },
 ];

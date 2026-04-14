@@ -13,17 +13,21 @@ export const NEWS_LIST: News[] = [
       'The central city park renovation has been completed, offering new playgrounds, walking paths, and green spaces for residents.',
     subArticles: [
       {
+        id: "1",
+        position: 0,
         title: 'Project Overview',
         content:
           'The renovation includes modern playgrounds, improved walking paths, and expanded green areas for the community.',
-        media: '/assets/news/news-1.jpg',
+        mediaUrl: '/assets/news/news-1.jpg',
         mediaType: 'image'
       },
       {
+        id: "2",
+        position: 1,
         title: 'Project Overview',
         content:
           'The renovation includes modern playgrounds, improved walking paths, and expanded green areas for the community.',
-        media: '/assets/news/news-1.jpg',
+        mediaUrl: '/assets/news/news-1.jpg',
         mediaType: 'image'
       }
     ]
@@ -40,10 +44,12 @@ export const NEWS_LIST: News[] = [
       'Three new bus routes have been introduced to improve connectivity between residential and commercial areas.',
     subArticles: [
       {
+        id: "1",
+        position: 0,
         title: 'Route Expansion Details',
         content:
           'The new routes aim to reduce commute times and improve access between key areas of the city.',
-        media: '/assets/news/news-2.jpg',
+        mediaUrl: '/assets/news/news-2.jpg',
         mediaType: 'image'
       }
     ]
@@ -59,10 +65,12 @@ export const NEWS_LIST: News[] = [
       'Residents are invited to participate in the city-wide clean-up campaign happening this Saturday morning.',
     subArticles: [
       {
+        id: "1",
+        position: 0,
         title: 'Join the Initiative',
         content:
           'Volunteers will gather across multiple locations to help clean and beautify public spaces.',
-        media: '/assets/news/news-3.jpg',
+        mediaUrl: '/assets/news/news-3.jpg',
         mediaType: 'image'
       }
     ]
@@ -79,10 +87,12 @@ export const NEWS_LIST: News[] = [
       'Starting next week, the main library will remain open until 9 PM on weekdays to accommodate more visitors.',
     subArticles: [
       {
+        id: "1",
+        position: 0,
         title: 'New Schedule',
         content:
           'The extended hours aim to provide better access for students and working professionals.',
-        media: '/assets/news/news-4.jpg',
+        mediaUrl: '/assets/news/news-4.jpg',
         mediaType: 'image'
       }
     ]
@@ -99,10 +109,12 @@ export const NEWS_LIST: News[] = [
       'The much-awaited annual food festival returns with over 50 vendors and live entertainment.',
     subArticles: [
       {
+        id: "1",
+        position: 0,
         title: 'Festival Highlights',
         content:
           'Visitors can enjoy a wide range of cuisines, live shows, and family-friendly activities.',
-        media: '/assets/news/news-5.jpg',
+        mediaUrl: '/assets/news/news-5.jpg',
         mediaType: 'image'
       }
     ]
@@ -119,10 +131,12 @@ export const NEWS_LIST: News[] = [
       'A new contemporary art exhibition featuring local and international artists opens this weekend.',
     subArticles: [
       {
+        id: "1",
+        position: 0,
         title: 'Exhibition Details',
         content:
           'The exhibition showcases a mix of modern works from emerging and established artists.',
-        media: '/assets/news/news-6.jpg',
+        mediaUrl: '/assets/news/news-6.jpg',
         mediaType: 'image'
       }
     ]
@@ -139,10 +153,12 @@ export const NEWS_LIST: News[] = [
       'A hands-on tech workshop for teens will be held at the Innovation Center, teaching robotics and coding basics.',
     subArticles: [
       {
+        id: "1",
+        position: 0,
         title: 'Workshop Activities',
         content:
           'Participants will learn programming fundamentals and build simple robotics projects.',
-        media: '/assets/news/news-6.jpg',
+        mediaUrl: '/assets/news/news-6.jpg',
         mediaType: 'image'
       }
     ]

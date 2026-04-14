@@ -3,6 +3,7 @@ import { ServiceCard } from '../../cards/service-card/service-card';
 import { RouterLink } from '@angular/router';
 import { Service } from '../../../models/service.model';
 import { CommonModule } from '@angular/common';
+import { allServices } from 'src/app/shared/mock/services.mock';
 
 @Component({
   selector: 'app-key-services-section',
@@ -12,34 +13,5 @@ import { CommonModule } from '@angular/common';
   standalone: true,
 })
 export class KeyServicesSection {
-  featuredServices: Service[] = [
-    {
-      id: 'building-permit',
-      title: 'Building Permit',
-      type: 'Urban Planning',
-      badges: ['Online', 'Not immediate'],
-      featured: true
-    },
-    {
-      id: 'garbage-collection',
-      title: 'Garbage Collection',
-      type: 'Sanitation',
-      badges: ['Scheduled', 'Public Service'],
-      featured: true
-    },
-    {
-      id: 'complaint',
-      title: 'Complaint Submission',
-      type: 'Citizen Service',
-      badges: ['Online', 'Immediate'],
-      featured: true
-    },
-    {
-      id: 'birth-certificate',
-      title: 'Birth Certificate',
-      type: 'Civil Status',
-      badges: ['Online', 'Official'],
-      featured: true
-    }
-  ];
+  featuredServices: Service[] = allServices.slice(0,4);
 }

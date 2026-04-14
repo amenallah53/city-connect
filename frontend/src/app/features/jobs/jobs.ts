@@ -86,6 +86,10 @@ export class Jobs implements OnInit {
     this.updateQueryParams();
   }
 
+  callFormDialog() {
+    console.log("pimp")
+  }
+
   onPageChange(event: PaginatorState) {
     this.first = event.first ?? 0;
     this.rows = event.rows ?? 12;
@@ -109,7 +113,7 @@ export class Jobs implements OnInit {
     this.filteredJobs = this.allJobsList.filter(job => {
       const matchCategory =
         this.selectedCategory.code === 'all' ||
-        job.profession.toLowerCase().replace(/\s+/g, '-') === this.selectedCategory.code;
+        job.specialty!.toLowerCase().replace(/\s+/g, '-') === this.selectedCategory.code;
 
       const matchFilter =
         this.selectedFilter.code === 'all' ||

@@ -11,3 +11,5 @@ export interface Ticket {
   date_creation?: string;
   user_id?: string;
 }
+
+// you gonna be depricated bItCh

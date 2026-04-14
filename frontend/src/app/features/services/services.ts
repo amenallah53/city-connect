@@ -107,7 +107,7 @@ export class Services implements OnInit {
     this.filteredServices = this.allServicesList.filter(service => {
       const matchCategory =
         this.selectedCategory.code === 'all' ||
-        service.type.toLowerCase().replace(/\s+/g, '-') === this.selectedCategory.code;
+        service.type!.toLowerCase().replace(/\s+/g, '-') === this.selectedCategory.code;
 
       const matchFilter =
         this.selectedFilter.code === 'all' ||

@@ -45,8 +45,8 @@
 
         <!-- Media -->
         <img 
-          *ngIf="article.media && article.mediaType === 'image'"
-          [src]="article.media"
+          *ngIf="article.mediaUrl && article.mediaType === 'image'"
+          [src]="article.mediaUrl"
           class="w-full rounded-xl shadow-md"
         />
 
