@@ -6,11 +6,12 @@ import { Ticket } from '../../../shared/models/ticket.model';
 import { SelectModule } from 'primeng/select';
 import { PaginatorModule } from 'primeng/paginator';
 import { DialogModule } from 'primeng/dialog';
+import { RouterLink } from '@angular/router';
 
 
 @Component({
   selector: 'app-all-my-reports',
-  imports: [CommonModule, ReportCard, SelectModule, PaginatorModule, DialogModule],
+  imports: [CommonModule, ReportCard, SelectModule, PaginatorModule, DialogModule, RouterLink],
   templateUrl: './all-my-reports.html',
   styleUrl: './all-my-reports.css',
 })
