@@ -1,0 +1,54 @@
+<div class="header">
+    <h2 class="header-title">{{ pageTitle }}</h2>
+    <!-- Actions -->
+    <div class="header-actions">
+        <!-- Bell -->
+        <div class="bell-wrapper">
+            <div class="bell-icon-container">
+                <div class="notification-dot"></div>
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"
+                    class="bell-icon">
+                    <path d="M10.268 21a2 2 0 0 0 3.464 0" />
+                    <path
+                        d="M3.262 15.326A1 1 0 0 0 4 17h16a1 1 0 0 0 .74-1.673C19.41 13.956 18 12.499 18 8A6 6 0 0 0 6 8c0 4.499-1.411 5.956-2.738 7.326" />
+                </svg>
+            </div>
+        </div>
+
+        <!-- Avatar wrapper -->
+        <div class="avatar-container" (click)="toggleProfile()">
+            <div class="avatar-circle">
+                <img src="/assets/avatar.png" alt="avatar" class="avatar-img">
+            </div>
+            <div class="avatar-chevron">
+                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="m6 9 6 6 6-6" />
+                </svg>
+            </div>
+
+            <!-- Dropdown -->
+            <div *ngIf="isProfileOpen" class="profile-dropdown">
+                <a routerLink="/profile" (click)="closeProfile()" class="dropdown-item">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="8" r="4" />
+                        <path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" />
+                    </svg>
+                    Profile
+                </a>
+                <div class="dropdown-divider"></div>
+                <button (click)="logout(); closeProfile()" class="dropdown-item dropdown-logout">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+                        <polyline points="16 17 21 12 16 7" />
+                        <line x1="21" y1="12" x2="9" y2="12" />
+                    </svg>
+                    Logout
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

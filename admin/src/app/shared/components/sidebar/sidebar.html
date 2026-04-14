@@ -1,0 +1,132 @@
+<div class="vertical-div sidebar-layout">
+    <div class="website-logo-container">
+        <!-- Logo -->
+        <a routerLink="/" class="logo-link">
+            <div class="logo-wrapper">
+                <div class="logo-icon">C</div>
+                <h1 class="logo-text">CityConnect</h1>
+            </div>
+        </a>
+    </div>
+    <div class="main-menu-txt">Main Menu</div>
+    <div class="menu-items-container vertical-div">
+
+        <!-- Dashboard -->
+        <div class="menu-item" routerLink="/dashboard" routerLinkActive="menu-item-active">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="menu-icon">
+                <path d="M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8" />
+                <path
+                    d="M3 10a2 2 0 0 1 .709-1.528l7-6a2 2 0 0 1 2.582 0l7 6A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+            </svg>
+            <span class="menu-text">Dashboard</span>
+        </div>
+
+        <!-- Users -->
+        <div class="menu-item" routerLink="/users" routerLinkActive="menu-item-active">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="menu-icon">
+                <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" />
+                <circle cx="12" cy="7" r="4" />
+            </svg>
+            <span class="menu-text">Users</span>
+        </div>
+
+        <!-- Services (collapsible) -->
+        <div class="menu-item menu-item-expandable" [ngClass]="{'menu-item-active': isRouteActive('/services')}"
+            (click)="toggleMenu('services')">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="menu-icon">
+                <rect width="8" height="4" x="8" y="2" rx="1" ry="1" />
+                <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2" />
+            </svg>
+            <span class="menu-text">Services</span>
+            <svg class="chevron-icon" [ngClass]="{'chevron-open': isExpanded('services')}"
+                xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="m18 15-6-6-6 6" />
+            </svg>
+        </div>
+        <div class="submenu-container" [ngClass]="{'submenu-open': isExpanded('services')}">
+            <div class="submenu-item" routerLink="/services/types-of-services" routerLinkActive="submenu-item-active">
+                Types of Services
+            </div>
+            <div class="submenu-item" routerLink="/services/requests" routerLinkActive="submenu-item-active">
+                Requests
+            </div>
+        </div>
+
+        <!-- Complaints -->
+        <div class="menu-item" routerLink="/complaints" routerLinkActive="menu-item-active">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="menu-icon">
+                <path d="M3 3h18v13H3z" />
+                <path d="M8 21h8" />
+                <path d="M12 17v4" />
+                <path d="M12 8v4" />
+                <path d="M12 6h.01" />
+            </svg>
+            <span class="menu-text">Complaints</span>
+        </div>
+
+        <!-- News -->
+        <div class="menu-item" routerLink="/news" routerLinkActive="menu-item-active">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="menu-icon">
+                <path
+                    d="M4 22h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16a2 2 0 0 1-2 2Zm0 0a2 2 0 0 1-2-2v-9c0-1.1.9-2 2-2h2" />
+                <path d="M18 14h-8" />
+                <path d="M15 18h-5" />
+                <path d="M10 6h8v4h-8V6Z" />
+            </svg>
+            <span class="menu-text">News</span>
+        </div>
+
+        <!-- Service Schedule -->
+        <div class="menu-item" routerLink="/service-schedule" routerLinkActive="menu-item-active">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="menu-icon">
+                <path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z" />
+                <path d="M12 6v6l4 2" />
+                <line x1="4.93" y1="4.93" x2="7.76" y2="7.76" />
+            </svg>
+            <span class="menu-text">Service Schedule</span>
+        </div>
+
+        <!-- Jobs (collapsible) -->
+        <div class="menu-item menu-item-expandable" [ngClass]="{'menu-item-active': isRouteActive('/jobs')}"
+            (click)="toggleMenu('jobs')">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="menu-icon">
+                <rect width="20" height="14" x="2" y="7" rx="2" ry="2" />
+                <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16" />
+            </svg>
+            <span class="menu-text">Jobs</span>
+            <svg class="chevron-icon" [ngClass]="{'chevron-open': isExpanded('jobs')}"
+                xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="m18 15-6-6-6 6" />
+            </svg>
+        </div>
+        <div class="submenu-container" [ngClass]="{'submenu-open': isExpanded('jobs')}">
+            <div class="submenu-item" routerLink="/jobs/prestataire-requests" routerLinkActive="submenu-item-active">
+                Prestataire requests
+            </div>
+            <div class="submenu-item" routerLink="/jobs/offers" routerLinkActive="submenu-item-active">
+                Offers
+            </div>
+        </div>
+
+        <!-- FAQ -->
+        <div class="menu-item" routerLink="/faq" routerLinkActive="menu-item-active">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="menu-icon">
+                <circle cx="12" cy="12" r="10" />
+                <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3" />
+                <path d="M12 17h.01" />
+            </svg>
+            <span class="menu-text">FAQ</span>
+        </div>
+
+    </div>
+</div>
