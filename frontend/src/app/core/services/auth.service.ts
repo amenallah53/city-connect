@@ -14,7 +14,7 @@ export class UserAuthService {
   constructor(
     @Inject(PLATFORM_ID) private platformId: Object,
     private http: HttpClient
-  ) {}
+  ) { }
 
   private isBrowser(): boolean {
     return isPlatformBrowser(this.platformId);
@@ -25,7 +25,7 @@ export class UserAuthService {
     // with the help of the jwt token return object: mak bch trajaa {key, id, email} (mathalan)
     return {
       id: "1",
-      cin: 14674032,
+      cin: "14674032",
       firstName: "amenallah",
       lastName: "kalai",
       email: "amenkalai53@gmail.com",
@@ -42,7 +42,7 @@ export class UserAuthService {
 
   isLoggedIn(): boolean {
     if (!this.isBrowser()) {
-      return true; 
+      return true;
     }
 
     return !!localStorage.getItem(this.USER_TOKEN_KEY);

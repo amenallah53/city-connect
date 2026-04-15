@@ -197,7 +197,7 @@ CREATE TABLE demande_service (
                             CHECK (status IN ('pending', 'approved', 'rejected')),
     submission_date     TIMESTAMP       NOT NULL DEFAULT NOW(),
     description         TEXT,
-    cin                 INTEGER,
+    cin                 VARCHAR(255),
     first_name          VARCHAR(255),
     last_name           VARCHAR(255),
     email               VARCHAR(255),

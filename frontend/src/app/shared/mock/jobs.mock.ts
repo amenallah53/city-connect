@@ -3,7 +3,7 @@ import { Prestataire } from "../models/prestataire.model";
 export const allJobs: Prestataire[] = [
   {
     id: '1',
-    cin: 123456,
+    cin: "123456",
     firstName: 'John',
     lastName: 'Doe',
     email: 'john@example.com',
@@ -19,7 +19,7 @@ export const allJobs: Prestataire[] = [
   },
   {
     id: '2',
-    cin: 234567,
+    cin: "234567",
     firstName: 'Sarah',
     lastName: 'Smith',
     email: 'sarah@example.com',
@@ -35,7 +35,7 @@ export const allJobs: Prestataire[] = [
   },
   {
     id: '3',
-    cin: 345678,
+    cin: "345678",
     firstName: 'Ahmed',
     lastName: 'Ben Ali',
     email: 'ahmed@example.com',
@@ -51,7 +51,7 @@ export const allJobs: Prestataire[] = [
   },
   {
     id: '4',
-    cin: 456789,
+    cin: "456789",
     firstName: 'Marie',
     lastName: 'Dupont',
     email: 'marie@example.com',
@@ -67,7 +67,7 @@ export const allJobs: Prestataire[] = [
   },
   {
     id: '5',
-    cin: 567890,
+    cin: "567890",
     firstName: 'Carlos',
     lastName: 'Mendez',
     email: 'carlos@example.com',
@@ -83,7 +83,7 @@ export const allJobs: Prestataire[] = [
   },
   {
     id: '6',
-    cin: 678901,
+    cin: "678901",
     firstName: 'Lena',
     lastName: 'Müller',
     email: 'lena@example.com',

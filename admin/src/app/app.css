@@ -1,18 +1,4 @@
-.main-body {
-    align-self: start;
-    justify-self: start;
-    width: 100%;
-    display: flex;
-    flex: 1;
-    overflow-y: auto;
-    margin-left: 350px;
-}
-
-app-sidebar {
-    position: fixed;
-    z-index: 3000;
-    top: 0;
-}
+/* Sidebar sits in normal flex flow — no fixed positioning needed */
 
 app-header {
     position: sticky;

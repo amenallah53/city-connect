@@ -1,39 +1,52 @@
-<div class="user-card horizontal-div">
-    <div class="user-infos horizontal-div">
-        <div class="horizontal-div username-n-pfp">
-            <div class="pfp">
+<div class="mx-6 w-[97%] min-h-[100px] bg-white rounded-[25px] p-6 flex flex-row items-center justify-between flex-wrap gap-4">
 
-                <img src="/assets/avatar.png" alt="avatar" class="avatar-img">
+    <!-- User info section -->
+    <div class="flex flex-row items-center justify-start gap-6 flex-wrap">
+
+        <!-- Avatar + Name -->
+        <div class="flex flex-row items-center gap-4 font-[family-name:var(--font-lato)] text-lg font-medium text-[var(--primary-text-color)]">
+            <div class="w-[60px] h-[60px] rounded-full overflow-hidden border border-[#bbbbbb] bg-white shrink-0">
+                <img src="/assets/avatar.png" alt="avatar" class="w-full h-full object-cover">
             </div>
-            <div class="username">
+            <div class="flex flex-row items-center justify-start gap-2">
                 <span>Amenallah Kalai</span>
             </div>
         </div>
-        <div class="user-role">
+
+        <!-- Role -->
+        <div class="flex flex-row items-center justify-start gap-2">
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
                 stroke="#8C8C8C" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
                 class="lucide lucide-user-icon lucide-user">
                 <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" />
                 <circle cx="12" cy="7" r="4" />
             </svg>
-            <span>Admin</span>
+            <span class="font-[family-name:var(--font-lato)] text-lg font-medium text-[var(--primary-subtitle-color)]">Admin</span>
         </div>
-        <div class="email-address-container horizontal-div gap-4">
+
+        <!-- Email -->
+        <div class="flex flex-row items-center justify-start gap-2">
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
                 stroke="#8C8C8C" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
                 class="lucide lucide-mail-icon lucide-mail">
                 <path d="m22 7-8.991 5.727a2 2 0 0 1-2.009 0L2 7" />
                 <rect x="2" y="4" width="20" height="16" rx="2" />
             </svg>
-            <span>amenallahkalai53@gmail.com</span>
+            <span class="font-[family-name:var(--font-lato)] text-lg font-medium text-[var(--primary-subtitle-color)]">amenallahkalai53@gmail.com</span>
         </div>
-        <div class="user-status">
+
+        <!-- Status -->
+        <div class="flex flex-row items-center justify-start gap-2 text-[#00AF20] font-[family-name:var(--font-lato)] text-lg font-bold">
             Active
         </div>
+
     </div>
-    <div class="actions horizontal-div">
+
+    <!-- Actions -->
+    <div class="flex flex-row items-center justify-end gap-1">
+
         <!--view more-->
-        <div class="icon-container">
+        <div class="w-12 h-12 flex items-center justify-center rounded-full cursor-pointer transition-all duration-300 text-[var(--primary-subtitle-color)] hover:bg-[#CCC] hover:text-[var(--primary-color)]">
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
                 stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
                 class="lucide lucide-eye-icon lucide-eye">
@@ -44,7 +57,7 @@
         </div>
 
         <!--edit-->
-        <div class="icon-container">
+        <div class="w-12 h-12 flex items-center justify-center rounded-full cursor-pointer transition-all duration-300 text-[var(--primary-subtitle-color)] hover:bg-[#CCC] hover:text-[var(--primary-color)]">
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
                 stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
                 class="lucide lucide-pen-icon lucide-pen">
@@ -52,8 +65,9 @@
                     d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z" />
             </svg>
         </div>
+
         <!--delete-->
-        <div class="icon-container">
+        <div class="w-12 h-12 flex items-center justify-center rounded-full cursor-pointer transition-all duration-300 text-[var(--primary-subtitle-color)] hover:bg-[#CCC] hover:text-[var(--primary-color)]">
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
                 stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
                 class="lucide lucide-trash2-icon lucide-trash-2">
@@ -64,6 +78,7 @@
                 <path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
             </svg>
         </div>
+
     </div>
 
 </div>

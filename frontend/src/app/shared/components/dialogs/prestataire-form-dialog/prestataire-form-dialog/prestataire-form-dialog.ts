@@ -25,7 +25,7 @@ export class PrestataireFormDialog implements OnInit {
   firstName: string = '';
   lastName: string = '';
   email: string = '';
-  cin: number = 0;
+  cin: string = '';
   telephone: string = '';
   addresse: string = '';
 
@@ -45,16 +45,16 @@ export class PrestataireFormDialog implements OnInit {
   constructor(
     private authService: UserAuthService,
     private ref: DynamicDialogRef,
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.currentUser = this.authService.getCurrentLoggedUser();
-    this.firstName  = this.currentUser.firstName;
-    this.lastName   = this.currentUser.lastName;
-    this.email      = this.currentUser.email;
-    this.cin        = this.currentUser.cin;
-    this.telephone  = this.currentUser.telephone ?? '';
-    this.addresse   = this.currentUser.addresse ?? '';
+    this.firstName = this.currentUser.firstName;
+    this.lastName = this.currentUser.lastName;
+    this.email = this.currentUser.email;
+    this.cin = this.currentUser.cin;
+    this.telephone = this.currentUser.telephone ?? '';
+    this.addresse = this.currentUser.addresse ?? '';
   }
 
   onFileChange(event: Event): void {
@@ -65,32 +65,32 @@ export class PrestataireFormDialog implements OnInit {
   onSubmit(): void {
     const prestataire: Prestataire = {
       // From current user (locked)
-      id:         this.currentUser.id,
-      cin:        this.currentUser.cin,
-      firstName:  this.firstName,
-      lastName:   this.lastName,
-      email:      this.email,
-      addresse:   this.addresse,
-      telephone:  this.telephone,
-      role:       'prestataire',
-      createdAt:  this.currentUser.createdAt,
+      id: this.currentUser.id,
+      cin: this.currentUser.cin,
+      firstName: this.firstName,
+      lastName: this.lastName,
+      email: this.email,
+      addresse: this.addresse,
+      telephone: this.telephone,
+      role: 'prestataire',
+      createdAt: this.currentUser.createdAt,
 
       // Always pending on new submission
       status: 'pending',
 
       // From form
-      specialty:       this.specialty,
-      description:     this.description,
-      reach:           this.selectedReach.code,
-      socialLinks:     this.socialLinksRaw
-                         .split(',')
-                         .map(s => s.trim())
-                         .filter(s => s.length > 0),
-      extraDocumentUrl: this.extraDocumentFile
-                          ? `[file: ${this.extraDocumentFile.name}]`
-                          : undefined,
-      submissionDate:  new Date(),
-      rating:          0,
+      specialty: this.specialty,
+      description: this.description,
+      reach: this.selectedReach.code,
+      socialLinks: this.socialLinksRaw
+        .split(',')
+        .map(s => s.trim())
+        .filter(s => s.length > 0),
+      document: this.extraDocumentFile
+        ? `[file: ${this.extraDocumentFile.name}]`
+        : undefined,
+      submissionDate: new Date(),
+      rating: 0,
     };
 
     console.log('📋 New Prestataire Submission:', prestataire);

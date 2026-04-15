@@ -6,7 +6,7 @@ export interface DemandeService {
   submissionDate: Date;
   description?: string;
   // Citizen snapshot at submission time
-  cin?: number;
+  cin?: string;
   firstName?: string;
   lastName?: string;
   email?: string;
