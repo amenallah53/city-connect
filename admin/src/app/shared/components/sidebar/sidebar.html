@@ -1,4 +1,4 @@
-<div class="bg-white min-h-screen max-h-screen overflow-y-auto flex flex-col justify-start items-stretch gap-6 p-4">
+<div class="bg-white h-full flex flex-col justify-start items-stretch gap-6 p-4">
 
     <!-- Logo -->
     <div class="flex justify-start items-center">
@@ -19,7 +19,7 @@
     <div class="flex flex-col justify-start gap-2">
 
         <!-- Dashboard -->
-        <div class="flex items-center gap-3 px-4 py-3 rounded-lg cursor-pointer transition-colors duration-200 border-l-[3px] border-l-transparent text-[var(--secondary-text-color)] hover:bg-[#F0F6FF] hover:text-[var(--primary-color)]"
+        <div class="flex items-center gap-3 px-4 py-3 rounded-lg cursor-pointer transition-colors duration-200 border-l-[5px] border-l-transparent text-[var(--secondary-text-color)] hover:bg-[#F0F6FF] hover:text-[var(--primary-color)]"
             routerLink="/dashboard" routerLinkActive="menu-item-active">
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
                 stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="shrink-0">
@@ -31,7 +31,7 @@
         </div>
 
         <!-- Users -->
-        <div class="flex items-center gap-3 px-4 py-3 rounded-lg cursor-pointer transition-colors duration-200 border-l-[3px] border-l-transparent text-[var(--secondary-text-color)] hover:bg-[#F0F6FF] hover:text-[var(--primary-color)]"
+        <div class="flex items-center gap-3 px-4 py-3 rounded-lg cursor-pointer transition-colors duration-200 border-l-[5px] border-l-transparent text-[var(--secondary-text-color)] hover:bg-[#F0F6FF] hover:text-[var(--primary-color)]"
             routerLink="/users" routerLinkActive="menu-item-active">
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
                 stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="shrink-0">
@@ -42,7 +42,7 @@
         </div>
 
         <!-- Services (collapsible) -->
-        <div class="flex items-center gap-3 px-4 py-3 rounded-lg cursor-pointer transition-colors duration-200 border-l-[3px] border-l-transparent text-[var(--secondary-text-color)] hover:bg-[#F0F6FF] hover:text-[var(--primary-color)] relative"
+        <div class="flex items-center gap-3 px-4 py-3 rounded-lg cursor-pointer transition-colors duration-200 border-l-[5px] border-l-transparent text-[var(--secondary-text-color)] hover:bg-[#F0F6FF] hover:text-[var(--primary-color)] relative"
             [ngClass]="{'menu-item-active': isRouteActive('/services')}" (click)="toggleMenu('services')">
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
                 stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
@@ -72,7 +72,7 @@
         </div>
 
         <!-- Complaints -->
-        <div class="flex items-center gap-3 px-4 py-3 rounded-lg cursor-pointer transition-colors duration-200 border-l-[3px] border-l-transparent text-[var(--secondary-text-color)] hover:bg-[#F0F6FF] hover:text-[var(--primary-color)]"
+        <div class="flex items-center gap-3 px-4 py-3 rounded-lg cursor-pointer transition-colors duration-200 border-l-[5px] border-l-transparent text-[var(--secondary-text-color)] hover:bg-[#F0F6FF] hover:text-[var(--primary-color)]"
             routerLink="/complaints" routerLinkActive="menu-item-active">
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
                 stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
@@ -84,7 +84,7 @@
         </div>
 
         <!-- News -->
-        <div class="flex items-center gap-3 px-4 py-3 rounded-lg cursor-pointer transition-colors duration-200 border-l-[3px] border-l-transparent text-[var(--secondary-text-color)] hover:bg-[#F0F6FF] hover:text-[var(--primary-color)]"
+        <div class="flex items-center gap-3 px-4 py-3 rounded-lg cursor-pointer transition-colors duration-200 border-l-[5px] border-l-transparent text-[var(--secondary-text-color)] hover:bg-[#F0F6FF] hover:text-[var(--primary-color)]"
             routerLink="/news" routerLinkActive="menu-item-active">
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
                 stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
@@ -98,7 +98,7 @@
         </div>
 
         <!-- Service Schedule -->
-        <div class="flex items-center gap-3 px-4 py-3 rounded-lg cursor-pointer transition-colors duration-200 border-l-[3px] border-l-transparent text-[var(--secondary-text-color)] hover:bg-[#F0F6FF] hover:text-[var(--primary-color)]"
+        <div class="flex items-center gap-3 px-4 py-3 rounded-lg cursor-pointer transition-colors duration-200 border-l-[5px] border-l-transparent text-[var(--secondary-text-color)] hover:bg-[#F0F6FF] hover:text-[var(--primary-color)]"
             routerLink="/service-schedule" routerLinkActive="menu-item-active">
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
                 stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
@@ -112,7 +112,7 @@
         </div>
 
         <!-- Jobs (collapsible) -->
-        <div class="flex items-center gap-3 px-4 py-3 rounded-lg cursor-pointer transition-colors duration-200 border-l-[3px] border-l-transparent text-[var(--secondary-text-color)] hover:bg-[#F0F6FF] hover:text-[var(--primary-color)] relative"
+        <div class="flex items-center gap-3 px-4 py-3 rounded-lg cursor-pointer transition-colors duration-200 border-l-[5px] border-l-transparent text-[var(--secondary-text-color)] hover:bg-[#F0F6FF] hover:text-[var(--primary-color)] relative"
             [ngClass]="{'menu-item-active': isRouteActive('/jobs')}" (click)="toggleMenu('jobs')">
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
                 stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
@@ -142,7 +142,7 @@
         </div>
 
         <!-- FAQ -->
-        <div class="flex items-center gap-3 px-4 py-3 rounded-lg cursor-pointer transition-colors duration-200 border-l-[3px] border-l-transparent text-[var(--secondary-text-color)] hover:bg-[#F0F6FF] hover:text-[var(--primary-color)]"
+        <div class="flex items-center gap-3 px-4 py-3 rounded-lg cursor-pointer transition-colors duration-200 border-l-[5px] border-l-transparent text-[var(--secondary-text-color)] hover:bg-[#F0F6FF] hover:text-[var(--primary-color)]"
             routerLink="/faq" routerLinkActive="menu-item-active">
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
                 stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="shrink-0">

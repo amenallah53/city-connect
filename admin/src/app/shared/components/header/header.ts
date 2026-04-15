@@ -25,7 +25,8 @@ export class Header implements OnInit {
   }
 
   private setPageTitle(url: string) {
-    const segments = url.split('/').filter(s => s);
+    const path = url.split('?')[0];          // strip query params
+    const segments = path.split('/').filter(s => s);
     const last = segments[segments.length - 1] || 'dashboard';
     // Convert 'types-of-services' → 'Types Of Services'
     this.pageTitle = last

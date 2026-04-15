@@ -1,0 +1,68 @@
+import { JobOffer } from "../models/offer.model";
+
+export const allJobOffers: JobOffer[] = [
+  {
+    id: 'offer-1',
+    status: 'pending',
+    dateJobSuggestion: new Date('2025-05-10T16:00:00'),
+    dateCreation: new Date('2025-04-01'),
+    prestataireId: '1',
+    offerorId: 'user-1',
+  },
+  {
+    id: 'offer-2',
+    status: 'approved',
+    dateJobSuggestion: new Date('2025-05-15T09:30:00'),
+    dateCreation: new Date('2025-04-03'),
+    prestataireId: '2',
+    offerorId: 'user-2',
+  },
+  {
+    id: 'offer-3',
+    status: 'rejected',
+    dateJobSuggestion: new Date('2025-04-28T14:00:00'),
+    dateCreation: new Date('2025-03-20'),
+    prestataireId: '3',
+    offerorId: 'user-1',
+  },
+  {
+    id: 'offer-4',
+    status: 'done',
+    dateJobSuggestion: new Date('2025-04-05T11:00:00'),
+    dateCreation: new Date('2025-03-15'),
+    prestataireId: '1',
+    offerorId: 'user-3',
+  },
+  {
+    id: 'offer-5',
+    status: 'cancelled',
+    dateJobSuggestion: new Date('2025-05-01T08:30:00'),
+    dateCreation: new Date('2025-03-28'),
+    prestataireId: '4',
+    offerorId: 'user-2',
+  },
+  {
+    id: 'offer-6',
+    status: 'pending',
+    dateJobSuggestion: new Date('2025-05-20T16:00:00'),
+    dateCreation: new Date('2025-04-10'),
+    prestataireId: '2',
+    offerorId: 'user-4',
+  },
+  {
+    id: 'offer-7',
+    status: 'approved',
+    dateJobSuggestion: new Date('2025-05-18T10:00:00'),
+    dateCreation: new Date('2025-04-12'),
+    prestataireId: '1',
+    offerorId: 'user-3',
+  },
+  {
+    id: 'offer-8',
+    status: 'done',
+    dateJobSuggestion: new Date('2025-03-22T13:30:00'),
+    dateCreation: new Date('2025-03-01'),
+    prestataireId: '1',
+    offerorId: 'user-1',
+  },
+];

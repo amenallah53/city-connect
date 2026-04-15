@@ -1,15 +1,16 @@
-<div class="mx-6 w-[97%] min-h-[100px] bg-white rounded-[25px] p-6 flex flex-row items-center justify-between flex-wrap gap-4">
+<div class="bg-white rounded-[25px] p-6 shadow-[0px_2px_15px_0px_rgba(0,0,0,0.1)]
+    flex flex-row items-center justify-between flex-wrap">
 
     <!-- User info section -->
-    <div class="flex flex-row items-center justify-start gap-6 flex-wrap">
+    <div class="flex flex-row items-center justify-start gap-3 flex-wrap">
 
         <!-- Avatar + Name -->
-        <div class="flex flex-row items-center gap-4 font-[family-name:var(--font-lato)] text-lg font-medium text-[var(--primary-text-color)]">
-            <div class="w-[60px] h-[60px] rounded-full overflow-hidden border border-[#bbbbbb] bg-white shrink-0">
+        <div class="flex flex-row items-center gap-2">
+            <div class="w-[50px] h-[50px] rounded-full overflow-hidden border border-[#F0F0F0] bg-white shrink-0">
                 <img src="/assets/avatar.png" alt="avatar" class="w-full h-full object-cover">
             </div>
-            <div class="flex flex-row items-center justify-start gap-2">
-                <span>Amenallah Kalai</span>
+            <div class="text-[16px] font-semibold font-[family-name:var(--font-lato)] text-[var(--primary-text-color)]">
+                <span>{{ fullName }}</span>
             </div>
         </div>
 
@@ -21,7 +22,10 @@
                 <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" />
                 <circle cx="12" cy="7" r="4" />
             </svg>
-            <span class="font-[family-name:var(--font-lato)] text-lg font-medium text-[var(--primary-subtitle-color)]">Admin</span>
+            <span
+                class="font-[family-name:var(--font-lato)] text-[16px] font-medium text-[var(--primary-subtitle-color)]">
+                {{ roleLabel }}
+            </span>
         </div>
 
         <!-- Email -->
@@ -32,12 +36,15 @@
                 <path d="m22 7-8.991 5.727a2 2 0 0 1-2.009 0L2 7" />
                 <rect x="2" y="4" width="20" height="16" rx="2" />
             </svg>
-            <span class="font-[family-name:var(--font-lato)] text-lg font-medium text-[var(--primary-subtitle-color)]">amenallahkalai53@gmail.com</span>
+            <span
+                class="font-[family-name:var(--font-lato)] text-[16px] font-medium text-[var(--primary-subtitle-color)]">{{ user.email }}</span>
         </div>
 
         <!-- Status -->
-        <div class="flex flex-row items-center justify-start gap-2 text-[#00AF20] font-[family-name:var(--font-lato)] text-lg font-bold">
-            Active
+        <div
+            class="flex flex-row items-center justify-start gap-2 font-[family-name:var(--font-lato)] text-[16px] font-semibold"
+            [style.color]="statusColor">
+            {{ statusLabel }}
         </div>
 
     </div>
@@ -46,7 +53,8 @@
     <div class="flex flex-row items-center justify-end gap-1">
 
         <!--view more-->
-        <div class="w-12 h-12 flex items-center justify-center rounded-full cursor-pointer transition-all duration-300 text-[var(--primary-subtitle-color)] hover:bg-[#CCC] hover:text-[var(--primary-color)]">
+        <div (click)="viewInfo()"
+            class="w-12 h-12 flex items-center justify-center rounded-full cursor-pointer transition-all duration-300 text-[var(--primary-subtitle-color)] hover:bg-[#CCC] hover:text-[var(--primary-color)]">
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
                 stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
                 class="lucide lucide-eye-icon lucide-eye">
@@ -57,7 +65,8 @@
         </div>
 
         <!--edit-->
-        <div class="w-12 h-12 flex items-center justify-center rounded-full cursor-pointer transition-all duration-300 text-[var(--primary-subtitle-color)] hover:bg-[#CCC] hover:text-[var(--primary-color)]">
+        <div (click)="editUser()"
+            class="w-12 h-12 flex items-center justify-center rounded-full cursor-pointer transition-all duration-300 text-[var(--primary-subtitle-color)] hover:bg-[#CCC] hover:text-[var(--primary-color)]">
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
                 stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
                 class="lucide lucide-pen-icon lucide-pen">
@@ -67,7 +76,8 @@
         </div>
 
         <!--delete-->
-        <div class="w-12 h-12 flex items-center justify-center rounded-full cursor-pointer transition-all duration-300 text-[var(--primary-subtitle-color)] hover:bg-[#CCC] hover:text-[var(--primary-color)]">
+        <div (click)="deleteUser()"
+            class="w-12 h-12 flex items-center justify-center rounded-full cursor-pointer transition-all duration-300 text-[var(--primary-subtitle-color)] hover:bg-[#CCC] hover:text-[var(--primary-color)]">
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
                 stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
                 class="lucide lucide-trash2-icon lucide-trash-2">

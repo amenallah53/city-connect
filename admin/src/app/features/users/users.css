@@ -1,21 +1,22 @@
-/* All layout/visual styles moved to Tailwind classes in users.html */
+/* Users component fills its container and scrolls independently */
+:host {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-height: 0;
+    overflow: hidden;
+}
 
-/* PrimeNG paginator deep overrides — cannot be expressed in Tailwind */
-:host ::ng-deep .p-paginator {
-    background: transparent;
+/* ── p-select — match jobs filter look (no extra border-radius) ── */
+:host ::ng-deep .p-select {
     border: none;
+    height: 42px;
+    font-family: var(--font-lato);
+    font-size: 14px;
 }
 
-:host ::ng-deep .p-paginator-page {
-    width: 36px;
-    height: 36px;
-    display: inline-flex;
+:host ::ng-deep .p-select .p-select-label {
+    padding: 0 1rem;
+    display: flex;
     align-items: center;
-    justify-content: center;
-    border-radius: 50%;
-}
-
-:host ::ng-deep .p-paginator-page.p-highlight {
-    background: #6366f1;
-    color: #fff;
 }
