@@ -1,4 +1,7 @@
 import { Routes } from '@angular/router';
+import { NoUserGuard } from './core/guards/no-user.guard';
+import { UserGuard } from './core/guards/user.guard';
+import { PrestataireGuard } from './core/guards/prestataire.guard';
 
 export const routes: Routes = [
 
@@ -15,6 +18,12 @@ export const routes: Routes = [
         pathMatch: 'full',
         loadComponent: () =>
           import('./features/home/home').then(m => m.Home)
+      },
+      {
+        canMatch: [PrestataireGuard],
+        path: 'offers',
+        loadComponent: () =>
+          import('./features/offers/offers').then(m => m.Offers)
       },
       {
         path: 'jobs',

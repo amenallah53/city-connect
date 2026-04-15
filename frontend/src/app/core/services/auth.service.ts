@@ -3,6 +3,8 @@ import { isPlatformBrowser } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { tap } from 'rxjs/operators';
+import { environment } from '../../../environments/environment';
+import { User } from 'src/app/shared/models/user.model';
 
 export interface UserData {
   cin: number;
@@ -40,6 +42,26 @@ export class UserAuthService {
       return null;
     }
   }
+  getCurrentLoggedUser(): User {
+    // this is a helper method where u can get the current user info after logging in
+    // with the help of the jwt token return object: mak bch trajaa {key, id, email} (mathalan)
+    return {
+      id: "1",
+      cin: 14674032,
+      firstName: "amenallah",
+      lastName: "kalai",
+      email: "amenkalai53@gmail.com",
+      role: "prestataire",
+      status: "accepted",
+      addresse: "mourouj",
+      createdAt: new Date()
+    }
+  }
+
+  isLoggedUserPrestataire(): boolean {
+    return this.getCurrentLoggedUser().role === "prestataire";
+  }
+
 
   isLoggedIn(): boolean {
     if (!this.isBrowser()) return false;

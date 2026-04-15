@@ -27,6 +27,8 @@ export class Header implements OnInit {
   currentLink: number = 0;
   showProfileMenu: boolean = false;
 
+  isUserPrestataire: boolean = false;
+
   profileMenuItems: MenuItem[] = [];
 
   constructor(
@@ -42,6 +44,8 @@ export class Header implements OnInit {
       .subscribe((event: NavigationEnd) => {
         this.setActiveFromRoute(event.urlAfterRedirects);
       });
+
+    this.isUserPrestataire = this.auth.isLoggedUserPrestataire();
 
     this.profileMenuItems = [
       {
