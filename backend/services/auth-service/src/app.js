@@ -27,9 +27,13 @@ const transporter = nodemailer.createTransport({
     pass: process.env.GMAIL_PASS,
   },
 });
+
+app.use(cors());
+app.use(express.json());
+
 const googleClient = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 
-app.post('/auth/google', async (req, res) => {
+app.post('/google', async (req, res) => {
   try {
     const { idToken } = req.body;
     if (!idToken) {
@@ -75,8 +79,7 @@ app.post('/auth/google', async (req, res) => {
   }
 });
 
-app.use(cors());
-app.use(express.json());
+
 
 
 function generateToken(user) {
@@ -113,7 +116,7 @@ app.post('/login', async (req, res) => {  //login
       return res.status(400).json({ error: 'Email and password are required' });
     }
 
-    const result = await pool.query('SELECT id, email, password, name FROM users WHERE LOWER(email) = LOWER($1)', [email]);
+    const result = await pool.query('SELECT id, email, password, first_name, last_name FROM users WHERE LOWER(email) = LOWER($1)', [email]);
     const user = result.rows[0];
     if (!user) {
       return res.status(401).json({ error: 'Invalid credentials' });
@@ -131,7 +134,7 @@ app.post('/login', async (req, res) => {  //login
     });
   } catch (err) {
     console.error('Login error:', err);
-    return res.status(500).json({ error: 'Internal server error' });
+    return res.status(500).json({ error: err.message });
   }
 });
 
@@ -179,9 +182,13 @@ app.post('/register', async (req, res) => {      //register
 });
 
 
-app.put('/me/password', authenticateToken, async (req, res) => {  //change password
+app.put('/me/password', async (req, res) => {
   try {
-    const { newPassword, confirmPassword } = req.body;
+    const { token, newPassword, confirmPassword } = req.body;
+
+    if (!token) {
+      return res.status(401).json({ error: 'Reset token is required' });
+    }
 
     if (!newPassword || !confirmPassword) {
       return res.status(400).json({ error: 'All fields are required' });
@@ -191,13 +198,18 @@ app.put('/me/password', authenticateToken, async (req, res) => {  //change passw
       return res.status(400).json({ error: 'Passwords do not match' });
     }
 
+    // extract email from the reset token instead of req.user
+    const payload = jwt.verify(token, jwtSecret);
+
     const hashed = await bcrypt.hash(newPassword, 10);
-    await pool.query('UPDATE users SET password = $1 WHERE id = $2', [hashed, req.user.userId]);
+    await pool.query('UPDATE users SET password = $1 WHERE email = $2', [hashed, payload.email]);
 
     return res.status(200).json({ message: 'Password updated successfully' });
   } catch (err) {
-    console.error('Change password error:', err);
-    return res.status(500).json({ error: 'Internal server error' });
+    if (err.name === 'TokenExpiredError') {
+      return res.status(401).json({ error: 'Reset link has expired' });
+    }
+    return res.status(401).json({ error: 'Invalid token' });
   }
 });
 
@@ -213,11 +225,12 @@ app.post('/forgot-password', async (req, res) => {     //email sending link rese
 
     // Don't reveal whether the email exists or not
     if (!user) {
-      return res.status(200).json({ message: 'If that email exists, a reset link has been sent' });
+      return res.status(404).json({ message: 'there is no user with such email' });
     }
 
     const resetToken = jwt.sign({ userId: user.id, email: user.email }, jwtSecret, { expiresIn: '15m' });
-    const resetLink = `${process.env.CLIENT_URL}/reset-password?token=${resetToken}`;
+    const resetLink = `${process.env.CLIENT_URL}/login/reset-page-link?token=${resetToken}`;
+    console.log("RESET LINK:", resetLink);
 
     await transporter.sendMail({
       from: process.env.GMAIL_USER,
@@ -225,8 +238,21 @@ app.post('/forgot-password', async (req, res) => {     //email sending link rese
       subject: 'Password Reset - City Connect',
       html: `
         <p>You requested a password reset.</p>
-        <p>Click the link below to set a new password. This link expires in 15 minutes.</p>
-        <a href="${resetLink}">${resetLink}</a>
+        <p>Click the button below to set a new password. This link expires in 15 minutes.</p>
+        
+        <a href="${resetLink}" 
+          style="
+            display:inline-block;
+            padding:12px 20px;
+            background-color:#007bff;
+            color:white;
+            text-decoration:none;
+            border-radius:6px;
+            font-weight:bold;
+          ">
+          Reset Password
+        </a>
+
         <p>If you didn't request this, ignore this email.</p>
       `,
     });

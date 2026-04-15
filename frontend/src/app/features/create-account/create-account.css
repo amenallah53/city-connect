@@ -129,3 +129,16 @@ input{
 .custom-file{
     cursor: pointer;
 }
+.red{
+    color: #dc2626;
+    font-size: 0.75rem;
+    font-weight: bold;
+    margin-top: 4px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+.red::before {
+  content: '⚠';
+  font-size: 0.75rem;
+}
