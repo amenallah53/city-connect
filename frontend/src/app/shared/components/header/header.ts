@@ -1,4 +1,4 @@
-import { CommonModule, NgClass, NgIf } from '@angular/common';
+import { CommonModule, NgClass } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { Router, NavigationEnd, RouterLink } from '@angular/router';
 import { filter } from 'rxjs/operators';
@@ -10,7 +10,7 @@ import { ConfirmDialogModule } from 'primeng/confirmdialog';
 @Component({
   selector: 'app-header',
   standalone: true,
-  imports: [RouterLink, NgClass, NgIf, CommonModule, MenuModule, ConfirmDialogModule],
+  imports: [RouterLink, NgClass, CommonModule, MenuModule, ConfirmDialogModule],
   providers: [ConfirmationService],
   templateUrl: './header.html',
   styleUrls: ['./header.css'],

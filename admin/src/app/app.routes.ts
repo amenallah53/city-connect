@@ -1,4 +1,5 @@
 import { Routes } from '@angular/router';
+import { PermitsProblemsManagementComponent } from './features/permits-problems-management/permits-problems-management.component';
 
 export const routes: Routes = [
   {

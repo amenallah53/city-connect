@@ -1,0 +1,73 @@
+<div class="page-wrapper">
+  <!-- Page Title Section -->
+  <div class="page-title-section">
+    <h1 class="page-title">Permits and problems management</h1>
+  </div>
+
+  <!-- Main Content Container -->
+  <div class="pp-container">
+    <!-- Top Section: Search Bar and Filters -->
+    <div class="search-filter-section">
+      <div class="search-box-wrapper">
+        <input
+          type="text"
+          class="search-input"
+          placeholder="Search for ..."
+          [(ngModel)]="searchTerm"
+          (input)="onSearch(searchTerm)"
+        />
+        <svg class="search-icon" viewBox="0 0 24 24" width="16" height="16">
+          <path d="M21 21l-4.35-4.35M11 19a8 8 0 100-16 8 8 0 000 16z" stroke="currentColor" fill="none" stroke-width="2"/>
+        </svg>
+      </div>
+      
+      <div class="filter-dropdown">
+        <span>{{ selectedType }}</span>
+        <svg class="dropdown-icon" viewBox="0 0 24 24" width="12" height="12">
+          <path d="M6 9l6 6 6-6" stroke="currentColor" fill="none" stroke-width="2"/>
+        </svg>
+      </div>
+
+      <div class="filter-dropdown">
+        <span>{{ selectedStatus }}</span>
+        <svg class="dropdown-icon" viewBox="0 0 24 24" width="12" height="12">
+          <path d="M6 9l6 6 6-6" stroke="currentColor" fill="none" stroke-width="2"/>
+        </svg>
+      </div>
+    </div>
+
+    <!-- DataView with Pagination -->
+    <p-dataview #dv [value]="filteredPermits" [rows]="itemsPerPage" [paginator]="true" paginatorPosition="bottom">
+      <ng-template #list let-items>
+        <div class="items-list">
+          <div class="permit-item" [ngClass]="permit.status === 'approved' || permit.status === 'rejected' ? 'permit-completed' : ''" *ngFor="let permit of items" (click)="openDetails(permit)" role="button" tabindex="0">
+            <div class="item-top-row">
+              <div class="title-row">
+                <h3 class="item-title">{{ permit.title }}</h3>
+                <span class="request-type" [ngClass]="permit.requestType + '-request'">
+                  {{ getRequestTypeLabel(permit.requestType) }}
+                </span>
+                <div class="status-badge" [ngClass]="getStatusClass(permit.status)">
+                  <span class="status-dot"></span>
+                  <span class="status">{{ permit.status | titlecase }}</span>
+                </div>
+              </div>
+              <span class="item-date">{{ permit.date }}</span>
+            </div>
+
+            <div class="item-bottom-row">
+              <span class="item-email">{{ permit.email }}</span>
+              <div class="item-actions">
+                <button class="action-btn approve" (click)="approve(permit); $event.stopPropagation()">Approve</button>
+                <button class="action-btn reject" (click)="reject(permit); $event.stopPropagation()">Reject</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </ng-template>
+    </p-dataview>
+  </div>
+</div>
+
+<!-- Details Modal -->
+<app-details-page *ngIf="selectedPermit()" [permit]="getPermitDetail()" (close)="closeDetails()"></app-details-page>
