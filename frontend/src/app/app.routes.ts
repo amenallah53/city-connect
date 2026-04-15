@@ -46,6 +46,7 @@ export const routes: Routes = [
           import('./features/services/details-page/details-page').then(m => m.DetailsPage)
       },
       {
+        canMatch: [UserGuard],
         path: 'services/:serviceId/start',
         loadComponent: () =>
           import('./features/services/start-service/start-service').then(m => m.StartService)
@@ -56,21 +57,25 @@ export const routes: Routes = [
           import('./features/faq/faq').then(m => m.Faq)
       },
       {
+        canMatch: [UserGuard],
         path: 'complaints/new',
         loadComponent: () =>
           import('./features/report/report').then(m => m.Report)
       },
       {
+        canMatch: [UserGuard],
         path: 'complaints',
         loadComponent: () =>
           import('./features/report/all-my-reports/all-my-reports').then(m => m.AllMyReports)
       },
       {
+        canMatch: [UserGuard],
         path: 'my-requests',
         loadComponent: () =>
           import('./features/my-requests/my-requests').then(m => m.MyRequests)
       },
       {
+        canMatch: [UserGuard],
         path: 'profile',
         loadComponent: () =>
           import('./features/profile/profile').then(m => m.Profile)
@@ -81,6 +86,7 @@ export const routes: Routes = [
           import('./features/news-details/news-details').then(m => m.NewsDetails)
       },
       {
+        canMatch: [UserGuard],
         path: 'schedules',
         loadComponent: () =>
           import('./features/schedules/schedule-page/schedule-page').then(
