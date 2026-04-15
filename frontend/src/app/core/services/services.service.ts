@@ -16,7 +16,7 @@ interface ApiResponse {
 
 @Injectable({ providedIn: 'root' })
 export class ServicesService {
-  private apiUrl = 'http://localhost:3004/api/services';
+  private apiUrl = 'http://localhost:5000/api/services';
 
   constructor(private http: HttpClient) {}
 

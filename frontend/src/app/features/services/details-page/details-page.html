@@ -29,9 +29,15 @@
     <!-- Tab Content -->
     <div class="tab-content">
       <div class="requirements-list" *ngIf="activeTab() === 'requirements'">
-        <ul>
-          <li *ngFor="let requirement of requirements">{{ requirement }}</li>
-        </ul>
+        <div class="requirements-items">
+          <div 
+            *ngFor="let requirement of requirements; let i = index"
+            class="requirement-item">
+            <div class="requirement-header">
+              <span class="requirement-name">{{ requirement }}</span>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>

@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
@@ -17,13 +17,11 @@ import { takeUntil } from 'rxjs/operators';
 export class StartService implements OnInit, OnDestroy {
   currentStep: number = 1;
   personalInfoForm: FormGroup;
-  requiredDataForm: FormGroup;
-  documentsForm: FormGroup;
-  serviceId: number | null = null;
+  serviceId: string | null = null;
   serviceName: string = '';
   formReady = false;
   requirements: string[] = [];
-  uploadedDocuments: File[] = [];
+  requirementDocuments: Map<number, File> = new Map();
   isSubmitting = false;
   successMessage: string | null = null;
   errorMessage: string | null = null;
@@ -35,7 +33,8 @@ export class StartService implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private serviceRequestsService: ServiceRequestsService,
     private servicesService: ServicesService,
-    private authService: UserAuthService
+    private authService: UserAuthService,
+    private cdr: ChangeDetectorRef
   ) {
     // Check if user is logged in on initialization
     const isLoggedIn = this.authService.isLoggedIn();
@@ -48,15 +47,16 @@ export class StartService implements OnInit, OnDestroy {
       phone: ['', [Validators.required, Validators.pattern(/^\d{8}$/)]],
       requestdescription: ['']
     });
-
-    this.requiredDataForm = this.formBuilder.group({});
-    this.documentsForm = this.formBuilder.group({});
   }
 
   ngOnInit(): void {
+    console.log('StartService ngOnInit called');
     // Get serviceId from route params
     this.route.paramMap.pipe(takeUntil(this.destroy$)).subscribe(params => {
-      this.serviceId = Number(params.get('serviceId')) || null;
+      const idParam = params.get('serviceId');
+      console.log('Route params received - serviceId:', idParam);
+      this.serviceId = idParam;
+      console.log('Parsed serviceId:', this.serviceId);
       if (this.serviceId) {
         this.loadServiceDetails(this.serviceId);
       }
@@ -79,81 +79,94 @@ export class StartService implements OnInit, OnDestroy {
     this.destroy$.complete();
   }
 
-  loadServiceDetails(serviceId: number): void {
+  loadServiceDetails(serviceId: string): void {
+    console.log('⭐ loadServiceDetails called with serviceId:', serviceId);
     this.servicesService.getServiceById(String(serviceId)).pipe(takeUntil(this.destroy$)).subscribe({
       next: (service: any) => {
+        console.log('⭐ Service data loaded:', service);
         if (service) {
           this.serviceName = service.name || 'Service';
-          // Parse requirements string into array
+          console.log('⭐ Raw requirements from API:', service.requirements, 'Type:', typeof service.requirements);
+          
+          // Parse requirements - handle both array and string formats
           if (service.requirements) {
-            this.requirements = service.requirements
-              .split(',')
-              .map((req: string) => req.trim())
-              .filter((req: string) => req.length > 0);
+            if (Array.isArray(service.requirements)) {
+              // Requirements is already an array from API
+              this.requirements = service.requirements.filter((req: any) => req && String(req).trim().length > 0);
+              console.log('⭐ Requirements set as array:', this.requirements);
+              console.log('⭐ Requirements length:', this.requirements.length);
+            } else if (typeof service.requirements === 'string') {
+              // Requirements is a comma-separated string
+              this.requirements = service.requirements
+                .split(',')
+                .map((req: string) => req.trim())
+                .filter((req: string) => req.length > 0);
+              console.log('⭐ Requirements set from string:', this.requirements);
+              console.log('⭐ Requirements length:', this.requirements.length);
+            }
             
-            // Create form controls for each requirement
-            this.createRequirementFormControls();
             this.formReady = true;
           } else {
+            console.log('⭐ No requirements found in service object');
             this.formReady = true;
           }
+          
+          console.log('⭐ Before markForCheck - requirements:', this.requirements);
+          console.log('⭐ Before markForCheck - requirements.length:', this.requirements.length);
+          // Trigger change detection to update template
+          this.cdr.markForCheck();
+          console.log('⭐ After markForCheck executed');
         }
       },
       error: (err) => {
-        console.error('Error loading service details:', err);
+        console.error('⭐ Error loading service details:', err);
         this.formReady = true;
+        this.cdr.markForCheck();
       }
     });
   }
 
-  createRequirementFormControls(): void {
-    const requirementControls: { [key: string]: any } = {};
-    this.requirements.forEach((req, index) => {
-      const controlName = `requirement_${index}`;
-      requirementControls[controlName] = ['', Validators.required];
-    });
-    
-    // If requirements exist, update the form or create new one
-    if (Object.keys(requirementControls).length > 0) {
-      this.requiredDataForm = this.formBuilder.group(requirementControls);
-    }
-  }
-
   initializeForm(): void {
     // personalInfoForm is already initialized in constructor
-    // Only reinitialize the dynamic requirement form if needed
-    if (this.requirements.length === 0) {
-      this.requiredDataForm = this.formBuilder.group({});
-    }
   }
 
   setFormDisabled(disabled: boolean): void {
     if (disabled) {
       this.personalInfoForm.disable();
-      this.requiredDataForm.disable();
-      this.documentsForm.disable();
     } else {
       this.personalInfoForm.enable();
-      this.requiredDataForm.enable();
-      this.documentsForm.enable();
     }
   }
 
-  onFileSelect(event: any): void {
+  onFileSelected(event: any, index: number): void {
     const files: FileList = event.target.files;
-    if (files) {
-      for (let i = 0; i < files.length; i++) {
-        this.uploadedDocuments.push(files[i]);
+    if (files && files.length > 0) {
+      const file = files[0];
+      
+      // Validate file size (10MB max)
+      const maxSize = 10 * 1024 * 1024; // 10MB in bytes
+      if (file.size > maxSize) {
+        this.errorMessage = `File size exceeds 10MB limit. Please choose a smaller file.`;
+        return;
       }
+      
+      // Store file in map by requirement index
+      this.requirementDocuments.set(index, file);
+      this.errorMessage = null;
+      this.cdr.markForCheck();
     }
   }
 
-  removeDocument(index: number): void {
-    this.uploadedDocuments.splice(index, 1);
+  getRequirementFile(index: number): File | undefined {
+    return this.requirementDocuments.get(index);
   }
 
   selectStep(step: number): void {
-    this.currentStep = step;
+    // Only allow steps 1 and 2
+    if (step >= 1 && step <= 2) {
+      this.currentStep = step;
+      this.cdr.markForCheck();
+    }
   }
 
   onContinue(): void {
@@ -165,24 +178,20 @@ export class StartService implements OnInit, OnDestroy {
           this.personalInfoForm.get(key)?.markAsTouched();
         });
         this.errorMessage = 'Please fill in all required fields correctly';
+        this.cdr.markForCheck();
         return;
       }
     } else if (this.currentStep === 2) {
-      if (this.requirements.length > 0 && !this.requiredDataForm.valid) {
-        Object.keys(this.requiredDataForm.controls).forEach(key => {
-          this.requiredDataForm.get(key)?.markAsTouched();
-        });
-        this.errorMessage = 'Please fill in all required data fields';
-        return;
-      }
+      // Can proceed to submission from step 2
+      this.submitServiceRequest();
+      return;
     }
 
-    if (this.currentStep < 3) {
+    // Move to next step (from 1 to 2)
+    if (this.currentStep < 2) {
       this.selectStep(this.currentStep + 1);
       this.errorMessage = null;
-    } else {
-      // Submit form and create service request
-      this.submitServiceRequest();
+      this.cdr.markForCheck();
     }
   }
 
@@ -203,6 +212,7 @@ export class StartService implements OnInit, OnDestroy {
     if (!formData.cin) {
       this.errorMessage = 'CIN is required to submit the service request. Please log in or enter your CIN.';
       this.currentStep = 1;
+      this.cdr.markForCheck();
       return;
     }
 
@@ -214,20 +224,13 @@ export class StartService implements OnInit, OnDestroy {
       });
       this.errorMessage = 'Please fill in all personal information fields correctly';
       this.currentStep = 1;
-      return;
-    }
-
-    if (this.requirements.length > 0 && !this.requiredDataForm.valid) {
-      Object.keys(this.requiredDataForm.controls).forEach(key => {
-        this.requiredDataForm.get(key)?.markAsTouched();
-      });
-      this.errorMessage = 'Please fill in all required data fields';
-      this.currentStep = 2;
+      this.cdr.markForCheck();
       return;
     }
 
     if (!this.serviceId) {
       this.errorMessage = 'Service ID is required';
+      this.cdr.markForCheck();
       return;
     }
 
@@ -235,6 +238,7 @@ export class StartService implements OnInit, OnDestroy {
     this.setFormDisabled(true);
     this.errorMessage = null;
     this.successMessage = null;
+    this.cdr.markForCheck();
 
     // Create request object with all data
     const requestPayload: any = {
@@ -248,6 +252,7 @@ export class StartService implements OnInit, OnDestroy {
         this.isSubmitting = false;
         this.setFormDisabled(false);
         this.successMessage = 'Your service request has been submitted successfully!';
+        this.cdr.markForCheck();
         
         // Reset form and redirect to my-requests after 2 seconds
         setTimeout(() => {
@@ -259,6 +264,7 @@ export class StartService implements OnInit, OnDestroy {
         this.setFormDisabled(false);
         console.error('Error submitting service request:', error);
         this.errorMessage = error.error?.message || 'Failed to submit service request. Please try again.';
+        this.cdr.markForCheck();
       }
     });
   }

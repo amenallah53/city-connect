@@ -32,7 +32,7 @@ exports.getAllServices = async (req, res) => {
         badges,
         requirements,
         municipalite_id
-      FROM services
+      FROM service
       WHERE name ILIKE $1
       ORDER BY name ASC
       LIMIT $2 OFFSET $3
@@ -47,12 +47,12 @@ exports.getAllServices = async (req, res) => {
       type: service.type,
       description: service.description,
       badges: service.badges ? (Array.isArray(service.badges) ? service.badges : service.badges.split(',').map(b => b.trim())) : [],
-      requirements: service.requirements,
+      requirements: Array.isArray(service.requirements) ? service.requirements : (service.requirements ? service.requirements.split(',').map(r => r.trim()) : []),
       municipalite_id: service.municipalite_id
     }));
 
     // Compter le nombre total de services pour la pagination
-    const countQuery = `SELECT COUNT(*) as total FROM services WHERE name ILIKE $1`;
+    const countQuery = `SELECT COUNT(*) as total FROM service WHERE name ILIKE $1`;
     const countResult = await pool.query(countQuery, [serviceName]);
 
     res.status(200).json({
@@ -93,8 +93,8 @@ exports.getServiceById = async (req, res) => {
         s.badges,
         s.requirements,
         s.municipalite_id,
-        m.nom as municipalite_name
-      FROM services s
+        m.name as municipalite_name
+      FROM service s
       LEFT JOIN municipalite m ON s.municipalite_id = m.id
       WHERE s.id = $1
     `;
@@ -115,7 +115,7 @@ exports.getServiceById = async (req, res) => {
       type: service.type,
       description: service.description,
       badges: service.badges ? (Array.isArray(service.badges) ? service.badges : service.badges.split(',').map(b => b.trim())) : [],
-      requirements: service.requirements,
+      requirements: Array.isArray(service.requirements) ? service.requirements : (service.requirements ? service.requirements.split(',').map(r => r.trim()) : []),
       municipalite_id: service.municipalite_id,
       municipalite_name: service.municipalite_name
     };
@@ -162,7 +162,7 @@ exports.createService = async (req, res) => {
     }
 
     const query = `
-      INSERT INTO services (
+      INSERT INTO service (
         name, type, description, badges, requirements, municipalite_id
       ) VALUES (
         $1, $2, $3, $4, $5, $6
@@ -204,7 +204,7 @@ exports.getServicesByMunicipality = async (req, res) => {
     const query = `
       SELECT 
         id, name, type, description, badges, requirements, municipalite_id
-      FROM services
+      FROM service
       WHERE municipalite_id = $1
       ORDER BY name ASC
     `;
@@ -239,7 +239,7 @@ exports.getServicesByCategory = async (req, res) => {
     const query = `
       SELECT 
         id, name, type, description, badges, requirements, municipalite_id
-      FROM services
+      FROM service
       WHERE type::text ILIKE $1
       ORDER BY name ASC
     `;
@@ -273,7 +273,7 @@ exports.updateService = async (req, res) => {
     const serviceName = name || nom; // Support both 'name' and 'nom' for backward compatibility
 
     const query = `
-      UPDATE services
+      UPDATE service
       SET 
         name = COALESCE($1, name),
         type = COALESCE($2, type),
@@ -321,7 +321,7 @@ exports.deleteService = async (req, res) => {
     const { id } = req.params;
 
     const query = `
-      DELETE FROM services
+      DELETE FROM service
       WHERE id = $1
       RETURNING id
     `;

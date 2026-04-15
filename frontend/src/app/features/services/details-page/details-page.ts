@@ -29,7 +29,6 @@ export class DetailsPage implements OnInit, OnDestroy {
   categoryBadges: string[] = [];
 
   requirements: string[] = [];
-
   relatedServices: Service[] = [];
 
   activeTab = signal<'requirements'>('requirements');
@@ -61,12 +60,15 @@ export class DetailsPage implements OnInit, OnDestroy {
             this.serviceDescription = serviceData.description || '';
             this.categoryBadges = serviceData.badges || [];
             
-            // Parse requirements if they exist
+            // Parse requirements if they exist - handle both array and string formats
             if (serviceData.requirements) {
               if (Array.isArray(serviceData.requirements)) {
-                this.requirements = serviceData.requirements;
+                this.requirements = serviceData.requirements.filter((req: any) => req && String(req).trim().length > 0);
               } else if (typeof serviceData.requirements === 'string') {
-                this.requirements = serviceData.requirements.split('\n').filter(r => r.trim());
+                this.requirements = serviceData.requirements
+                  .split(',')
+                  .map((req: string) => req.trim())
+                  .filter((req: string) => req.length > 0);
               }
             }
             
