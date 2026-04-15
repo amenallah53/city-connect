@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, signal, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, OnDestroy, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Service } from '../../../shared/models/service.model';
@@ -16,6 +16,7 @@ interface ServiceDetails extends Service {
 
 @Component({
   selector: 'app-details-page',
+  standalone: true,
   imports: [CommonModule, ServiceCard],
   templateUrl: './details-page.html',
   styleUrl: './details-page.css',
@@ -31,7 +32,6 @@ export class DetailsPage implements OnInit, OnDestroy {
   requirements: string[] = [];
   relatedServices: Service[] = [];
 
-  activeTab = signal<'requirements'>('requirements');
   private subscriptions = new Subscription();
 
   constructor(
@@ -106,10 +106,6 @@ export class DetailsPage implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.subscriptions.unsubscribe();
-  }
-
-  selectTab(tab: 'requirements'): void {
-    this.activeTab.set(tab);
   }
 
   startService(): void {

@@ -11,6 +11,7 @@ export interface ServiceRequest {
   description?: string;
   requestdescription?: string;
   date_creation?: Date | string;
+  submission_date?: Date | string;
   requestedat?: Date | string;
   approvedat?: Date | string;
   completedat?: Date | string;

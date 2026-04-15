@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { ServiceRequestsService, ServiceRequest } from '../../core/services/service-requests.service';
 import { UserAuthService } from '../../core/services/auth.service';
 import { Subscription } from 'rxjs';
@@ -15,7 +15,7 @@ interface RequestItem extends ServiceRequest {
 @Component({
   selector: 'app-my-requests',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, RouterLink],
   templateUrl: './my-requests.html',
   styleUrl: './my-requests.css'
 })
@@ -65,7 +65,7 @@ export class MyRequests implements OnInit, OnDestroy {
           ...req,
           statusDisplay: this.formatStatus(req.status),
           statusColor: this.getStatusColor(req.status),
-          formattedDate: this.formatDate(req.date_creation || req.requestedat)
+          formattedDate: this.formatDate(req.submission_date || req.requestedat)
         }));
 
         this.requests.set(formattedRequests);
@@ -117,7 +117,7 @@ export class MyRequests implements OnInit, OnDestroy {
   private formatDate(date: string | Date | undefined): string {
     if (!date) return 'N/A';
     const d = new Date(date);
-    return d.toLocaleDateString('en-US', {
+    return d.toLocaleString('en-US', {
       year: 'numeric',
       month: 'short',
       day: 'numeric',

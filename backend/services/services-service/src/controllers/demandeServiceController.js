@@ -55,10 +55,10 @@ exports.createServiceRequest = async (req, res) => {
       INSERT INTO demande_service (
         user_id, service_id, status, description, cin
       ) VALUES (
-        $1, $2, 'en_attente', $3, $4
+        $1, $2, 'pending', $3, $4
       )
       RETURNING 
-        id, user_id, service_id, status, description, date_creation
+        id, user_id, service_id, status, description, submission_date
     `;
 
     const result = await pool.query(query, [
@@ -115,11 +115,11 @@ exports.getUserServiceRequests = async (req, res) => {
         s.type,
         ds.status,
         ds.description,
-        ds.date_creation
+        ds.submission_date
       FROM demande_service ds
       LEFT JOIN service s ON ds.service_id = s.id
       WHERE ds.user_id = $1
-      ORDER BY ds.date_creation DESC
+      ORDER BY ds.submission_date DESC
     `;
 
     const result = await pool.query(query, [userId]);
@@ -159,7 +159,7 @@ exports.getServiceRequestById = async (req, res) => {
         s.type,
         ds.status,
         ds.description,
-        ds.date_creation,
+        ds.submission_date,
         u.first_name,
         u.last_name,
         u.email,
@@ -206,24 +206,24 @@ exports.updateServiceRequestStatus = async (req, res) => {
     // Map English status values to French (support both for backward compatibility)
     const statusMap = {
       // English to French
-      'pending': 'en_attente',
-      'in_progress': 'en_cours',
-      'approved': 'approuvee',
-      'rejected': 'rejetee',
-      'completed': 'terminee',
-      // Also accept French directly
-      'en_attente': 'en_attente',
-      'en_cours': 'en_cours',
-      'approuvee': 'approuvee',
-      'rejetee': 'rejetee',
-      'terminee': 'terminee'
+      'pending': 'pending',
+      'in_progress': 'in_progress',
+      'approved': 'approved',
+      'rejected': 'rejected',
+      'completed': 'completed',
+      // Also accept French and map to English
+      'en_attente': 'pending',
+      'en_cours': 'in_progress',
+      'approuvee': 'approved',
+      'rejetee': 'rejected',
+      'terminee': 'completed'
     };
 
     const dbStatus = statusMap[status];
     if (!dbStatus) {
       return res.status(400).json({
         success: false,
-        error: `Invalid status. Allowed values: ${Object.keys(statusMap).filter((k, i, a) => a.indexOf(k) === i).join(', ')}`
+        error: `Invalid status. Allowed values: pending, in_progress, approved, rejected, completed`
       });
     }
 
@@ -231,7 +231,7 @@ exports.updateServiceRequestStatus = async (req, res) => {
       UPDATE demande_service
       SET status = $1
       WHERE id = $2
-      RETURNING id, user_id, service_id, status, date_creation
+      RETURNING id, user_id, service_id, status, submission_date
     `;
 
     const result = await pool.query(query, [dbStatus, id]);
@@ -266,14 +266,14 @@ exports.updateServiceRequestStatus = async (req, res) => {
  */
 exports.getAllServiceRequests = async (req, res) => {
   try {
-    const status = req.query.status || 'en_attente';
+    const status = req.query.status || 'pending';
     const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 10;
     const offset = (page - 1) * limit;
 
-    // Valid status values (French status as stored in database)
-    const validStatuses = ['en_attente', 'en_cours', 'approuvee', 'rejetee', 'terminee'];
-    const dbStatus = validStatuses.includes(status) ? status : 'en_attente';
+    // Valid status values (English status as stored in database)
+    const validStatuses = ['pending', 'in_progress', 'approved', 'rejected', 'completed'];
+    const dbStatus = validStatuses.includes(status) ? status : 'pending';
 
     // Récupérer les requêtes de service
     const query = `
@@ -289,12 +289,12 @@ exports.getAllServiceRequests = async (req, res) => {
         s.type,
         ds.status,
         ds.description,
-        ds.date_creation
+        ds.submission_date
       FROM demande_service ds
       LEFT JOIN users u ON ds.user_id = u.id
       LEFT JOIN service s ON ds.service_id = s.id
       WHERE ds.status = $1
-      ORDER BY ds.date_creation DESC
+      ORDER BY ds.submission_date DESC
       LIMIT $2 OFFSET $3
     `;
 
