@@ -69,7 +69,7 @@ export class Faq implements OnInit {
       error: (err) => {
         this.isLoading = false;
         this.successMessage = null;
-        this.errorMessage = err.error?.error || 'Failed to send question';
+        this.errorMessage = err.error?.error || err.message;
         this.cdr.detectChanges();
       }
     });

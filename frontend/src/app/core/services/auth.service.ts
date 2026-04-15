@@ -6,7 +6,7 @@ import { tap } from 'rxjs/operators';
 @Injectable({ providedIn: 'root' })
 export class UserAuthService {
 
-  private USER_TOKEN_KEY = "";
+  private USER_TOKEN_KEY = 'token';
   private API_URL = 'http://localhost:5000';
 
   constructor(
