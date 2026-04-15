@@ -1,7 +1,7 @@
 import { Injectable, Inject, PLATFORM_ID } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, BehaviorSubject } from 'rxjs';
 import { tap } from 'rxjs/operators';
 import { environment } from '../../../environments/environment';
 import { User } from 'src/app/shared/models/user.model';
@@ -18,11 +18,31 @@ export class UserAuthService {
   private USER_TOKEN_KEY = 'user_token';
   private USER_DATA_KEY = 'user_data';
   private API_URL = 'http://localhost:5002';
+  private initializationSubject = new BehaviorSubject<boolean>(false);
+  public isInitialized$ = this.initializationSubject.asObservable();
 
   constructor(
     @Inject(PLATFORM_ID) private platformId: Object,
     private http: HttpClient
-  ) {}
+  ) {
+    this.initializeAuthState();
+  }
+
+  private initializeAuthState(): void {
+    if (!this.isBrowser()) {
+      this.initializationSubject.next(true);
+      return;
+    }
+
+    const token = localStorage.getItem(this.USER_TOKEN_KEY);
+    if (token) {
+      const userData = this.extractUserDataFromToken(token);
+      if (userData) {
+        this.setCurrentUser(userData);
+      }
+    }
+    this.initializationSubject.next(true);
+  }
 
   private isBrowser(): boolean {
     return isPlatformBrowser(this.platformId);
