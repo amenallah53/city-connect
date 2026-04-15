@@ -1,0 +1,128 @@
+<section>
+
+  <!-- Header + Filter row -->
+  <div class="px-6 pt-6 pb-2 flex flex-col gap-1">
+    <h1 class="font-rubik text-[32px] font-regular">
+      Job Offers
+    </h1>
+    <div class="flex flex-row items-center justify-between">
+      <p class="text-[18px] text-[var(--primary-subtitle-color)]">
+        {{ filteredOffers.length }} offer(s) found
+      </p>
+      <div class="flex flex-row gap-3 items-center">
+
+        <!-- Filter Select -->
+        <div class="card flex justify-center rounded-[25px] shadow-[0px_2px_15px_0px_rgba(0,0,0,0.1)]">
+          <p-select
+            [options]="filters"
+            [(ngModel)]="selectedFilter"
+            optionLabel="name"
+            placeholder="Filter by status"
+            class="w-full md:w-[180px] text-[var(--secondary-text-color)]"
+            (onChange)="onFilterChange()"
+          />
+        </div>
+
+        <!-- View toggle -->
+        <div class="flex flex-row gap-2 items-center">
+          <!-- Grid btn -->
+          <div
+            (click)="setViewMode('grid')"
+            [ngClass]="viewMode === 'grid'
+              ? 'bg-[var(--primary-color)] hover:bg-[#005E71]'
+              : 'bg-[var(--secondary-color)] hover:bg-[#F0F0F0]'"
+            class="rounded-full w-[48px] h-[48px] flex items-center justify-center
+                   shadow-[0px_2px_15px_0px_rgba(0,0,0,0.1)]
+                   hover:cursor-pointer transition-colors duration-300">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                 fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                 stroke-linejoin="round"
+                 [ngClass]="viewMode === 'grid' ? 'text-white' : 'text-[var(--secondary-text-color)]'">
+              <rect width="7" height="7" x="3" y="3" rx="1"/>
+              <rect width="7" height="7" x="14" y="3" rx="1"/>
+              <rect width="7" height="7" x="14" y="14" rx="1"/>
+              <rect width="7" height="7" x="3" y="14" rx="1"/>
+            </svg>
+          </div>
+
+          <!-- List btn -->
+          <div
+            (click)="setViewMode('list')"
+            [ngClass]="viewMode === 'list'
+              ? 'bg-[var(--primary-color)] hover:bg-[#005E71]'
+              : 'bg-[var(--secondary-color)] hover:bg-[#F0F0F0]'"
+            class="rounded-full w-[48px] h-[48px] flex items-center justify-center
+                   shadow-[0px_2px_15px_0px_rgba(0,0,0,0.1)]
+                   hover:cursor-pointer transition-colors duration-300">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                 fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                 stroke-linejoin="round"
+                 [ngClass]="viewMode === 'list' ? 'text-white' : 'text-[var(--secondary-text-color)]'">
+              <rect width="7" height="7" x="3" y="3" rx="1"/>
+              <rect width="7" height="7" x="3" y="14" rx="1"/>
+              <path d="M14 4h7"/><path d="M14 9h7"/>
+              <path d="M14 15h7"/><path d="M14 20h7"/>
+            </svg>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- Offers Grid / List -->
+  <div class="px-6 py-4 flex justify-center">
+
+    <!-- Grid view -->
+    <div *ngIf="viewMode === 'grid'" class="grid grid-cols-3 gap-6 w-full max-w-[1200px] items-stretch">
+      <app-offer-card
+        *ngFor="let offer of pagedOffers"
+        [offer]="offer"
+        (onAccept)="onAcceptOffer(offer)"
+        (onDecline)="onDeclineOffer(offer)"
+      />
+    </div>
+
+    <!-- List view -->
+    <div *ngIf="viewMode === 'list'" class="flex flex-col gap-4 w-full max-w-[1200px]">
+      <app-offer-card
+        *ngFor="let offer of pagedOffers"
+        [offer]="offer"
+        (onAccept)="onAcceptOffer(offer)"
+        (onDecline)="onDeclineOffer(offer)"
+      />
+    </div>
+
+  </div>
+
+  <!-- Empty state -->
+  <div
+    *ngIf="filteredOffers.length === 0"
+    class="flex flex-col items-center justify-center py-20 gap-4">
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="64" height="64" viewBox="0 0 24 24" fill="none"
+      stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+      class="text-[var(--secondary-text-color)]">
+      <path d="m21 21-4.34-4.34"/><circle cx="11" cy="11" r="8"/>
+    </svg>
+    <p class="text-[18px] text-[var(--primary-subtitle-color)] font-medium">
+      No offers found for the selected status.
+    </p>
+  </div>
+
+  <!-- Paginator -->
+  <div class="flex justify-center py-6" *ngIf="filteredOffers.length > 0">
+    <p-paginator
+      (onPageChange)="onPageChange($event)"
+      [first]="first"
+      [rows]="rows"
+      [totalRecords]="filteredOffers.length"
+      [showCurrentPageReport]="true"
+      [showPageLinks]="true"
+      [showJumpToPageDropdown]="false"
+      currentPageReportTemplate="Showing {first} to {last} of {totalRecords}"
+    />
+  </div>
+
+</section>
