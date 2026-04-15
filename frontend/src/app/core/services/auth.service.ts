@@ -1,5 +1,8 @@
 import { Injectable, Inject, PLATFORM_ID } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
+import { tap } from 'rxjs/operators';
 
 export interface UserData {
   cin: number;
@@ -12,39 +15,54 @@ export class UserAuthService {
 
   private USER_TOKEN_KEY = 'user_token';
   private USER_DATA_KEY = 'user_data';
+  private API_URL = 'http://localhost:5002';
 
-  constructor(@Inject(PLATFORM_ID) private platformId: Object) {}
+  constructor(
+    @Inject(PLATFORM_ID) private platformId: Object,
+    private http: HttpClient
+  ) {}
 
   private isBrowser(): boolean {
     return isPlatformBrowser(this.platformId);
   }
 
-  isLoggedIn(): boolean {
-    if (!this.isBrowser()) {
-      return true; 
-      // Allow SSR to render.
-      // Real check happens in browser after hydration.
+  private extractUserDataFromToken(token: string): UserData | null {
+    try {
+      const payload = token.split('.')[1];
+      const decoded = JSON.parse(atob(payload));
+      return {
+        cin: decoded.cin ? Number(decoded.cin) : 0,
+        email: decoded.email,
+        name: decoded.name
+      };
+    } catch (err) {
+      console.error('Failed to extract user data from token:', err);
+      return null;
     }
+  }
 
+  isLoggedIn(): boolean {
+    if (!this.isBrowser()) return false;
     return !!localStorage.getItem(this.USER_TOKEN_KEY);
   }
 
-  login(email: string, password: string, userData?: UserData): boolean {
-    if (!this.isBrowser()) return false;
+  login(email: string, password: string): Observable<any> {
+    return this.http.post(`${this.API_URL}/login`, { email, password }).pipe(
+      tap((response: any) => {
+        if (response.token) {
+          localStorage.setItem(this.USER_TOKEN_KEY, response.token);
+          // Extract user data from JWT token
+          const userData = this.extractUserDataFromToken(response.token);
+          if (userData) {
+            this.setCurrentUser(userData);
+          }
+        }
+      })
+    );
+  }
 
-    if (email && password) {
-      const fakeToken = 'user-token-' + Date.now();
-      localStorage.setItem(this.USER_TOKEN_KEY, fakeToken);
-      
-      // Store user data for access throughout the app
-      if (userData) {
-        localStorage.setItem(this.USER_DATA_KEY, JSON.stringify(userData));
-      }
-      
-      return true;
-    }
-
-    return false;
+  resetPassword(token: string, newPassword: string): Observable<any> {
+    return this.http.put(`${this.API_URL}/me/password`, { token, newPassword, confirmPassword: newPassword });
   }
 
   getCurrentUser(): UserData | null {
@@ -70,5 +88,39 @@ export class UserAuthService {
     if (!this.isBrowser()) return;
     localStorage.removeItem(this.USER_TOKEN_KEY);
     localStorage.removeItem(this.USER_DATA_KEY);
+  }
+  getToken(): string | null {
+    return localStorage.getItem(this.USER_TOKEN_KEY);
+  }
+
+  forgotPassword(email: string): Observable<any> {
+  return this.http.post(`${this.API_URL}/forgot-password`, { email });
+  }
+
+  register(data: {
+    email: string;
+    password: string;
+    confirmPassword: string;
+    firstname: string;
+    lastname: string;
+    CIN: string;
+    documentUrl: string;
+  }): Observable<any> {
+    return this.http.post(`${this.API_URL}/register`, data);
+  }
+
+  googleLogin(idToken: string): Observable<any> {
+    return this.http.post(`${this.API_URL}/google`, { idToken }).pipe(
+      tap((response: any) => {
+        if (response.token) {
+          localStorage.setItem(this.USER_TOKEN_KEY, response.token);
+          // Extract user data from JWT token
+          const userData = this.extractUserDataFromToken(response.token);
+          if (userData) {
+            this.setCurrentUser(userData);
+          }
+        }
+      })
+    );
   }
 }

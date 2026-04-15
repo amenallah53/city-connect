@@ -1,4 +1,5 @@
 <div id="body">
+  <script async src="https://accounts.google.com/gsi/client"></script>
   <app-login-projet-descrip></app-login-projet-descrip>
   <div class="card">
     <div id="div1">Sign in</div>
@@ -14,7 +15,6 @@
       <div>or sign in with your email</div>
       <hr>
     </div>
-
     <form [formGroup]="form" (ngSubmit)="submit()">
       <div id="div3">Email</div>
       <input formControlName="email" type="text" placeholder="you@example.com">
@@ -24,11 +24,7 @@
         <div id="for"><a routerLink="/login/reset">Forgot ?</a></div>
       </div>
       <input formControlName="password" type="password" placeholder="Enter your password">
-
-      <div id="div3">CIN (8-digit ID)</div>
-      <input formControlName="cin" type="text" placeholder="Enter your 8-digit CIN" maxlength="8" pattern="[0-9]{8}">
-
-      <div class="flex flex-row justify-end items-center">
+      <div>
         <button id="button2" type="submit">Sign in</button>
       </div>
     </form>
@@ -39,4 +35,6 @@
     </div>
     <div id="div4">By signing in you agree to our Terms and Privacy policy.</div>
   </div>
+  
+
 </div>

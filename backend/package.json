@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "concurrently \"npm:gateway\" \"npm:users\" \"npm:auth\" \"npm:admin\" \"npm:complaints\" \"npm:news\" \"npm:notifications\" \"npm:services\"",
+    "dev": "concurrently \"npm:gateway\" \"npm:users\" \"npm:auth\" \"npm:admin\" \"npm:complaints\" \"npm:news\" \"npm:notifications\" \"npm:services\" \"npm:faq\"",
 
     "gateway": "cd api-gateway && npm run dev",
     
@@ -15,7 +15,8 @@
     "news": "cd services/news-service && npm run dev",
     "notifications": "cd services/notifications-service && npm run dev",
     "services": "cd services/services-service && npm run dev",
-    "users": "cd services/users-service && npm run dev"
+    "users": "cd services/users-service && npm run dev",
+    "faq": "cd services/faq-service && npm run dev"
   },
   "keywords": [],
   "author": "",

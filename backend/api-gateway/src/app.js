@@ -30,7 +30,7 @@ app.use("/api/complaints", createProxyMiddleware({
   changeOrigin: true
 }));
 
-app.use("/api/news", createProxyMiddleware({
+app.use("/api/news-service", createProxyMiddleware({
   target: "http://localhost:5005",
   changeOrigin: true
 }));
@@ -43,7 +43,21 @@ app.use("/api/services", createProxyMiddleware({
   }
 }));
 
+app.use("/api/faqs", createProxyMiddleware({
+  target: "http://localhost:5007",
+  changeOrigin: true
+}));
 
+
+app.use("/api/myprofile", createProxyMiddleware({
+  target: "http://localhost:5008",
+  changeOrigin: true
+}));
+
+app.use("/api/users-service-admin", createProxyMiddleware({
+  target: "http://localhost:5009",
+  changeOrigin: true
+}));
 
 app.get("/", (req, res) => {
   res.send("API is running 🚀");
