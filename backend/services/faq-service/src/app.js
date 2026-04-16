@@ -1,7 +1,10 @@
 const express = require('express');
 const { Pool } = require('pg');
 const cors = require('cors');
+const jwt = require('jsonwebtoken');
 require('dotenv').config();
+if (!process.env.JWT_SECRET) throw new Error('JWT_SECRET must be set in .env');
+const jwtSecret = process.env.JWT_SECRET;
 
 const app = express();
 const port = process.env.PORT || 5007;
@@ -14,13 +17,40 @@ const pool = new Pool({
   password: process.env.DB_PASSWORD,
 });
 
-app.use(cors());
+app.use(cors({
+  origin: 'http://localhost:4200',
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+}));
+
 app.use(express.json());
 
+function authenticateToken(req, res, next) {
+  
+  if (req.method === 'OPTIONS') {
+    return next();
+  }
+  const authHeader = req.headers.authorization;
+  if (!authHeader) {
+    return res.status(401).json({ error: 'Authorization header missing' });
+  }
+
+  const token = authHeader.split(' ')[1];
+  if (!token) {
+    return res.status(401).json({ error: 'Token not provided' });
+  }
+
+  try {
+    const payload = jwt.verify(token, jwtSecret);
+    req.user = payload;
+    next();
+  } catch (err) {
+    return res.status(401).json({ error: 'Invalid token' });
+  }
+}
 
 
-
-app.get('/unanswered', async (req, res) => {
+app.get('/unanswered',authenticateToken, async (req, res) => {
   try {
     const result = await pool.query(
       'SELECT * FROM faqs WHERE answer IS NULL ORDER BY id DESC;'
@@ -32,7 +62,7 @@ app.get('/unanswered', async (req, res) => {
   }
 });
 
-app.get('/answered', async (req, res) => {
+app.get('/answered',authenticateToken, async (req, res) => {
   try {
     const result = await pool.query('SELECT * FROM faqs WHERE answer IS NOT NULL ORDER BY id DESC');
     res.status(200).json(result.rows);
@@ -43,7 +73,7 @@ app.get('/answered', async (req, res) => {
 });
 
 
-app.post('/ask', async (req, res) => {   
+app.post('/ask',authenticateToken, async (req, res) => {   
   try {
     const { question } = req.body;
     if (!question || question.trim() === '') {
@@ -58,7 +88,7 @@ app.post('/ask', async (req, res) => {
   }
 });
 
-app.put('/:id', async (req, res) => {
+app.put('/:id',authenticateToken, async (req, res) => {
   try {
     const { id } = req.params;
     const { answer } = req.body;
@@ -79,7 +109,7 @@ app.put('/:id', async (req, res) => {
   }
 });
 
-app.delete('/:id', async (req, res) => {
+app.delete('/:id',authenticateToken, async (req, res) => {
   try {
     const { id } = req.params;
     const result = await pool.query('DELETE FROM faqs WHERE id = $1 RETURNING *', [id]);

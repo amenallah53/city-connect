@@ -1,63 +1,29 @@
-<div class="min-h-screen" style="background-color: var(--background-color);" *ngIf="service">
+<div class="min-h-screen" style="background-color: var(--background-color);" *ngIf="serviceName">
 
   <!-- ═══════════════════════════ HERO HEADER ═══════════════════════════ -->
   <div style="background-color: var(--secondary-color);">
-
-    <div class="px-16 pt-12 pb-0">
-
-      <!-- Top row: title + CTA -->
-      <div class="flex items-start justify-between gap-6 mb-6">
-        <div class="flex flex-col gap-3">
-
-          <!-- Service type label -->
-          <span class="text-xs font-semibold uppercase tracking-widest"
-                style="color: var(--primary-color); font-family: var(--font-lato);">
-            {{ service.type }}
-          </span>
-
-          <!-- Service name -->
-          <h1 class="text-4xl font-medium leading-tight"
-              style="font-family: var(--font-rubik); color: var(--primary-text-color); letter-spacing: -0.5px;">
-            {{ service.name }}
-          </h1>
-        </div>
-
-        <!-- CTA button -->
-        <button class="start-service-btn" (click)="startService()">Service request</button>
+    <div class="px-16 pt-12 pb-8 flex justify-between items-start gap-8">
+      <!-- Left content: Title & Description -->
+      <div class="flex-1">
+        <!-- Service Title -->
+        <h1 class="text-4xl font-bold mb-3"
+            style="font-family: var(--font-rubik); color: var(--primary-text-color);">
+          {{ serviceName }}
+        </h1>
+        
+        <!-- Service Description -->
+        <p class="text-lg"
+           style="font-family: var(--font-lato); color: var(--secondary-text-color);">
+          {{ serviceDescription || 'No description available' }}
+        </p>
       </div>
-
-      <!-- Badges -->
-      <div class="flex flex-wrap gap-2 mb-6">
-        <span
-          *ngFor="let badge of service.badges"
-          class="px-3 py-1.5 rounded-lg text-xs font-semibold"
-          style="background-color: var(--background-color);
-                 color: var(--secondary-text-color);
-                 font-family: var(--font-lato);">
-          {{ badge }}
-        </span>
-      </div>
-
-      <!-- Description -->
-      <p class="text-base italic pb-10"
-         style="color: var(--secondary-text-color); font-family: var(--font-lato); letter-spacing: -0.2px;">
-        {{ service.description }}
-      </p>
-    </div>
-
-    <!-- ─── Tabs bar ─── -->
-    <div class="px-16 border-b" style="border-color: #F0F0F0;">
-      <div class="flex gap-0">
-        <button
-          *ngFor="let tab of ['Overview', 'Requirements', 'Process']"
-          (click)="activeTab = tab"
-          class="px-6 py-3.5 text-base font-medium border-b-2 transition-colors duration-200"
-          [style.color]="activeTab === tab ? 'var(--primary-text-color)' : 'var(--primary-subtitle-color)'"
-          [style.border-bottom-color]="activeTab === tab ? 'var(--primary-color)' : 'transparent'"
-          [style.font-family]="'var(--font-lato)'">
-          {{ tab }}
-        </button>
-      </div>
+      
+      <!-- Right content: Start Service Button -->
+      <button (click)="startService()"
+              class="px-8 py-3 rounded-lg font-semibold h-fit"
+              style="background-color: var(--primary-color); color: white; font-family: var(--font-lato);">
+        Start Service
+      </button>
     </div>
   </div>
 
@@ -65,7 +31,7 @@
   <div class="px-16 py-12">
 
     <!-- ─── Requirements block ─── -->
-    <div *ngIf="service.requirements?.length"
+    <div *ngIf="requirements.length"
          class="rounded-2xl p-8 mb-10"
          style="background-color: var(--secondary-color);">
 
@@ -81,7 +47,7 @@
       <!-- List -->
       <ul class="space-y-3 pl-2">
         <li
-          *ngFor="let req of service.requirements"
+          *ngFor="let req of requirements"
           class="flex items-start gap-3 text-base"
           style="font-family: var(--font-lato); color: var(--primary-text-color);">
 
@@ -100,20 +66,20 @@
         <p class="text-xs font-semibold uppercase tracking-widest mb-1"
            style="color: var(--primary-subtitle-color); font-family: var(--font-lato);">Category</p>
         <p class="text-base font-medium"
-           style="color: var(--primary-text-color); font-family: var(--font-lato);">{{ service.type }}</p>
+           style="color: var(--primary-text-color); font-family: var(--font-lato);">{{ categoryBadges[0] || 'General' }}</p>
       </div>
       <div class="rounded-xl p-5" style="background-color: var(--secondary-color);">
         <p class="text-xs font-semibold uppercase tracking-widest mb-1"
            style="color: var(--primary-subtitle-color); font-family: var(--font-lato);">Service ID</p>
         <p class="text-base font-medium"
-           style="color: var(--primary-text-color); font-family: var(--font-lato);">#{{ service.id }}</p>
+           style="color: var(--primary-text-color); font-family: var(--font-lato);">#{{ serviceId }}</p>
       </div>
       <div class="rounded-xl p-5" style="background-color: var(--secondary-color);">
         <p class="text-xs font-semibold uppercase tracking-widest mb-1"
            style="color: var(--primary-subtitle-color); font-family: var(--font-lato);">Documents needed</p>
         <p class="text-base font-medium"
            style="color: var(--primary-text-color); font-family: var(--font-lato);">
-          {{ service.requirements?.length || 0 }} item(s)
+          {{ requirements.length || 0 }} item(s)
         </p>
       </div>
     </div>
@@ -152,6 +118,8 @@
           [service]="s">
         </app-service-card>
       </div>
+    </div>
+
   </div>
 
 </div>
