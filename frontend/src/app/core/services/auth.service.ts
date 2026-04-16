@@ -6,16 +6,18 @@ import { tap } from 'rxjs/operators';
 import { User } from 'src/app/shared/models/user.model';
 
 export interface UserData {
+  id: string;
   cin: number;
   name?: string;
   email?: string;
+  role?: string;
 }
 
 @Injectable({ providedIn: 'root' })
 export class UserAuthService {
 
   private USER_TOKEN_KEY = 'token';
-  private API_URL = 'http://localhost:5000';
+  private API_URL = 'http://localhost:5002';
   private USER_DATA_KEY = 'userData';
 
   constructor(
@@ -32,6 +34,8 @@ export class UserAuthService {
       const payload = token.split('.')[1];
       const decoded = JSON.parse(atob(payload));
       return {
+        id: decoded.userId,
+        role: decoded.role,
         cin: decoded.cin ? Number(decoded.cin) : 0,
         email: decoded.email,
         name: decoded.name
@@ -44,6 +48,19 @@ export class UserAuthService {
   getCurrentLoggedUser(): User {
     // this is a helper method where u can get the current user info after logging in
     // with the help of the jwt token return object: mak bch trajaa {key, id, email} (mathalan)
+    const userData = this.getCurrentUser();
+    /*return {
+      id: userData!.id,
+      cin: String(userData!.cin),
+      firstName: userData!.name,
+      lastName: userData!.name,
+      email: userData!.email,
+      role: userData!.role as "citoyen" | "prestataire" | "admin",
+      status: "accepted",
+      addresse: "mourouj",
+      telephone: "22222222",
+      createdAt: new Date()
+    };*/
     return {
       id: "1",
       cin: "14674032",
@@ -53,12 +70,13 @@ export class UserAuthService {
       role: "prestataire",
       status: "accepted",
       addresse: "mourouj",
+      telephone: "22222222",
       createdAt: new Date()
     }
   }
 
   isLoggedUserPrestataire(): boolean {
-    return this.getCurrentLoggedUser().role === "prestataire";
+    return this.getCurrentUser()?.role === "prestataire";
   }
 
   /*isLoggedIn(): boolean {

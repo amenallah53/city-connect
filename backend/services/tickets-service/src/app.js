@@ -55,7 +55,7 @@ app.get('/api/tickets', async (req, res) => {
       WHERE 1=1
     `;
     let query = `
-      SELECT p.*, p.localisation as city, pc.type as category, pm.file_url as image
+      SELECT p.*, p.location as city, pc.type as category, pm.file_url as image
       FROM plainte p
       LEFT JOIN plainte_categorie pc ON p.categorie_id = pc.id
       LEFT JOIN plainte_media pm ON p.id = pm.plainte_id
@@ -65,8 +65,8 @@ app.get('/api/tickets', async (req, res) => {
 
     if (city) {
       values.push(city);
-      query += ` AND p.localisation = $${values.length}`;
-      countQuery += ` AND p.localisation = $${values.length}`;
+      query += ` AND p.location = $${values.length}`;
+      countQuery += ` AND p.location = $${values.length}`;
     }
     if (category) {
       values.push(category);
@@ -103,7 +103,7 @@ app.post('/api/tickets', authenticateToken, async (req, res) => {
   const client = await pool.connect();
   try {
     const { title, description, city, category, image } = req.body;
-    const userId = req.user.id; // Extracted from JWT
+    const userId = req.user.userId; // Extracted from JWT
 
     await client.query('BEGIN');
 
@@ -113,7 +113,7 @@ app.post('/api/tickets', authenticateToken, async (req, res) => {
 
     // 2. Insert into plainte
     const ticketResult = await client.query(
-      'INSERT INTO plainte (title, description, localisation, user_id, categorie_id) VALUES ($1, $2, $3, $4, $5) RETURNING *',
+      'INSERT INTO plainte (title, description, location, user_id, categorie_id) VALUES ($1, $2, $3, $4, $5) RETURNING *',
       [title || 'Untitled Report', description, city, userId, categoryId]
     );
     const ticket = ticketResult.rows[0];
@@ -145,7 +145,7 @@ app.get('/api/tickets/search', async (req, res) => {
   try {
     const { q } = req.query;
     const result = await pool.query(
-      'SELECT * FROM plainte WHERE description ILIKE $1 OR localisation ILIKE $1',
+      'SELECT * FROM plainte WHERE description ILIKE $1 OR location ILIKE $1',
       [`%${q}%`]
     );
     res.json(result.rows);

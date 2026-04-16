@@ -40,9 +40,9 @@ export interface ServiceRequestResponse {
 
 @Injectable({ providedIn: 'root' })
 export class ServiceRequestsService {
-  private apiUrl = 'http://localhost:3004/api/service-requests';
+  private apiUrl = 'http://localhost:5006/api/service-requests';
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) { }
 
   /**
    * Crée une nouvelle demande de service

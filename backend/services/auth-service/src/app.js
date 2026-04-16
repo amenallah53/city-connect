@@ -88,6 +88,7 @@ function generateToken(user) {
       userId: user.id,
       email: user.email,
       cin: user.cin,
+      role: user.role,
       name: user.first_name ? (user.first_name + ' ' + (user.last_name || '')).trim() : ''
     },
     jwtSecret
@@ -123,7 +124,7 @@ app.post('/login', async (req, res) => {  //login
       return res.status(400).json({ error: 'Email and password are required' });
     }
 
-    const result = await pool.query('SELECT id, email, password, first_name, last_name, cin FROM users WHERE LOWER(email) = LOWER($1)', [email]);
+    const result = await pool.query('SELECT id, email, password, first_name, last_name, cin, role FROM users WHERE LOWER(email) = LOWER($1)', [email]);
     const user = result.rows[0];
     if (!user) {
       return res.status(401).json({ error: 'Invalid credentials' });

@@ -16,9 +16,9 @@ interface ApiResponse {
 
 @Injectable({ providedIn: 'root' })
 export class ServicesService {
-  private apiUrl = 'http://localhost:5000/api/services';
+  private apiUrl = 'http://localhost:5006/api/services';
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) { }
 
   /**
    * Récupère tous les services disponibles

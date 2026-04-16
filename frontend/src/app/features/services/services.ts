@@ -53,7 +53,7 @@ export class Services implements OnInit {
     private route: ActivatedRoute,
     private servicesService: ServicesService,
     private cdr: ChangeDetectorRef
-  ) {}
+  ) { }
 
   ngOnInit() {
     // Charger les services depuis l'API
@@ -155,6 +155,6 @@ export class Services implements OnInit {
   }
 
   goToMyRequests(): void {
-    this.router.navigate(['/my-requests']);
+    this.router.navigate(['/services/requests']);
   }
 }

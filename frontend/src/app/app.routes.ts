@@ -6,10 +6,43 @@ import { PrestataireGuard } from './core/guards/prestataire.guard';
 export const routes: Routes = [
 
   // =====================
-  // DEFAULT (HOME)
+  // PUBLIC
+  // =====================
+  {
+    path: 'login',
+    canMatch: [NoUserGuard],
+    loadComponent: () =>
+      import('./layouts/simple-layout/simple-layout').then(m => m.SimpleLayout),
+    children: [
+      {
+        path: '',
+        loadComponent: () =>
+          import('./features/login/login').then(m => m.Login)
+      },
+      {
+        path: 'reset',
+        loadComponent: () =>
+          import('./features/reset-password-page/reset-password-page').then(m => m.ResetPasswordPage)
+      },
+      {
+        path: 'reset-page-link',
+        loadComponent: () =>
+          import('./features/reset-password-page-here/reset-password-page-here').then(m => m.ResetPasswordPageHere)
+      },
+      {
+        path: 'create-account',
+        loadComponent: () =>
+          import('./features/create-account/create-account').then(m => m.CreateAccount)
+      },
+    ]
+  },
+
+  // =====================
+  // PROTECTED
   // =====================
   {
     path: '',
+    canMatch: [UserGuard],
     loadComponent: () =>
       import('./layouts/default-layout/default-layout').then(m => m.DefaultLayout),
     children: [
@@ -46,10 +79,14 @@ export const routes: Routes = [
           import('./features/services/details-page/details-page').then(m => m.DetailsPage)
       },
       {
-        canMatch: [UserGuard],
         path: 'services/:serviceId/start',
         loadComponent: () =>
           import('./features/services/start-service/start-service').then(m => m.StartService)
+      },
+      {
+        path: 'services/requests',
+        loadComponent: () =>
+          import('./features/my-requests/my-requests').then(m => m.MyRequests)
       },
       {
         path: 'faq',
@@ -57,25 +94,16 @@ export const routes: Routes = [
           import('./features/faq/faq').then(m => m.Faq)
       },
       {
-        canMatch: [UserGuard],
         path: 'complaints/new',
         loadComponent: () =>
           import('./features/report/report').then(m => m.Report)
       },
       {
-        canMatch: [UserGuard],
         path: 'complaints',
         loadComponent: () =>
           import('./features/report/all-my-reports/all-my-reports').then(m => m.AllMyReports)
       },
       {
-        canMatch: [UserGuard],
-        path: 'my-requests',
-        loadComponent: () =>
-          import('./features/my-requests/my-requests').then(m => m.MyRequests)
-      },
-      {
-        canMatch: [UserGuard],
         path: 'profile',
         loadComponent: () =>
           import('./features/profile/profile').then(m => m.Profile)
@@ -86,43 +114,11 @@ export const routes: Routes = [
           import('./features/news-details/news-details').then(m => m.NewsDetails)
       },
       {
-        canMatch: [UserGuard],
         path: 'schedules',
         loadComponent: () =>
           import('./features/schedules/schedule-page/schedule-page').then(
             (m) => m.SchedulePage
           ),
-      },
-    ]
-  },
-
-  // =====================
-  // PUBLIC AUTH
-  // =====================
-  {
-    path: 'login',
-    loadComponent: () =>
-      import('./layouts/simple-layout/simple-layout').then(m => m.SimpleLayout),
-    children: [
-      {
-        path: '',
-        loadComponent: () =>
-          import('./features/login/login').then(m => m.Login)
-      },
-      {
-        path: 'reset',
-        loadComponent: () =>
-          import('./features/reset-password-page/reset-password-page').then(m => m.ResetPasswordPage)
-      },
-      {
-        path: 'reset-page-link',
-        loadComponent: () =>
-          import('./features/reset-password-page-here/reset-password-page-here').then(m => m.ResetPasswordPageHere)
-      },
-      {
-        path: 'create-account',
-        loadComponent: () =>
-          import('./features/create-account/create-account').then(m => m.CreateAccount)
       },
     ]
   },

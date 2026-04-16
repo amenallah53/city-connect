@@ -13,7 +13,7 @@ const serviceRoutes = require('./routes/services');
 const demandeServiceRoutes = require('./routes/demandeService');
 
 const app = express();
-const PORT = process.env.PORT || 3004;
+const PORT = process.env.PORT || 5006;
 
 // ===== MIDDLEWARES =====
 // CORS: Permet aux requêtes du frontend d'accéder à ce backend

@@ -5,7 +5,7 @@ const { Pool } = require('pg');
 require('dotenv').config({ path: __dirname + '/.env' });
 
 const app = express();
-const port = parseInt(process.env.PORT, 10) || 5004;
+const port = parseInt(process.env.PORT, 10) || 5005;
 
 if (!process.env.JWT_SECRET) throw new Error('JWT_SECRET must be set in .env');
 const jwtSecret = process.env.JWT_SECRET;
