@@ -142,4 +142,17 @@ details[open] svg{
     display: flex;
     align-items: center;
     justify-content: center;
+    cursor: pointer;
+}
+#no-result{
+    color: var(--secondary-text-color);
+    margin-left: 6%;
+}
+.red{
+    color: red;
+    margin-left: 2vw;
+}
+.success{
+    color: green;
+    margin-left: 2vw;
 }

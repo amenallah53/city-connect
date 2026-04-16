@@ -15,9 +15,9 @@ export interface UserData {
 @Injectable({ providedIn: 'root' })
 export class UserAuthService {
 
-  private USER_TOKEN_KEY = 'user_token';
-  private USER_DATA_KEY = 'user_data';
-  private API_URL = 'http://localhost:5002';
+  private USER_TOKEN_KEY = 'token';
+  private API_URL = 'http://localhost:5000';
+  private USER_DATA_KEY = 'userData';
 
   constructor(
     @Inject(PLATFORM_ID) private platformId: Object,
