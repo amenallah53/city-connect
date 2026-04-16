@@ -1,15 +1,15 @@
-.title{
+.title {
     margin: 0;
     padding: 0;
 }
 
-.titles{
+.titles {
     padding: 24px;
-    gap:8px
+    gap: 8px
 }
 
-.report-cards-container{
-    margin:0;
+.report-cards-container {
+    margin: 0 10vw;
     padding: 16px 0 16px 0;
     align-items: flex-start;
     justify-content: center;
@@ -18,12 +18,12 @@
 }
 
 
-.page-selector{
-    gap:16px;
+.page-selector {
+    gap: 16px;
     margin-bottom: 16px;
 }
 
-.current-page-number{
+.current-page-number {
     font-family: var(--font-rubik);
     font-size: 24px;
     height: 48px;
@@ -37,8 +37,9 @@
     color: white;
 }
 
-.page-number, .three-dots{
-     font-family: var(--font-rubik);
+.page-number,
+.three-dots {
+    font-family: var(--font-rubik);
     font-size: 24px;
     height: 48px;
     width: 48px;
@@ -47,4 +48,148 @@
     align-items: center;
     justify-content: center;
     color: var(--primary-text-color);
+}
+
+/* Dialog Styling */
+::ng-deep .ticket-dialog .p-dialog-header {
+    border-bottom: 1px solid #ebebeb;
+    background-color: #fcfcfc;
+}
+
+::ng-deep .ticket-dialog .p-dialog-content {
+    background-color: #fdfdfd;
+}
+
+.ticket-details-content {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    margin-top: 10px;
+    font-family: var(--font-rubik, sans-serif);
+}
+
+.dialog-image-container {
+    width: 100%;
+    overflow: hidden;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.dialog-image {
+    width: 100%;
+    max-height: 250px;
+    object-fit: cover;
+    display: block;
+}
+
+.dialog-body {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.dialog-header-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.dialog-status-badge {
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 14px;
+    font-weight: 600;
+    text-transform: capitalize;
+}
+
+.dialog-status-badge.pending {
+    background-color: #fff3cd;
+    color: #856404;
+}
+
+.dialog-status-badge.approved {
+    background-color: #d4edda;
+    color: #155724;
+}
+
+.dialog-status-badge.rejected {
+    background-color: #f8d7da;
+    color: #721c24;
+}
+
+.dialog-date {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    color: var(--secondary-text-color, #777);
+}
+
+.dialog-desc-section {
+    background-color: #f8f9fa;
+    padding: 16px;
+    border-radius: 10px;
+    border-left: 4px solid var(--primary-color, #007bff);
+}
+
+.dialog-section-title {
+    margin: 0 0 8px 0;
+    font-size: 14px;
+    color: #555;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.dialog-description {
+    margin: 0;
+    font-size: 15px;
+    line-height: 1.5;
+    color: #333;
+    word-break: break-word;
+    white-space: pre-wrap;
+    overflow-wrap: break-word;
+    /* Fix scroll if description is too big */
+}
+
+.dialog-meta-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 12px;
+}
+
+.dialog-meta-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background-color: #fff;
+    border: 1px solid #eee;
+    padding: 12px;
+    border-radius: 10px;
+}
+
+.meta-icon-box {
+    background-color: #f0f4ff;
+    color: var(--primary-color, #007bff);
+    padding: 8px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.meta-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.meta-label {
+    font-size: 12px;
+    color: #888;
+    text-transform: uppercase;
+}
+
+.meta-value {
+    font-size: 14px;
+    font-weight: 500;
+    color: #222;
 }

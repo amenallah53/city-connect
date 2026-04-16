@@ -1,22 +1,38 @@
 <section class="services-container">
 
+  <!-- Loading indicator -->
+  <div *ngIf="isLoading" class="loading-state">
+    <p>Loading services...</p>
+  </div>
+
   <!-- Category Bar -->
-  <div class="category-bar">
+  <div *ngIf="!isLoading" class="category-bar">
     <div
       *ngFor="let category of categories"
       (click)="selectCategory(category)"
-      [ngClass]="{ 'active': selectedCategory?.code === category.code }"
+      [ngClass]="{ 'active': selectedCategory.code === category.code }"
       class="category-item">
       {{ category.name }}
     </div>
   </div>
 
   <!-- Header + Filter row -->
-  <div class="services-header">
+  <div *ngIf="!isLoading" class="services-header">
     <h1 class="services-title">{{ selectedCategory.name }}</h1>
     <div class="services-toolbar">
       <p class="services-count">{{ filteredServices.length }} service(s) found</p>
       <div class="toolbar-actions">
+
+        <!-- My Requests Button -->
+        <button class="btn-my-requests" (click)="goToMyRequests()" title="View your service requests">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+            <path d="M9 10h.01"/>
+            <path d="M13 10h.01"/>
+            <path d="M17 10h.01"/>
+          </svg>
+          My Requests
+        </button>
 
         <!-- Filter Select -->
         <div class="filter-select-wrapper">
@@ -63,7 +79,7 @@
   </div>
 
   <!-- Services Grid / List -->
-  <div class="services-grid-container">
+  <div class="services-grid-container" *ngIf="!isLoading">
     <div *ngIf="viewMode === 'grid'" class="services-grid">
       <app-service-card *ngFor="let service of pagedServices" [service]="service" />
     </div>
@@ -86,15 +102,13 @@
   </div>
 
   <!-- Paginator -->
-  <div class="paginator-wrapper" *ngIf="filteredServices.length > 0">
+  <div class="flex justify-center py-6" *ngIf="filteredServices.length > 0">
     <p-paginator
       (onPageChange)="onPageChange($event)"
       [first]="first"
       [rows]="rows"
       [totalRecords]="filteredServices.length"
       [showCurrentPageReport]="true"
-      [showPageLinks]="true"
-      [showJumpToPageDropdown]="false"
       currentPageReportTemplate="Showing {first} to {last} of {totalRecords}"
     />
   </div>

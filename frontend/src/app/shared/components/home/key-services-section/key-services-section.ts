@@ -3,6 +3,7 @@ import { ServiceCard } from '../../cards/service-card/service-card';
 import { RouterLink } from '@angular/router';
 import { Service } from '../../../models/service.model';
 import { CommonModule } from '@angular/common';
+import { allServices } from 'src/app/shared/mock/services.mock';
 
 @Component({
   selector: 'app-key-services-section',
@@ -15,31 +16,27 @@ export class KeyServicesSection {
   featuredServices: Service[] = [
     {
       id: 'building-permit',
-      title: 'Building Permit',
+      name: 'Building Permit',
       type: 'Urban Planning',
-      badges: ['Online', 'Not immediate'],
-      featured: true
+      badges: ['Online', 'Not immediate']
     },
     {
       id: 'garbage-collection',
-      title: 'Garbage Collection',
+      name: 'Garbage Collection',
       type: 'Sanitation',
-      badges: ['Scheduled', 'Public Service'],
-      featured: true
+      badges: ['Scheduled', 'Public Service']
     },
     {
       id: 'complaint',
-      title: 'Complaint Submission',
+      name: 'Complaint Submission',
       type: 'Citizen Service',
-      badges: ['Online', 'Immediate'],
-      featured: true
+      badges: ['Online', 'Immediate']
     },
     {
       id: 'birth-certificate',
-      title: 'Birth Certificate',
+      name: 'Birth Certificate',
       type: 'Civil Status',
-      badges: ['Online', 'Official'],
-      featured: true
+      badges: ['Online', 'Official']
     }
   ];
 }

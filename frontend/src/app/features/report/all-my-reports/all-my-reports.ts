@@ -1,129 +1,72 @@
-import { Component } from '@angular/core';
-import { NgForm } from '@angular/forms';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { ReportCard } from '../../../shared/components/cards/report-card/report-card';
+import { TicketService } from '../../../core/services/ticket.service';
+import { Ticket } from '../../../shared/models/ticket.model';
 import { SelectModule } from 'primeng/select';
-import { PaginatorModule, PaginatorState } from 'primeng/paginator';
+import { PaginatorModule } from 'primeng/paginator';
+import { DialogModule } from 'primeng/dialog';
+import { RouterLink } from '@angular/router';
 
-interface ReportFormData {
-  city: string;
-  category: string;
-  title: string;
-  description: string;
-  agreed: boolean;
-}
 
 @Component({
   selector: 'app-all-my-reports',
-  imports: [ReportCard,SelectModule, PaginatorModule],
+  imports: [CommonModule, ReportCard, SelectModule, PaginatorModule, DialogModule, RouterLink],
   templateUrl: './all-my-reports.html',
   styleUrl: './all-my-reports.css',
 })
-export class AllMyReports {
-  cities: string[] = [
-    'Ariana',
-    'Beja',
-    'Ben Arous',
-    'Bizerte',
-    'Gabes',
-    'Gafsa',
-    'Jendouba',
-    'Kairouan',
-    'Kasserine',
-    'Kebili',
-    'Kef',
-    'Mahdia',
-    'Manouba',
-    'Medenine',
-    'Monastir',
-    'Nabeul',
-    'Sfax',
-    'Sidi Bouzid',
-    'Siliana',
-    'Sousse',
-    'Tataouine',
-    'Tozeur',
-    'Tunis',
-    'Zaghouan',
-  ];
+export class AllMyReports implements OnInit {
+  tickets: Ticket[] = [];
+  errorMessage: string | null = null;
+  loading: boolean = false;
 
-  categories: string[] = [
-    'Street lighting',
-    'Traffic lights',
-    'Potholes',
-    'Sanitation',
-    'Public transport',
-    'Other',
-  ];
-  
+  first: number = 0;
+  rows: number = 12;
+  totalRecords: number = 0;
 
-  formData: ReportFormData = {
-    city: '',
-    category: '',
-    title: '',
-    description: '',
-    agreed: false,
-  };
+  selectedTicket: Ticket | null = null;
+  displayDialog: boolean = false;
 
-  // File state
-  fileName: string = '';
-  imagePreview: string | null = null;
-  fileError: string = '';
-  selectedFile: File | null = null;
+  constructor(
+    private ticketService: TicketService,
+    private cdr: ChangeDetectorRef
+  ) { }
 
-  onFileChange(event: Event): void {
-    const input = event.target as HTMLInputElement;
-    this.fileError = '';
-
-    if (!input.files || input.files.length === 0) {
-      this.resetFile();
-      return;
-    }
-
-    const file = input.files[0];
-
-    if (!file.type.startsWith('image/')) {
-      this.fileError = 'Only image files are allowed.';
-      this.resetFile();
-      return;
-    }
-
-    if (file.size > 1 * 1024 * 1024) {
-      this.fileError = 'File size must be less than 1MB.';
-      this.resetFile();
-      return;
-    }
-
-    this.selectedFile = file;
-    this.fileName = file.name;
-
-    const reader = new FileReader();
-    reader.onload = () => {
-      this.imagePreview = reader.result as string;
-    };
-    reader.readAsDataURL(file);
+  ngOnInit(): void {
+    this.loadTickets();
   }
 
-  private resetFile(): void {
-    this.selectedFile = null;
-    this.fileName = '';
-    this.imagePreview = null;
+  openTicketDetails(ticket: Ticket): void {
+    this.selectedTicket = ticket;
+    this.displayDialog = true;
   }
 
-  onSubmit(form: NgForm): void {
-    if (form.invalid || this.fileError) {
-      form.form.markAllAsTouched();
-      return;
-    }
+  loadTickets(): void {
+    this.loading = true;
+    this.errorMessage = null;
 
-    const payload = {
-      ...this.formData,
-      file: this.selectedFile,
-    };
+    const page = Math.floor(this.first / this.rows) + 1;
 
-    console.log('Form submitted:', payload);
-    // TODO: inject your service and call e.g. this.reportService.submit(payload)
+    this.ticketService.getAllTickets({ page, limit: this.rows }).subscribe({
+      next: (response) => {
+        console.log('Tickets received in AllMyReports:', response);
+        this.tickets = response.data;
+        this.totalRecords = response.total;
+        this.loading = false;
+        this.cdr.detectChanges(); // Manual trigger to fix NG0100
+      },
+      error: (err) => {
+        console.error('Error loading tickets:', err);
+        this.errorMessage = `Failed to load reports: ${err.message || 'Unknown error'}`;
+        this.loading = false;
+        this.cdr.detectChanges();
+      }
+    });
+  }
 
-    form.resetForm();
-    this.resetFile();
+  onPageChange(event: any) {
+    this.first = event.first;
+    this.rows = event.rows;
+    this.loadTickets();
   }
 }

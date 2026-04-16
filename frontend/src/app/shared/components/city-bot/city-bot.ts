@@ -1,4 +1,4 @@
-import { CommonModule, NgClass } from '@angular/common';
+import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { trigger, transition, style, animate, state } from '@angular/animations';
 import { FormsModule } from '@angular/forms';
@@ -10,7 +10,7 @@ interface Message {
 
 @Component({
   selector: 'app-city-bot',
-  imports: [CommonModule, NgClass, FormsModule],
+  imports: [CommonModule, FormsModule],
   templateUrl: './city-bot.html',
   styleUrl: './city-bot.css',
   animations: [

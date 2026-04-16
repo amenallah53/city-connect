@@ -1,0 +1,91 @@
+<div
+  class="p-6 bg-[var(--card-color)] border border-[var(--border-color)]
+         rounded-[25px] flex flex-col gap-4 h-full
+         shadow-[0px_2px_15px_0px_rgba(0,0,0,0.1)]">
+
+  <!-- Top row: avatar + name/status -->
+  <div class="flex flex-row items-center gap-3">
+    <div class="rounded-full h-[52px] w-[52px] border border-[var(--border-color)] shrink-0">
+      <img class="rounded-full h-full w-full object-cover" src="/assets/avatar.png" alt="avatar">
+    </div>
+    <div class="flex flex-col gap-0.5">
+      <h3 class="text-[16px] font-semibold text-[var(--primary-text-color)]">
+        Mr. {{ offer.offerorId }}
+      </h3>
+      <div class="flex flex-row items-center gap-1">
+        <span class="text-[14px] font-medium text-[var(--primary-subtitle-color)]">
+          Offer State:
+        </span>
+        <span class="text-[14px] font-semibold" [style.color]="statusColor">
+          {{ statusLabel }}
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Action buttons (pending only) -->
+  <div *ngIf="isPending" class="flex flex-row gap-2">
+    <button
+      (click)="onAccept.emit()"
+      class="flex-1 border border-[var(--primary-color)] text-[14px] font-medium
+             py-2 px-4 rounded-[12px] shadow-[0px_2px_15px_0px_rgba(0,0,0,0.1)]
+             bg-[var(--primary-color)] text-[var(--secondary-color)]
+             hover:bg-[var(--secondary-color)] hover:text-[var(--primary-color)]
+             hover:cursor-pointer transition-colors duration-300">
+      Accept Offer
+    </button>
+    <button
+      (click)="onDecline.emit()"
+      class="flex-1 border border-[#E5484D] text-[14px] font-medium
+             py-2 px-4 rounded-[12px] shadow-[0px_2px_15px_0px_rgba(0,0,0,0.1)]
+             bg-[#E5484D] text-white
+             hover:bg-[var(--secondary-color)] hover:text-[#E5484D]
+             hover:cursor-pointer transition-colors duration-300">
+      Decline Offer
+    </button>
+  </div>
+
+  <!-- Divider -->
+  <div class="border-t border-[var(--border-color)]"></div>
+
+  <!-- Appointment -->
+  <div class="flex flex-col gap-2">
+    <h4 class="text-[15px] font-semibold text-[var(--primary-text-color)]">
+      Appointment:
+    </h4>
+    <div class="flex flex-row items-center gap-3 flex-wrap">
+
+      <!-- Date -->
+      <div class="flex flex-row items-center gap-1.5">
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"
+             fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+             stroke-linejoin="round" class="text-[var(--primary-subtitle-color)] shrink-0">
+          <rect width="18" height="18" x="3" y="4" rx="2" ry="2"/>
+          <line x1="16" x2="16" y1="2" y2="6"/>
+          <line x1="8" x2="8" y1="2" y2="6"/>
+          <line x1="3" x2="21" y1="10" y2="10"/>
+        </svg>
+        <span class="text-[15px] font-medium text-[var(--secondary-text-color)]">
+          {{ offer.dateJobSuggestion | date: 'dd-MM-yyyy' }}
+        </span>
+      </div>
+
+      <span class="text-[var(--primary-subtitle-color)]">•</span>
+
+      <!-- Time -->
+      <div class="flex flex-row items-center gap-1.5">
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"
+             fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+             stroke-linejoin="round" class="text-[var(--primary-subtitle-color)] shrink-0">
+          <circle cx="12" cy="12" r="10"/>
+          <polyline points="12 6 12 12 16 14"/>
+        </svg>
+        <span class="text-[15px] font-medium text-[var(--secondary-text-color)]">
+          {{ offer.dateJobSuggestion | date: 'HH:mm' }}
+        </span>
+      </div>
+
+    </div>
+  </div>
+
+</div>

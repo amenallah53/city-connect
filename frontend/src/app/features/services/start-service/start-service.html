@@ -1,8 +1,18 @@
 <div class="start-service-container">
   <!-- Page Header -->
   <div class="page-header">
-    <h1 class="page-title">License requirements</h1>
-    <p class="page-description">You can submit and track your license application remotely.</p>
+    <h1 class="page-title">{{ serviceName || 'Service Requirements' }}</h1>
+    <p class="page-description">You can submit and track your service request remotely.</p>
+  </div>
+
+  <!-- Success Message -->
+  <div *ngIf="successMessage" class="alert alert-success">
+    {{ successMessage }}
+  </div>
+
+  <!-- Error Message -->
+  <div *ngIf="errorMessage" class="alert alert-error">
+    {{ errorMessage }}
   </div>
 
   <!-- Steps Header -->
@@ -23,12 +33,6 @@
         class="tab" 
         [class.active]="currentStep === 2"
         (click)="selectStep(2)">
-        Required data
-      </button>
-      <button 
-        class="tab" 
-        [class.active]="currentStep === 3"
-        (click)="selectStep(3)">
         Required documents
       </button>
     </div>
@@ -38,57 +42,108 @@
   <div class="form-container">
     <!-- Step 1: Personal Information -->
     <div class="step-content" [class.active]="currentStep === 1">
-      <form [formGroup]="personalInfoForm">
+      <p class="info-message">
+        <span *ngIf="personalInfoForm.get('cin')?.disabled">Your CIN and Name are automatically filled from your account.</span>
+        <span *ngIf="!personalInfoForm.get('cin')?.disabled">Please enter your CIN and Name to submit the service request.</span>
+      </p>
+      <form *ngIf="personalInfoForm" [formGroup]="personalInfoForm">
         <div class="form-row">
-          <div class="form-group">
-            <label for="name">Name</label>
-            <input 
-              id="name" 
-              type="text" 
-              placeholder="name" 
-              formControlName="name"
-              class="form-input">
-          </div>
-          <div class="form-group">
-            <label for="phone">Phone number</label>
-            <input 
-              id="phone" 
-              type="tel" 
-              placeholder="phone number" 
-              formControlName="phone"
-              class="form-input">
-          </div>
-        </div>
-        <div class="form-row" id = "cin-row">
           <div class="form-group">
             <label for="cin">CIN</label>
             <input 
               id="cin" 
               type="text" 
-              placeholder="cin" 
+              placeholder="12345678" 
               formControlName="cin"
               class="form-input">
+          </div>
+          <div class="form-group">
+            <label for="name">Name</label>
+            <input 
+              id="name" 
+              type="text" 
+              placeholder="Full Name" 
+              formControlName="name"
+              class="form-input">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="phone">Phone number</label>
+            <input 
+              id="phone" 
+              type="tel" 
+              placeholder="Phone number" 
+              formControlName="phone"
+              class="form-input">
+            <small class="form-error" *ngIf="personalInfoForm.get('phone')?.hasError('required') && personalInfoForm.get('phone')?.touched">
+              Phone number is required
+            </small>
+            <small class="form-error" *ngIf="personalInfoForm.get('phone')?.hasError('pattern') && personalInfoForm.get('phone')?.touched">
+              Phone must be 8 digits
+            </small>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="description">Description (optional)</label>
+            <textarea 
+              id="description" 
+              placeholder="Additional information..." 
+              formControlName="requestdescription"
+              class="form-input"
+              rows="4"></textarea>
           </div>
         </div>
       </form>
     </div>
 
-    <!-- Step 2: Required Data -->
+    <!-- Step 2: Required Documents -->
     <div class="step-content" [class.active]="currentStep === 2">
-      <p>Required data information to be added</p>
+      <div *ngIf="requirements.length === 0" class="no-requirements">
+        <p>No additional documents required for this service.</p>
+      </div>
+      
+      <div *ngIf="requirements.length > 0" class="documents-section">
+        <div class="documents-list">
+          <div class="requirement-upload-item" *ngFor="let req of requirements; let i = index">
+            <div class="requirement-header">
+              <span class="requirement-name">{{ req }}</span>
+            </div>
+            <div class="requirement-upload">
+              <label [for]="'doc-' + i" class="upload-label">
+                <span class="upload-icon">📄</span>
+                <span class="upload-text">Click to upload or drag and drop</span>
+                <span class="upload-hint">PDF, Image, or Document (max 10MB)</span>
+              </label>
+              <input 
+                type="file" 
+                [id]="'doc-' + i"
+                class="file-input"
+                (change)="onFileSelected($event, i)"
+                accept=".pdf,.jpg,.jpeg,.png,.doc,.docx">
+              <div *ngIf="getRequirementFile(i)" class="file-preview">
+                ✓ {{ getRequirementFile(i)?.name }}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
-
-    <!-- Step 3: Required Documents -->
-    <div class="step-content" [class.active]="currentStep === 3">
-      <p>Required documents information to be added</p>
-    </div>
+    
     <!-- Action Buttons -->
     <div class="action-buttons">
-        <button class="btn btn-continue" (click)="onContinue()">Continue</button>
-        <button class="btn btn-return" (click)="onReturn()">Return</button>
+        <button 
+          class="btn btn-continue" 
+          (click)="onContinue()"
+          [disabled]="isSubmitting">
+          {{ isSubmitting ? 'Processing...' : (currentStep === 2 ? 'Submit Service Request' : 'Continue') }}
+        </button>
+        <button 
+          class="btn btn-return" 
+          (click)="onReturn()">
+          Return
+        </button>
     </div>
   </div>
-
-
-  
 </div>

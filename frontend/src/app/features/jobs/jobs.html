@@ -7,8 +7,8 @@
         *ngFor="let category of categories"
         (click)="selectCategory(category)"
         [ngClass]="{
-            'text-white bg-[#005E71]/50': selectedCategory?.code === category.code,
-            'hover:bg-[#005E71]/50': selectedCategory?.code !== category.code
+            'text-white bg-[#005E71]/50': selectedCategory.code === category.code,
+            'hover:bg-[#005E71]/50': selectedCategory.code !== category.code
         }"
         class="p-3 rounded-[12px] hover:cursor-pointer transition-colors duration-300">
         {{ category.name }}
@@ -80,6 +80,9 @@
             </div>
         </div>
         </div>
+    </div>
+    <div class="px-6 text-[var(--secondary-text-color)] italic font-medium text-[18px]">
+        Maybe you want to be Service Provider ? If so please enter the <span (click)="callFormDialog()" class="text-[var(--primary-color)] hover:cursor-pointer">link</span> to fill the form and we'll look it out.
     </div>
 
     <!-- Jobs Grid / List -->

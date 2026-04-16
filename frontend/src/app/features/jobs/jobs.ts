@@ -3,24 +3,20 @@ import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { SelectModule } from 'primeng/select';
 import { PaginatorModule, PaginatorState } from 'primeng/paginator';
+import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Prestataire } from '../../shared/models/prestataire.model';
 import { JobCard } from '../../shared/components/cards/job-card/job-card';
 import { allJobs } from '../../shared/mock/jobs.mock';
+import { PrestataireFormDialog } from '../../shared/components/dialogs/prestataire-form-dialog/prestataire-form-dialog/prestataire-form-dialog';
 
-interface JobFilter {
-  name: string;
-  code: string;
-}
-
-interface JobCategory {
-  name: string;
-  code: string;
-}
+interface JobFilter { name: string; code: string; }
+interface JobCategory { name: string; code: string; }
 
 @Component({
   selector: 'app-jobs',
   imports: [CommonModule, NgClass, FormsModule, SelectModule, PaginatorModule, JobCard],
+  providers: [DialogService],
   templateUrl: './jobs.html',
   styleUrl: './jobs.css',
   standalone: true
@@ -36,17 +32,19 @@ export class Jobs implements OnInit {
   filteredJobs: Prestataire[] = [];
   pagedJobs: Prestataire[] = [];
 
-  // Pagination
   first: number = 0;
   rows: number = 12;
-
   viewMode: 'grid' | 'list' = 'grid';
 
-  setViewMode(mode: 'grid' | 'list') {
-    this.viewMode = mode;
-  }
+  private dialogRef: DynamicDialogRef | null = null;
 
-  constructor(private router: Router, private route: ActivatedRoute) {}
+  constructor(
+    private router: Router,
+    private route: ActivatedRoute,
+    private dialogService: DialogService,
+  ) {}
+
+  setViewMode(mode: 'grid' | 'list') { this.viewMode = mode; }
 
   ngOnInit() {
     this.filters = [
@@ -55,7 +53,6 @@ export class Jobs implements OnInit {
       { name: 'On Demand', code: 'on-demand' },
       { name: 'New', code: 'new' },
     ];
-
     this.categories = [
       { name: 'All Jobs', code: 'all' },
       { name: 'Private Tutor', code: 'private-tutor' },
@@ -64,15 +61,12 @@ export class Jobs implements OnInit {
       { name: 'Contractor', code: 'contractor' },
       { name: 'Accountant', code: 'accountant' },
     ];
-
     this.route.queryParams.subscribe(params => {
       const categoryCode = params['category'] || 'all';
       const filterCode = params['filter'] || 'all';
-
       this.selectedCategory = this.categories.find(c => c.code === categoryCode) ?? this.categories[0];
       this.selectedFilter = this.filters.find(f => f.code === filterCode) ?? this.filters[0];
-
-      this.first = 0; // reset to page 1 on filter change
+      this.first = 0;
       this.applyFilters();
     });
   }
@@ -82,8 +76,20 @@ export class Jobs implements OnInit {
     this.updateQueryParams();
   }
 
-  onFilterChange() {
-    this.updateQueryParams();
+  onFilterChange() { this.updateQueryParams(); }
+
+  callFormDialog() {
+    const ref = this.dialogService.open(PrestataireFormDialog, {
+      header: 'Add a new prestataire',
+      width: '680px',
+      modal: true,
+      closable: true,
+      styleClass: 'prestataire-dialog',
+    });
+
+    if (ref) {
+      this.dialogRef = ref;
+    }
   }
 
   onPageChange(event: PaginatorState) {
@@ -97,27 +103,19 @@ export class Jobs implements OnInit {
     const queryParams: any = {};
     if (this.selectedCategory.code !== 'all') queryParams['category'] = this.selectedCategory.code;
     if (this.selectedFilter.code !== 'all') queryParams['filter'] = this.selectedFilter.code;
-
-    this.router.navigate([], {
-      relativeTo: this.route,
-      queryParams,
-      replaceUrl: true,
-    });
+    this.router.navigate([], { relativeTo: this.route, queryParams, replaceUrl: true });
   }
 
   private applyFilters() {
     this.filteredJobs = this.allJobsList.filter(job => {
       const matchCategory =
         this.selectedCategory.code === 'all' ||
-        job.profession.toLowerCase().replace(/\s+/g, '-') === this.selectedCategory.code;
-
+        job.specialty!.toLowerCase().replace(/\s+/g, '-') === this.selectedCategory.code;
       const matchFilter =
         this.selectedFilter.code === 'all' ||
         job.reach === this.selectedFilter.code;
-
       return matchCategory && matchFilter;
     });
-
     this.updatePagedJobs();
   }
 

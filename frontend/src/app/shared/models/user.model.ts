@@ -1,11 +1,14 @@
 export interface User {
-    id: string;
-    cin: string;
-    name: string;
-    surname: string;
-    email: string;
-    phone: string;
-    role: 'CLIENT' | 'PRESTATAIRE' | 'ADMIN';
-    profilePictureUrl?: string;
-    // Add other common user properties as needed
+  id: string;
+  cin: number;
+  firstName: string;
+  lastName: string;
+  email: string;
+  addresse?: string;
+  telephone?: string;
+  status: 'pending' | 'accepted' | 'rejected';
+  role: 'citoyen' | 'prestataire' | 'admin';
+  extraDocumentUrl?: string;   // Backblaze B2 URL
+  documentType?: string;
+  createdAt: Date;
 }
