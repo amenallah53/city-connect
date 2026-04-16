@@ -7,19 +7,19 @@
 
   <div class="form-row">
     <div class="form-group">
-      <label for="city">City</label>
+      <label for="location">Location</label>
       <select
-        id="city"
-        name="city"
-        [(ngModel)]="formData.city"
-        #city="ngModel"
+        id="location"
+        name="location"
+        [(ngModel)]="formData.location"
+        #location="ngModel"
         required
-        [class.invalid]="city.invalid && city.touched"
+        [class.invalid]="location.invalid && location.touched"
       >
-        <option value="" disabled selected>Select city</option>
+        <option value="" disabled selected>Select location</option>
         <option *ngFor="let c of cities" [value]="c">{{ c }}</option>
       </select>
-      <span class="error-msg" *ngIf="city.invalid && city.touched">City is required.</span>
+      <span class="error-msg" *ngIf="location.invalid && location.touched">Location is required.</span>
     </div>
 
     <div class="form-group">

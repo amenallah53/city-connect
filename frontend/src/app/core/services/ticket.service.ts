@@ -13,9 +13,9 @@ export interface PaginatedTickets {
 }
 
 export interface TicketFilters {
-  city?: string;
+  location?: string;
   category?: string;
-  status?: 'pending' | 'approved' | 'rejected';
+  status?: 'pending' | 'approved' | 'rejected' | 'in-process';
   page?: number;
   limit?: number;
 }
@@ -38,7 +38,7 @@ export class TicketService {
     let params = new HttpParams();
 
     if (filters) {
-      if (filters.city) params = params.set('city', filters.city);
+      if (filters.location) params = params.set('city', filters.location);
       if (filters.category) params = params.set('category', filters.category);
       if (filters.status) params = params.set('status', filters.status);
       if (filters.page) params = params.set('page', filters.page.toString());

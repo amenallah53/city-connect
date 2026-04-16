@@ -36,9 +36,9 @@ const authenticateToken = (req, res, next) => {
 };
 
 // Check if we should use Mock/Local storage
-const useLocalStorage = !process.env.B2_BUCKET_NAME || 
-                       process.env.B2_BUCKET_NAME.includes('your_bucket_name') || 
-                       !process.env.B2_KEY_ID;
+const useLocalStorage = !process.env.B2_BUCKET_NAME ||
+  process.env.B2_BUCKET_NAME.includes('your_bucket_name') ||
+  !process.env.B2_KEY_ID;
 
 let storage;
 
@@ -102,7 +102,7 @@ app.get('/health', (req, res) => {
   res.json({ status: 'Upload service is healthy', storage: useLocalStorage ? 'local' : 's3' });
 });
 
-const PORT = process.env.PORT || 5008;
+const PORT = process.env.PORT || 5010;
 app.listen(PORT, () => {
   console.log(`Upload service running on port ${PORT} 📦`);
 });

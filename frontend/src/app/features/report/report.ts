@@ -7,7 +7,7 @@ import { Ticket } from '../../shared/models/ticket.model';
 import { CITIES, TICKET_CATEGORIES } from '../../core/constants/app.constants';
 
 interface ReportFormData {
-  city: string;
+  location: string;
   category: string;
   title: string;
   description: string;
@@ -31,7 +31,7 @@ export class Report {
   categories = TICKET_CATEGORIES;
 
   formData: ReportFormData = {
-    city: '',
+    location: '',
     category: '',
     title: '',
     description: '',
@@ -92,7 +92,7 @@ export class Report {
     const ticket: Ticket = {
       title: this.formData.title,
       description: this.formData.description,
-      city: this.formData.city,
+      location: this.formData.location,
       category: this.formData.category,
       status: 'pending'
     };
