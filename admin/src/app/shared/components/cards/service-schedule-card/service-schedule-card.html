@@ -1,0 +1,66 @@
+<div
+  class="p-6 bg-white border border-[#E5E7EB] rounded-[30px] flex flex-col gap-4 h-full shadow-[0px_4px_20px_0px_rgba(0,0,0,0.05)]"
+>
+  <div class="flex justify-between items-start">
+    <h3 class="text-[18px] font-semibold text-[var(--primary-text-color)] m-0 font-[family-name:var(--font-lato)]">
+      {{ schedule.name }}
+    </h3>
+    <span class="text-[16px] text-[#8C8C8C] font-medium font-[family-name:var(--font-lato)]">
+      {{ schedule.type }}
+    </span>
+  </div>
+
+  <div class="flex items-center gap-2 mb-2">
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="20"
+      height="20"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="#8C8C8C"
+      stroke-width="2"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+    >
+      <circle cx="12" cy="12" r="10" />
+      <polyline points="12 6 12 12 16 14" />
+    </svg>
+    <span class="text-[16px] text-[#8C8C8C] font-medium font-[family-name:var(--font-lato)]">
+      {{ schedule.heureDeb }} <span *ngIf="schedule.heureFin"> - {{ schedule.heureFin }}</span>
+    </span>
+  </div>
+
+  <div class="flex flex-row gap-2 flex-wrap">
+    @for (day of allDays; track day) {
+    <div
+      class="w-[45px] h-[30px] flex items-center justify-center rounded-[8px] text-[14px] font-semibold transition-colors font-[family-name:var(--font-lato)]"
+      [ngClass]="{
+        'bg-[var(--primary-color)] text-white': isDayActive(day),
+        'bg-[#EFEFEF] text-[#8C8C8C]': !isDayActive(day)
+      }"
+    >
+      {{ day }}
+    </div>
+    }
+  </div>
+
+  <button
+    class="mt-4 w-full h-[45px] rounded-[15px] bg-[var(--primary-color)] text-white text-[16px] font-semibold flex items-center justify-center gap-2 hover:bg-[#005E71] transition-colors font-[family-name:var(--font-lato)]"
+  >
+    View Details
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="18"
+      height="18"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="2"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+    >
+      <line x1="5" y1="12" x2="19" y2="12" />
+      <polyline points="12 5 19 12 12 19" />
+    </svg>
+  </button>
+</div>

@@ -1,0 +1,107 @@
+<div class="flex flex-col gap-6 font-[family-name:var(--font-lato)] p-2">
+  <!-- Header -->
+  <div class="flex flex-row justify-between items-start">
+    <div class="flex flex-col gap-1">
+      <h2 class="text-[32px] font-bold text-[var(--primary-text-color)] m-0 leading-tight">
+        {{ isEditMode ? 'Edit schedule' : 'Add a new schedule' }}
+      </h2>
+      <p class="text-[16px] italic text-[var(--secondary-text-color)] m-0">
+        fill in the details below to create a new article.
+      </p>
+    </div>
+    <button
+      (click)="save()"
+      class="border border-[var(--primary-color)] text-[14px] font-medium py-2 px-6 rounded-[12px] shadow-[0px_2px_15px_0px_rgba(0,0,0,0.1)] bg-[var(--primary-color)] text-[var(--secondary-color)] hover:bg-[#005E71] focus:outline-none hover:text-white hover:cursor-pointer transition-colors duration-300"
+    >
+      Save schedule
+    </button>
+  </div>
+
+  <div class="flex flex-col gap-6">
+    <h3 class="text-[20px] font-medium text-[var(--primary-text-color)] m-0">
+      Service Schedule Information
+    </h3>
+
+    <div class="flex flex-col gap-5">
+      <!-- Service Title -->
+      <div class="flex flex-col gap-1">
+        <label class="text-[14px] text-[var(--primary-text-color)] font-medium">Service Title</label>
+        <input
+          type="text"
+          [(ngModel)]="formData.name"
+          placeholder="Add the title for the hero of the article"
+          class="w-full h-[45px] px-4 bg-white border border-[var(--border-color)] rounded-[12px] text-[var(--primary-text-color)] font-[family-name:var(--font-lato)] outline-none focus:border-[var(--primary-color)] transition-colors"
+        />
+      </div>
+
+      <!-- Service Type -->
+      <div class="flex flex-col gap-1">
+        <label class="text-[14px] text-[var(--primary-text-color)] font-medium">Service type</label>
+        <input
+          type="text"
+          [(ngModel)]="formData.type"
+          placeholder="Add the subtitle for the hero of the article"
+          class="w-full h-[45px] px-4 bg-white border border-[var(--border-color)] rounded-[12px] text-[var(--primary-text-color)] font-[family-name:var(--font-lato)] outline-none focus:border-[var(--primary-color)] transition-colors"
+        />
+      </div>
+
+      <!-- Days of work -->
+      <div class="flex flex-col gap-2">
+        <label class="text-[14px] text-[var(--primary-text-color)] font-medium">Days of work</label>
+        <div class="flex gap-2 flex-wrap">
+          @for (day of allDays; track day) {
+          <button
+            (click)="toggleDay(day)"
+            class="px-4 py-2 rounded-[8px] text-[14px] font-medium transition-all shadow-sm"
+            [ngClass]="{
+              'bg-[var(--primary-color)] text-white': isDaySelected(day),
+              'bg-[#EFEFEF] text-[#8C8C8C] hover:bg-gray-200': !isDaySelected(day)
+            }"
+          >
+            {{ day }}
+          </button>
+          }
+        </div>
+      </div>
+
+      <!-- Time Row -->
+      <div class="flex flex-row gap-5">
+        <!-- Debut Time -->
+        <div class="flex flex-col gap-1 flex-1">
+          <label class="text-[14px] text-[var(--primary-text-color)] font-medium">Debut Time</label>
+          <input
+            type="text"
+            [(ngModel)]="formData.heureDeb"
+            class="w-full h-[45px] px-4 bg-white border border-[var(--border-color)] rounded-[12px] text-[var(--primary-text-color)] font-[family-name:var(--font-lato)] outline-none focus:border-[var(--primary-color)] transition-colors"
+          />
+        </div>
+
+        <!-- End Time -->
+        <div class="flex flex-col gap-1 flex-1">
+          <label class="text-[14px] text-[var(--primary-text-color)] font-medium">End Time (optional)</label>
+          <div class="relative">
+            <input
+              type="text"
+              [(ngModel)]="formData.heureFin"
+              class="w-full h-[45px] px-4 bg-white border border-[var(--border-color)] rounded-[12px] text-[var(--primary-text-color)] font-[family-name:var(--font-lato)] outline-none focus:border-[var(--primary-color)] transition-colors"
+            />
+            <svg
+              class="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none"
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path d="m6 9 6 6 6-6" />
+            </svg>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

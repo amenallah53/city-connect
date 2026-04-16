@@ -29,20 +29,18 @@
                 </div>
 
                 <!-- Filter by role -->
-                <div
-                    class="card flex justify-center rounded-[12px] shadow-[0px_2px_15px_0px_rgba(0,0,0,0.1)] bg-white overflow-hidden">
-                    <p-select [options]="roleFilters" [(ngModel)]="selectedRoleFilter" optionLabel="name"
+                <div class="card flex justify-center rounded-[12px] shadow-[0px_2px_15px_0px_rgba(0,0,0,0.1)] bg-white">
+                    <p-select dataKey="code" [options]="roleFilters" [(ngModel)]="selectedRoleFilter" optionLabel="name"
                         placeholder="Filter by role"
-                        class="w-full md:w-[180px] text-[var(--secondary-text-color)] bg-transparent"
+                        class="w-full md:w-[150px] text-[var(--secondary-text-color)] bg-transparent"
                         (onChange)="onFilterChange()" />
                 </div>
 
                 <!-- Filter by status -->
-                <div
-                    class="card flex justify-center rounded-[12px] shadow-[0px_2px_15px_0px_rgba(0,0,0,0.1)] bg-white overflow-hidden">
-                    <p-select [options]="statusFilters" [(ngModel)]="selectedStatusFilter" optionLabel="name"
-                        placeholder="Filter by status"
-                        class="w-full md:w-[180px] text-[var(--secondary-text-color)] bg-transparent"
+                <div class="card flex justify-center rounded-[12px] shadow-[0px_2px_15px_0px_rgba(0,0,0,0.1)] bg-white">
+                    <p-select dataKey="code" [options]="statusFilters" [(ngModel)]="selectedStatusFilter"
+                        optionLabel="name" placeholder="Filter by status"
+                        class="w-full md:w-[150px] text-[var(--secondary-text-color)] bg-transparent"
                         (onChange)="onFilterChange()" />
                 </div>
 
