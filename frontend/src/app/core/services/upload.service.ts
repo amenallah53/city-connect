@@ -19,6 +19,11 @@ export class UploadService {
     const formData = new FormData();
     formData.append('image', file);
 
-    return this.http.post<{ url: string }>(this.apiUrl, formData);
+    const token = localStorage.getItem('token');
+    return this.http.post<{ url: string }>(this.apiUrl, formData, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    });
   }
 }

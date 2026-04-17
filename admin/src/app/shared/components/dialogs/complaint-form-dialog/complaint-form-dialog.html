@@ -1,0 +1,86 @@
+<div class="flex flex-col gap-6 font-[family-name:var(--font-lato)] p-2 bg-[#FFFFFF]">
+    <!-- Header -->
+    <div class="flex flex-row justify-between items-start pb-4 border-b border-[#E5E7EB] border-dashed">
+        <div class="flex flex-col gap-1">
+            <h2 class="text-[32px] font-bold text-[#1E293B] m-0 leading-tight">Add a new complaint</h2>
+            <p class="text-[15px] italic text-[#6B7280] m-0 mt-1">fill in the details below to log a new complaint.</p>
+        </div>
+        
+        <div class="flex flex-row gap-3 items-center">
+            <button (click)="saveForm()" class="border-none flex items-center justify-center font-[family-name:var(--font-lato)]
+                           h-[42px] px-6 rounded-[8px] bg-[#00899B] text-[#FFFFFF] text-[15px] font-medium
+                           hover:bg-[#007A8A] hover:cursor-pointer transition-colors duration-300">
+                Save complaint
+            </button>
+        </div>
+    </div>
+
+    <!-- Content -->
+    <div class="flex flex-col gap-4 mt-1">
+        <h3 class="text-[18px] font-semibold text-[#1E293B] m-0">Complaint main Information</h3>
+
+        <div class="flex flex-col gap-5">
+            <!-- Title -->
+            <div class="flex flex-col gap-1.5">
+                <span class="text-[14px] text-[#1E293B] font-medium">Complaint Title</span>
+                <input type="text" [(ngModel)]="complaint.title" placeholder="Add the title of the complaint"
+                       class="w-full h-[45px] px-4 text-[14px] text-[#4B5563] border border-[#E5E7EB] rounded-[10px] bg-[#FFFFFF] outline-none focus:border-[#00899B] transition-colors">
+            </div>
+
+            <!-- Category -->
+            <div class="flex flex-col gap-1.5">
+                <span class="text-[14px] text-[#1E293B] font-medium">Category ID</span>
+                <input type="text" [(ngModel)]="categoryIdString" placeholder="Add the category ID (number)"
+                       class="w-full h-[45px] px-4 text-[14px] text-[#4B5563] border border-[#E5E7EB] rounded-[10px] bg-[#FFFFFF] outline-none focus:border-[#00899B] transition-colors">
+            </div>
+
+            <!-- Location -->
+            <div class="flex flex-col gap-1.5">
+                <span class="text-[14px] text-[#1E293B] font-medium">Location</span>
+                <input type="text" [(ngModel)]="complaint.location" placeholder="Add the location of the complaint"
+                       class="w-full h-[45px] px-4 text-[14px] text-[#4B5563] border border-[#E5E7EB] rounded-[10px] bg-[#FFFFFF] outline-none focus:border-[#00899B] transition-colors">
+            </div>
+
+            <!-- Description -->
+            <div class="flex flex-col gap-1.5">
+                <span class="text-[14px] text-[#1E293B] font-medium">Complaint Description</span>
+                <textarea [(ngModel)]="complaint.description" placeholder="Add complaint description"
+                          class="w-full h-[120px] p-4 text-[14px] text-[#4B5563] border border-[#E5E7EB] rounded-[10px] bg-[#FFFFFF] resize-none outline-none focus:border-[#00899B] transition-colors"></textarea>
+            </div>
+
+            <!-- Image Upload Support -->
+            <div class="flex flex-col gap-1.5">
+                <span class="text-[14px] text-[#1E293B] font-medium">Supporting Documents</span>
+                <div class="file-upload-area font-[family-name:var(--font-lato)]">
+                  <div class="file-preview">
+                    <img *ngIf="imagePreview; else placeholder" [src]="imagePreview" alt="Preview" />
+                    <ng-template #placeholder>
+                      <div class="placeholder-icon">
+                        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                          <rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/>
+                          <polyline points="21 15 16 10 5 21"/>
+                        </svg>
+                      </div>
+                    </ng-template>
+                  </div>
+                  <div class="file-input-wrapper">
+                    <p class="file-hint">Please upload an image for the problem, size less than 1MB</p>
+                    <div class="file-row mt-1">
+                      <label class="choose-file-btn" for="fileInput">Choose File</label>
+                      <input
+                        type="file"
+                        id="fileInput"
+                        name="file"
+                        accept="image/*"
+                        (change)="onFileChange($event)"
+                        hidden
+                      />
+                      <span class="file-name">{{ fileName || 'No File Chosen' }}</span>
+                    </div>
+                    <span class="error-msg" *ngIf="fileError">{{ fileError }}</span>
+                  </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

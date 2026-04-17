@@ -25,6 +25,11 @@ app.use("/api/admin", createProxyMiddleware({
   changeOrigin: true
 }));
 
+app.use("/api/tickets", createProxyMiddleware({
+  target: "http://localhost:5004",
+  changeOrigin: true
+}));
+
 
 app.use("/api/news-service", createProxyMiddleware({
   target: "http://localhost:5005",
@@ -44,17 +49,6 @@ app.use("/api/faqs", createProxyMiddleware({
   changeOrigin: true
 }));
 
-app.use("/api/tickets", createProxyMiddleware({
-  target: "http://localhost:5004",
-  changeOrigin: true
-}));
-
-app.use("/api/uploads", createProxyMiddleware({
-  target: "http://localhost:5010",
-  changeOrigin: true
-}));
-
-
 
 app.use("/api/myprofile", createProxyMiddleware({
   target: "http://localhost:5008",
@@ -65,6 +59,14 @@ app.use("/api/users-service-admin", createProxyMiddleware({
   target: "http://localhost:5009",
   changeOrigin: true
 }));
+
+
+app.use("/api/uploads", createProxyMiddleware({
+  target: "http://localhost:5010",
+  changeOrigin: true
+}));
+
+
 
 app.get("/", (req, res) => {
   res.send("API is running 🚀");

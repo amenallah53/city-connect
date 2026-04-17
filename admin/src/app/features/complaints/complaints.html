@@ -1,1 +1,81 @@
-<p>complaints works!</p>
+<section class="flex flex-col h-full overflow-y-auto bg-[var(--background-color)]">
+
+    <!-- Header + Filter row -->
+    <div class="px-6 pt-6 pb-2 flex flex-col gap-1">
+        <h1 class="font-[family-name:var(--font-rubik)] text-[32px] font-semibold text-[var(--primary-text-color)]">
+            Complaints management
+        </h1>
+        <p class="text-[18px] text-[var(--primary-subtitle-color)] font-[family-name:var(--font-lato)] italic">
+            Here where you can complain for us to not to listen to you
+        </p>
+
+        <div class="flex flex-row items-center justify-between flex-wrap gap-4 mt-6">
+            <div class="flex flex-row gap-3 items-center flex-wrap w-full md:w-auto">
+
+                <!-- Search input -->
+                <div class="card flex justify-center rounded-[12px] shadow-[0px_2px_15px_0px_rgba(0,0,0,0.1)]">
+                    <div class="relative flex items-center bg-white rounded-[12px] overflow-hidden w-[260px]">
+                        <input type="text" placeholder="Search for ..." [(ngModel)]="searchQuery"
+                            (keydown)="onSearchKeydown($event)" class="w-full h-[48px] border-none bg-transparent pl-5 pr-10
+                                   font-[family-name:var(--font-lato)] text-[15px]
+                                   text-[var(--secondary-text-color)] outline-none
+                                   placeholder:text-[var(--primary-subtitle-color)]">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                            class="absolute right-4 text-[var(--primary-subtitle-color)] pointer-events-none">
+                            <circle cx="11" cy="11" r="8" />
+                            <path d="m21 21-4.3-4.3" />
+                        </svg>
+                    </div>
+                </div>
+
+                <!-- Filter by Badge -->
+                <div class="card flex justify-center rounded-[12px] shadow-[0px_2px_15px_0px_rgba(0,0,0,0.1)] bg-white">
+                    <p-select dataKey="code" [options]="badgeFilters" [(ngModel)]="selectedBadgeFilter"
+                        optionLabel="name" placeholder="Filter by Badge"
+                        class="w-full md:w-[200px] text-[var(--secondary-text-color)] bg-transparent"
+                        (onChange)="onFilterChange()" />
+                </div>
+
+            </div>
+
+            <!-- Add a complaint button -->
+            <button (click)="callFormDialog()"
+                class="border-none text-[15px] font-medium
+                   h-[48px] px-6 rounded-[12px] shadow-[0px_2px_15px_0px_rgba(0,0,0,0.1)]
+                   bg-[#00899B] text-white
+                   hover:bg-[#007A8A] hover:cursor-pointer transition-colors duration-300 ml-auto font-[family-name:var(--font-lato)]">
+                Add a complaint
+            </button>
+        </div>
+    </div>
+
+    <!-- Complaints list -->
+    <div class="flex flex-col gap-5 px-6 py-4">
+        @for (complaint of pagedPlaintes; track complaint.id) {
+        <app-complaint-card [complaint]="complaint" (actionExecuted)="loadTickets()"></app-complaint-card>
+        }
+    </div>
+
+    <!-- Empty state -->
+    <div *ngIf="allPlaintes.length === 0"
+        class="flex flex-col items-center justify-center py-20 gap-4 text-[var(--primary-subtitle-color)]">
+        <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+            class="text-[var(--secondary-text-color)]">
+            <path d="m21 21-4.34-4.34" />
+            <circle cx="11" cy="11" r="8" />
+        </svg>
+        <p class="text-[18px] text-[var(--primary-subtitle-color)] font-medium">
+            No complaints found for the selected filters.
+        </p>
+    </div>
+
+    <!-- Paginator -->
+    <div class="flex justify-center py-6" *ngIf="totalRecords > 0">
+        <p-paginator (onPageChange)="onPageChange($event)" [first]="first" [rows]="rows" [totalRecords]="totalRecords"
+            [showCurrentPageReport]="true" [showPageLinks]="true" [showJumpToPageDropdown]="false"
+            currentPageReportTemplate="Showing {first} to {last} of {totalRecords}" />
+    </div>
+
+</section>

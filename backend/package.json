@@ -9,12 +9,12 @@
     "gateway": "cd api-gateway && npm run dev",
     "admin": "cd services/admin-service && npm run dev",
     "auth": "cd services/auth-service && npm run dev",
-    "news": "cd services/news-service && npm run dev",
+    "news": "cd \"services/news-service (admin api)\" && npm run dev",
     "notifications": "cd services/notifications-service && npm run dev",
     "services": "cd services/services-service && npm run dev",
     "tickets": "cd services/tickets-service && npm run dev",
     "uploads": "cd services/upload-service && npm run dev",
-    "users": "cd services/users-service && npm run dev"
+    "users": "cd \"services/users-service (admin)\" && npm run dev"
   },
   "keywords": [],
   "author": "",

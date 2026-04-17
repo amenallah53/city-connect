@@ -2,10 +2,10 @@ export interface Ticket {
   id?: string;
   description: string;
   title?: string;
-  city: string;
+  location: string;
   category: string;
   urgency?: string;
-  status?: 'pending' | 'approved' | 'rejected';
+  status?: 'pending' | 'approved' | 'rejected' | 'in-process';
   image?: string;
   createdAt?: string;
   date_creation?: string;

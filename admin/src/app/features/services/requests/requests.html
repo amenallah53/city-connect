@@ -1,1 +1,95 @@
-<p>requests works!</p>
+<section class="flex flex-col h-full overflow-y-auto w-full">
+
+    <!-- Header + Filter row -->
+    <div class="px-6 pt-6 pb-2 flex flex-col gap-1 w-full">
+        <h1 class="font-[family-name:var(--font-rubik)] text-[32px] font-bold text-[var(--primary-text-color)] m-0">
+            Users Services requests management
+        </h1>
+        <p class="text-[18px] text-[var(--primary-subtitle-color)] font-[family-name:var(--font-lato)] italic m-0">
+            Review the citizen service requests.
+        </p>
+        <div class="flex flex-row gap-3 items-center flex-wrap mt-6">
+            <!-- Search input -->
+            <div class="card flex justify-center rounded-[12px] shadow-[0px_2px_15px_0px_rgba(0,0,0,0.1)]">
+                <div class="relative flex items-center bg-white rounded-[12px] overflow-hidden w-[260px]">
+                    <input type="text" placeholder="Search for ..." [(ngModel)]="searchQuery"
+                        (ngModelChange)="onSearchChange()" class="w-full h-[42px] border-none bg-transparent pl-5 pr-10
+                                   font-[family-name:var(--font-lato)] text-[14px]
+                                   text-[var(--secondary-text-color)] outline-none
+                                   placeholder:text-[var(--primary-subtitle-color)]">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                        class="absolute right-4 text-[var(--primary-subtitle-color)] pointer-events-none">
+                        <circle cx="11" cy="11" r="8" />
+                        <path d="m21 21-4.3-4.3" />
+                    </svg>
+                </div>
+            </div>
+
+            <!-- Filter by status -->
+            <div class="card flex justify-center rounded-[12px] shadow-[0px_2px_15px_0px_rgba(0,0,0,0.1)] bg-white">
+                <p-select [options]="statusFilters" [(ngModel)]="selectedFilter" optionLabel="name"
+                    placeholder="Filter by status" (onChange)="onFilterChange()"
+                    class="w-full md:w-[150px] text-[var(--secondary-text-color)] bg-transparent"
+                    styleClass="w-full text-[var(--secondary-text-color)] bg-transparent !border-none !shadow-none !rounded-[12px]"
+                    panelStyleClass="!border-none !shadow-lg !rounded-xl text-[14px] font-[family-name:var(--font-lato)]">
+                </p-select>
+            </div>
+
+            <!-- Toggle Grid/List -->
+            <button (click)="setViewMode('grid')"
+                [class]="viewMode === 'grid' ? 'bg-[var(--primary-color)] text-[var(--secondary-color)] p-2.5 rounded-[12px] shadow-[0px_2px_15px_0px_rgba(0,0,0,0.1)]' : 'bg-white text-[var(--primary-subtitle-color)] p-2.5 rounded-[12px] shadow-[0px_2px_15px_0px_rgba(0,0,0,0.1)] hover:bg-[#F2F2F2] transition-colors'">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <rect width="7" height="7" x="3" y="3" rx="1" />
+                    <rect width="7" height="7" x="14" y="3" rx="1" />
+                    <rect width="7" height="7" x="14" y="14" rx="1" />
+                    <rect width="7" height="7" x="3" y="14" rx="1" />
+                </svg>
+            </button>
+
+            <button (click)="setViewMode('list')"
+                [class]="viewMode === 'list' ? 'bg-[var(--primary-color)] text-[var(--secondary-color)] p-2.5 rounded-[12px] shadow-[0px_2px_15px_0px_rgba(0,0,0,0.1)]' : 'bg-white text-[var(--primary-subtitle-color)] p-2.5 rounded-[12px] shadow-[0px_2px_15px_0px_rgba(0,0,0,0.1)] hover:bg-[#F2F2F2] transition-colors'">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <rect width="7" height="7" x="3" y="3" rx="1" />
+                    <rect width="7" height="7" x="3" y="14" rx="1" />
+                    <path d="M14 4h7" />
+                    <path d="M14 9h7" />
+                    <path d="M14 15h7" />
+                    <path d="M14 20h7" />
+                </svg>
+            </button>
+
+        </div>
+    </div>
+    <!-- Requests list -->
+    <div class="px-6 py-4 w-full"
+        [ngClass]="viewMode === 'grid' ? 'grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6' : 'flex flex-col gap-4'">
+        @for (req of pagedRequests; track req.id) {
+        <app-request-card [req]="req" [viewMode]="viewMode"></app-request-card>
+        }
+    </div>
+
+    <!-- Empty state -->
+    <div *ngIf="filteredRequests.length === 0"
+        class="flex flex-col items-center justify-center py-20 gap-4 text-[var(--primary-subtitle-color)] w-full">
+        <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+            class="text-[var(--secondary-text-color)]">
+            <path d="m21 21-4.34-4.34" />
+            <circle cx="11" cy="11" r="8" />
+        </svg>
+        <p class="text-[18px] text-[var(--primary-subtitle-color)] font-medium">
+            No requests found for the selected filters.
+        </p>
+    </div>
+
+    <!-- Paginator -->
+    <div class="flex justify-center py-6 w-full" *ngIf="filteredRequests.length > 0">
+        <p-paginator (onPageChange)="onPageChange($event)" [first]="first" [rows]="rows"
+            [totalRecords]="filteredRequests.length" [showCurrentPageReport]="true" [showPageLinks]="true"
+            [showJumpToPageDropdown]="false" currentPageReportTemplate="Showing {first} to {last} of {totalRecords}" />
+    </div>
+
+</section>

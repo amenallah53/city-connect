@@ -1,76 +1,39 @@
 <div class="vertical-div titles">
-    <p class="title">Report an issue</p>
-    <p class="subtitle">Broken street lights, unfunctional traffic lights, potholes... Report it here and we’ll do our best to fix it within the next 24 hours</p>
+  <p class="title">Report an issue</p>
+  <p class="subtitle">Broken street lights, unfunctional traffic lights, potholes... Report it here and we’ll do our
+    best to fix it within the next 24 hours</p>
 </div>
 
 <form #reportForm="ngForm" (ngSubmit)="onSubmit(reportForm)" novalidate>
-
-  <div class="form-row">
-    <div class="form-group">
-      <label for="city">City</label>
-      <select
-        id="city"
-        name="city"
-        [(ngModel)]="formData.city"
-        #city="ngModel"
-        required
-        [class.invalid]="city.invalid && city.touched"
-      >
-        <option value="" disabled selected>Select city</option>
-        <option *ngFor="let c of cities" [value]="c">{{ c }}</option>
-      </select>
-      <span class="error-msg" *ngIf="city.invalid && city.touched">City is required.</span>
-    </div>
-
-    <div class="form-group">
-      <label for="category">Ticket category</label>
-      <select
-        id="category"
-        name="category"
-        [(ngModel)]="formData.category"
-        #category="ngModel"
-        required
-        [class.invalid]="category.invalid && category.touched"
-      >
-        <option value="" disabled selected>Specify the category of your complaint</option>
-        <option *ngFor="let cat of categories" [value]="cat">{{ cat }}</option>
-      </select>
-      <span class="error-msg" *ngIf="category.invalid && category.touched">Category is required.</span>
-    </div>
+  <div class="form-group">
+    <label for="category">Ticket category</label>
+    <select id="category" name="category" [(ngModel)]="formData.category" #category="ngModel" required
+      [class.invalid]="category.invalid && category.touched">
+      <option value="" disabled selected>Specify the category of your complaint</option>
+      <option *ngFor="let cat of categories" [value]="cat">{{ cat }}</option>
+    </select>
+    <span class="error-msg" *ngIf="category.invalid && category.touched">Category is required.</span>
   </div>
 
   <div class="form-group">
     <label for="title">Title</label>
-    <input
-      type="text"
-      id="title"
-      name="title"
-      placeholder="Add the title of your ticket"
-      [(ngModel)]="formData.title"
-      #title="ngModel"
-      required
-      minlength="5"
-      [class.invalid]="title.invalid && title.touched"
-    />
+    <input type="text" id="title" name="title" placeholder="Add the title of your ticket" [(ngModel)]="formData.title"
+      #title="ngModel" required minlength="5" [class.invalid]="title.invalid && title.touched" />
     <span class="error-msg" *ngIf="title.errors?.['required'] && title.touched">Title is required.</span>
-    <span class="error-msg" *ngIf="title.errors?.['minlength'] && title.touched">Title must be at least 5 characters.</span>
+    <span class="error-msg" *ngIf="title.errors?.['minlength'] && title.touched">Title must be at least 5
+      characters.</span>
   </div>
 
   <div class="form-group">
     <label for="description">Description</label>
-    <textarea
-      id="description"
-      name="description"
+    <textarea id="description" name="description"
       placeholder="Describe the complaint in a few words and make sure to include every detail you find necessary"
-      [(ngModel)]="formData.description"
-      #description="ngModel"
-      required
-      minlength="20"
-      rows="5"
-      [class.invalid]="description.invalid && description.touched"
-    ></textarea>
-    <span class="error-msg" *ngIf="description.errors?.['required'] && description.touched">Description is required.</span>
-    <span class="error-msg" *ngIf="description.errors?.['minlength'] && description.touched">Description must be at least 20 characters.</span>
+      [(ngModel)]="formData.description" #description="ngModel" required minlength="20" rows="5"
+      [class.invalid]="description.invalid && description.touched"></textarea>
+    <span class="error-msg" *ngIf="description.errors?.['required'] && description.touched">Description is
+      required.</span>
+    <span class="error-msg" *ngIf="description.errors?.['minlength'] && description.touched">Description must be at
+      least 20 characters.</span>
   </div>
 
   <div class="form-group">
@@ -81,8 +44,9 @@
         <ng-template #placeholder>
           <div class="placeholder-icon">
             <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-              <rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/>
-              <polyline points="21 15 16 10 5 21"/>
+              <rect x="3" y="3" width="18" height="18" rx="2" />
+              <circle cx="8.5" cy="8.5" r="1.5" />
+              <polyline points="21 15 16 10 5 21" />
             </svg>
           </div>
         </ng-template>
@@ -91,14 +55,7 @@
         <p class="file-hint">Please upload an image for the problem, size less than 1MB</p>
         <div class="file-row">
           <label class="choose-file-btn" for="fileInput">Choose File</label>
-          <input
-            type="file"
-            id="fileInput"
-            name="file"
-            accept="image/*"
-            (change)="onFileChange($event)"
-            hidden
-          />
+          <input type="file" id="fileInput" name="file" accept="image/*" (change)="onFileChange($event)" hidden />
           <span class="file-name">{{ fileName || 'No File Chosen' }}</span>
         </div>
         <span class="error-msg" *ngIf="fileError">{{ fileError }}</span>
@@ -108,13 +65,7 @@
 
   <div class="form-group checkbox-group">
     <label class="checkbox-label">
-      <input
-        type="checkbox"
-        name="agreed"
-        [(ngModel)]="formData.agreed"
-        #agreed="ngModel"
-        required
-      />
+      <input type="checkbox" name="agreed" [(ngModel)]="formData.agreed" #agreed="ngModel" required />
       <span>By checking this box, you agree to the terms and conditions related to the report tickets</span>
     </label>
     <span class="error-msg" *ngIf="agreed.invalid && agreed.touched">You must agree to the terms.</span>
