@@ -1,6 +1,5 @@
-import { Component, Input } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { Prestataire } from '../../../models/prestataire.model';
-import { NgClass } from '@angular/common';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { PrestataireInfoDialog } from '../../dialogs/prestataire-info-dialog/prestataire-info-dialog';
 import { PrestataireFormDialog } from '../../dialogs/prestataire-form-dialog/prestataire-form-dialog';
@@ -8,13 +7,15 @@ import { PrestataireDeleteDialog } from '../../dialogs/prestataire-delete-dialog
 
 @Component({
   selector: 'app-prestataire-card',
-  imports: [NgClass],
   providers: [DialogService],
   templateUrl: './prestataire-card.html',
   styleUrl: './prestataire-card.css',
 })
 export class PrestataireCard {
   @Input({ required: true }) prestataire!: Prestataire;
+  @Output() statusUpdated = new EventEmitter<{ id: string; status: 'accepted' | 'rejected' }>();
+  @Output() prestataireEdited = new EventEmitter<Partial<Prestataire>>();
+  @Output() prestataireDeleted = new EventEmitter<string>();
 
   private dialogRef: DynamicDialogRef | null = null;
 
@@ -29,6 +30,18 @@ export class PrestataireCard {
       closable: true,
       styleClass: 'user-dialog', // keeping this primeNG custom class from user
     });
+
+    if (!this.dialogRef) {
+      return;
+    }
+
+    this.dialogRef.onClose.subscribe((result?: 'accepted' | 'rejected') => {
+      if (!result) {
+        return;
+      }
+
+      this.statusUpdated.emit({ id: this.prestataire.id, status: result });
+    });
   }
 
   editPrestataire() {
@@ -40,6 +53,18 @@ export class PrestataireCard {
       closable: true,
       styleClass: 'user-dialog',
     });
+
+    if (!this.dialogRef) {
+      return;
+    }
+
+    this.dialogRef.onClose.subscribe((payload?: Partial<Prestataire>) => {
+      if (!payload) {
+        return;
+      }
+
+      this.prestataireEdited.emit(payload);
+    });
   }
 
   deletePrestataire() {
@@ -50,6 +75,18 @@ export class PrestataireCard {
       modal: true,
       closable: true,
       styleClass: 'user-dialog',
+    });
+
+    if (!this.dialogRef) {
+      return;
+    }
+
+    this.dialogRef.onClose.subscribe((confirmed?: boolean) => {
+      if (!confirmed) {
+        return;
+      }
+
+      this.prestataireDeleted.emit(this.prestataire.id);
     });
   }
 

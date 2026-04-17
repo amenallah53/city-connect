@@ -5,6 +5,11 @@
         <h1 class="font-[family-name:var(--font-rubik)] text-[32px] font-bold text-[var(--primary-text-color)] m-0">
             Users Services requests management
         </h1>
+        <div *ngIf="actionMessage"
+            class="mt-3 px-4 py-3 rounded-[10px] text-[14px] font-[family-name:var(--font-lato)]"
+            [ngClass]="actionMessageType === 'success' ? 'bg-[#E8F7EC] text-[#1E7A35] border border-[#BFE8CB]' : 'bg-[#FDECEC] text-[#B42318] border border-[#F5C2C0]'">
+            {{ actionMessage }}
+        </div>
         <p class="text-[18px] text-[var(--primary-subtitle-color)] font-[family-name:var(--font-lato)] italic m-0">
             Review the citizen service requests.
         </p>
@@ -67,7 +72,7 @@
     <div class="px-6 py-4 w-full"
         [ngClass]="viewMode === 'grid' ? 'grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6' : 'flex flex-col gap-4'">
         @for (req of pagedRequests; track req.id) {
-        <app-request-card [req]="req" [viewMode]="viewMode"></app-request-card>
+        <app-request-card [req]="req" [viewMode]="viewMode" (statusUpdated)="onStatusUpdate($event)"></app-request-card>
         }
     </div>
 

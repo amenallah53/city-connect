@@ -31,7 +31,7 @@
 
                 <!-- Filter by Badge -->
                 <div class="card flex justify-center rounded-[12px] shadow-[0px_2px_15px_0px_rgba(0,0,0,0.1)] bg-white">
-                    <p-select dataKey="code" [options]="badgeFilters" [(ngModel)]="selectedBadgeFilter"
+                    <p-select dataKey="code" [options]="badgeFilters" [(ngModel)]="selectedBadgeCode" optionValue="code"
                         optionLabel="name" placeholder="Filter by Badge"
                         class="w-full md:w-[200px] text-[var(--secondary-text-color)] bg-transparent"
                         (onChange)="onFilterChange()" />

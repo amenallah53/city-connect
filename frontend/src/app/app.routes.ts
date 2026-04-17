@@ -74,6 +74,11 @@ export const routes: Routes = [
           import('./features/services/services').then(m => m.Services)
       },
       {
+        path: 'services/requests',
+        loadComponent: () =>
+          import('./features/my-requests/my-requests').then(m => m.MyRequests)
+      },
+      {
         path: 'services/:serviceId',
         loadComponent: () =>
           import('./features/services/details-page/details-page').then(m => m.DetailsPage)
@@ -82,11 +87,6 @@ export const routes: Routes = [
         path: 'services/:serviceId/start',
         loadComponent: () =>
           import('./features/services/start-service/start-service').then(m => m.StartService)
-      },
-      {
-        path: 'services/requests',
-        loadComponent: () =>
-          import('./features/my-requests/my-requests').then(m => m.MyRequests)
       },
       {
         path: 'faq',

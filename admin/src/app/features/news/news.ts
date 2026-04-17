@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { PaginatorModule, PaginatorState } from 'primeng/paginator';
+import { Paginator, PaginatorState } from 'primeng/paginator';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 
 import { NewsCard } from '../../shared/components/cards/news-card/news-card';
@@ -12,7 +12,7 @@ import { NewsFormDialog } from '../../shared/components/dialogs/news-form-dialog
 
 @Component({
   selector: 'app-news',
-  imports: [CommonModule, FormsModule, PaginatorModule, NewsCard],
+  imports: [CommonModule, FormsModule, Paginator, NewsCard],
   providers: [DialogService],
   templateUrl: './news.html',
   styleUrl: './news.css',
@@ -89,3 +89,4 @@ export class NewsComponent implements OnInit {
     this.pagedNews = this.filteredNews.slice(this.first, this.first + this.rows);
   }
 }
+

@@ -15,6 +15,7 @@ export class RequestCard {
   @Input() req!: any;
   @Input() viewMode: 'grid' | 'list' = 'list';
   @Output() actionExecuted = new EventEmitter<void>();
+  @Output() statusUpdated = new EventEmitter<{ requestId: string; status: 'approved' | 'rejected' }>();
 
   private dialogRef: DynamicDialogRef | null = null;
 
@@ -31,11 +32,35 @@ export class RequestCard {
     });
 
     if (this.dialogRef) {
-      this.dialogRef.onClose.subscribe((updated: boolean) => {
-        if (updated) {
+      this.dialogRef.onClose.subscribe((result?: boolean | 'approved' | 'rejected') => {
+        if (result === 'approved' || result === 'rejected') {
+          this.emitStatus(result);
+          this.actionExecuted.emit();
+          return;
+        }
+
+        if (result) {
           this.actionExecuted.emit();
         }
       });
     }
+  }
+
+  approveRequest() {
+    this.emitStatus('approved');
+  }
+
+  rejectRequest() {
+    this.emitStatus('rejected');
+  }
+
+  private emitStatus(status: 'approved' | 'rejected') {
+    const requestId = this.req?.id;
+    if (!requestId) {
+      console.warn('RequestCard: missing request id for status update action.');
+      return;
+    }
+
+    this.statusUpdated.emit({ requestId, status });
   }
 }

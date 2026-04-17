@@ -1,6 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 const dotenv = require('dotenv');
+const fs = require('fs');
 const { S3Client, GetObjectCommand } = require('@aws-sdk/client-s3');
 const multer = require('multer');
 const multerS3 = require('multer-s3');
@@ -13,10 +14,18 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
+const localUploadsDir = path.join(__dirname, '../uploads');
+
+const ensureLocalUploadsDir = () => {
+  if (!fs.existsSync(localUploadsDir)) {
+    fs.mkdirSync(localUploadsDir, { recursive: true });
+  }
+};
+
 const JWT_SECRET = process.env.JWT_SECRET || 'city-connect-secure-secret-2024';
 
 // Middleware to serve uploaded files locally
-app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
+app.use('/uploads', express.static(localUploadsDir));
 
 // Middleware to authenticate JWT
 const authenticateToken = (req, res, next) => {
@@ -45,9 +54,12 @@ let s3;
 
 if (useLocalStorage) {
   console.log('⚠️  Using LOCAL STORAGE for uploads (B2 credentials not configured)');
+  ensureLocalUploadsDir();
+
   storage = multer.diskStorage({
     destination: function (req, file, cb) {
-      cb(null, path.join(__dirname, '../uploads'));
+      ensureLocalUploadsDir();
+      cb(null, localUploadsDir);
     },
     filename: function (req, file, cb) {
       const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);

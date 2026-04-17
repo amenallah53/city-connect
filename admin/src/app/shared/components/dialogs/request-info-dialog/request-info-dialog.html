@@ -7,12 +7,12 @@
         </div>
 
         <div class="flex flex-row gap-3 items-center" *ngIf="req?.status === 'pending'">
-            <button class="border-none flex items-center justify-center font-[family-name:var(--font-lato)]
+            <button type="button" (click)="approveRequest()" class="border-none flex items-center justify-center font-[family-name:var(--font-lato)]
                            h-[40px] px-6 rounded-[12px] bg-[#00899B] text-[#FFFFFF] text-[15px] font-medium
                            hover:bg-[#007A8A] hover:cursor-pointer transition-colors duration-300 shadow-sm">
                 Approve
             </button>
-            <button class="border-none flex items-center justify-center font-[family-name:var(--font-lato)]
+            <button type="button" (click)="rejectRequest()" class="border-none flex items-center justify-center font-[family-name:var(--font-lato)]
                            h-[40px] px-6 rounded-[12px] bg-[#F44336] text-[#FFFFFF] text-[15px] font-medium
                            hover:bg-[#D32F2F] hover:cursor-pointer transition-colors duration-300 shadow-sm">
                 Reject
@@ -55,12 +55,6 @@
                 <span class="text-[16px] text-[#4B5563]">{{ req?.phone || '+216 54 369 852' }}</span>
             </div>
 
-            <!-- Location -->
-            <div class="flex flex-col gap-1">
-                <span class="text-[14px] italic text-[#6B7280]">Location</span>
-                <span class="text-[16px] text-[#4B5563]">{{ req?.location || 'El Mourouj 3 win LC Waikiki' }}</span>
-            </div>
-
             <!-- Submission Date -->
             <div class="flex flex-col gap-1">
                 <span class="text-[14px] italic text-[#6B7280]">Submission Date</span>
@@ -81,35 +75,25 @@
     <div class="flex flex-col gap-3 mt-4">
         <span class="text-[14px] italic text-[#6B7280]">Attachments</span>
 
-        <div class="flex flex-col gap-4">
-            <!-- Mock Attachment 1 -->
-            <div class="flex flex-row gap-4 w-full h-[80px]">
-                <div class="w-[80px] h-[80px] bg-[#E5E7EB] rounded-[6px] flex items-center justify-center shrink-0 overflow-hidden text-[#9CA3AF]">
+        <div class="flex flex-col gap-4" *ngIf="getAttachments().length > 0; else noAttachments">
+            <div class="flex flex-row gap-4 w-full h-[80px]" *ngFor="let attachment of getAttachments()">
+                <div class="w-[80px] h-[80px] rounded-[6px] flex items-center justify-center shrink-0 overflow-hidden text-[#9CA3AF]"
+                    [ngStyle]="{ 'background-color': attachment.bgColor }">
                     <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-image"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg>
                 </div>
                 <div class="flex flex-col justify-between flex-1 py-1">
-                    <span class="text-[14px] italic text-[#4B5563]">complaint_10545454046.jpg</span>
+                    <span class="text-[14px] italic text-[#4B5563]">{{ attachment.name }}</span>
                     <div class="border border-[#E5E7EB] rounded-[6px] h-[45px] flex flex-row items-center px-4 gap-4 bg-[#FFFFFF]">
-                        <button class="border border-[#00899B] bg-transparent text-[#00899B] text-[12px] font-medium px-4 py-1.5 rounded-[20px] hover:bg-[#00899B] hover:text-white transition-colors duration-300 cursor-pointer">Preview</button>
-                        <button class="border border-[#00899B] bg-transparent text-[#00899B] text-[12px] font-medium px-4 py-1.5 rounded-[20px] hover:bg-[#00899B] hover:text-white transition-colors duration-300 cursor-pointer">Download</button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Mock Attachment 2 -->
-            <div class="flex flex-row gap-4 w-full h-[80px]">
-                <div class="w-[80px] h-[80px] bg-[#E5E7EB] rounded-[6px] flex items-center justify-center shrink-0 overflow-hidden text-[#9CA3AF]">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-image"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg>
-                </div>
-                <div class="flex flex-col justify-between flex-1 py-1">
-                    <span class="text-[14px] italic text-[#4B5563]">complaint_10545454047.mp4</span>
-                    <div class="border border-[#E5E7EB] rounded-[6px] h-[45px] flex flex-row items-center px-4 gap-4 bg-[#FFFFFF]">
-                        <button class="border border-[#00899B] bg-transparent text-[#00899B] text-[12px] font-medium px-4 py-1.5 rounded-[20px] hover:bg-[#00899B] hover:text-white transition-colors duration-300 cursor-pointer">Preview</button>
-                        <button class="border border-[#00899B] bg-transparent text-[#00899B] text-[12px] font-medium px-4 py-1.5 rounded-[20px] hover:bg-[#00899B] hover:text-white transition-colors duration-300 cursor-pointer">Download</button>
+                        <button (click)="previewAttachment(attachment)" class="border border-[#00899B] bg-transparent text-[#00899B] text-[12px] font-medium px-4 py-1.5 rounded-[20px] hover:bg-[#00899B] hover:text-white transition-colors duration-300 cursor-pointer">Preview</button>
+                        <button (click)="downloadAttachment(attachment)" class="border border-[#00899B] bg-transparent text-[#00899B] text-[12px] font-medium px-4 py-1.5 rounded-[20px] hover:bg-[#00899B] hover:text-white transition-colors duration-300 cursor-pointer">Download</button>
                     </div>
                 </div>
             </div>
         </div>
+
+        <ng-template #noAttachments>
+            <div class="text-[14px] text-[#9CA3AF] italic">No attachments uploaded for this request.</div>
+        </ng-template>
     </div>
 
     <!-- Admin Notes -->
