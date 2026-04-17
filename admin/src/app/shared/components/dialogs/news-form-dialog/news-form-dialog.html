@@ -1,0 +1,136 @@
+<div class="flex flex-col gap-8 font-[family-name:var(--font-lato)] p-2">
+    <!-- Header -->
+    <div class="flex flex-row justify-between items-start">
+        <div class="flex flex-col gap-1">
+            <h2 class="text-[32px] font-bold text-[var(--primary-text-color)] m-0 leading-tight">
+                {{ isEditMode ? 'Edit article' : 'Add a new article' }}
+            </h2>
+            <p class="text-[16px] italic text-[var(--secondary-text-color)] m-0">
+                {{ isEditMode ? 'update the details below.' : 'fill in the details below to create a new article.' }}
+            </p>
+        </div>
+        <button (click)="save()"
+                class="border border-[var(--primary-color)] text-[14px] font-medium
+                       py-2 px-6 rounded-[12px] shadow-[0px_2px_15px_0px_rgba(0,0,0,0.1)]
+                       bg-[var(--primary-color)] text-[var(--secondary-color)]
+                       hover:bg-[#005E71] focus:outline-none hover:text-white
+                       hover:cursor-pointer transition-colors duration-300">
+            Save article
+        </button>
+    </div>
+
+    <!-- Hero Information -->
+    <div class="flex flex-col gap-5 mt-2">
+        <h3 class="text-[20px] font-medium text-[var(--primary-text-color)] m-0 ml-6">Article Hero Information</h3>
+
+        <div class="flex flex-col gap-5 ml-6">
+            <!-- Hero Title -->
+            <div class="flex flex-col gap-1">
+                <label class="text-[14px] text-[var(--primary-text-color)] font-medium">Hero Title</label>
+                <input type="text" [(ngModel)]="formData.heroTitle" placeholder="Add the title for the hero of the article"
+                       class="w-full h-[40px] px-3 bg-white border border-[var(--border-color)] rounded-[8px] text-[var(--primary-text-color)] font-[family-name:var(--font-lato)] outline-none focus:border-[var(--primary-color)] transition-colors">
+            </div>
+
+            <!-- Hero Subtitle -->
+            <div class="flex flex-col gap-1">
+                <label class="text-[14px] text-[var(--primary-text-color)] font-medium">Hero Subtitle</label>
+                <input type="text" [(ngModel)]="formData.heroSubtitle" placeholder="Add the subtitle for the hero of the article"
+                       class="w-full h-[40px] px-3 bg-white border border-[var(--border-color)] rounded-[8px] text-[var(--primary-text-color)] font-[family-name:var(--font-lato)] outline-none focus:border-[var(--primary-color)] transition-colors">
+            </div>
+
+            <!-- Hero Image -->
+            <div class="flex flex-col gap-1">
+                <label class="text-[14px] text-[var(--primary-text-color)] font-medium">Hero Image</label>
+                <div class="flex items-center gap-4">
+                    <div class="w-[80px] h-[80px] bg-[#E0E5E9] rounded-[8px] flex items-center justify-center shrink-0">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#9EAAAE" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-image">
+                            <rect width="18" height="18" x="3" y="3" rx="2" ry="2"/>
+                            <circle cx="9" cy="9" r="2"/>
+                            <path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/>
+                        </svg>
+                    </div>
+                    <div class="flex flex-col gap-2 w-full">
+                        <span class="text-[14px] italic text-[var(--secondary-text-color)]">Please upload a file with a maximum size of 1MB</span>
+                        <div class="flex items-center bg-[#FAFAFA] border border-[var(--border-color)] rounded-[8px] overflow-hidden w-full h-[40px]">
+                            <button class="bg-white border-r border-[var(--border-color)] px-4 h-full text-[14px] text-[var(--primary-color)] font-medium hover:bg-gray-50 flex items-center justify-center focus:outline-none">
+                                Choose File
+                            </button>
+                            <span class="px-4 text-[14px] text-[var(--secondary-text-color)]">No File Chosen</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Dynamic Sub Articles Loop -->
+    <ng-container *ngFor="let article of formData.subArticles; let i = index">
+        <div class="flex flex-col gap-5 mt-2 transition-all">
+            <div class="flex flex-row justify-between items-center ml-0">
+                <h3 class="text-[20px] font-medium text-[var(--primary-text-color)] m-0">Sub-article #{{ i + 1 }} information</h3>
+                
+                <!-- Action Buttons: Add (always shown in the design) / Remove -->
+                <div class="flex flex-row gap-3">
+                    <!-- Only show remove if there's more than one -->
+                    <button *ngIf="formData.subArticles?.length! > 1" (click)="removeSubArticle(i)"
+                            class="border border-[#E50000] text-[14px] font-medium
+                                   py-2 px-4 rounded-[8px] bg-white text-[#E50000]
+                                   hover:bg-[#FFF0F0] focus:outline-none
+                                   hover:cursor-pointer transition-colors duration-300">
+                        Remove
+                    </button>
+                    <!-- Show Add Sub-article next to the header as per design -->
+                    <button *ngIf="i === 0" (click)="addSubArticle()"
+                            class="border border-[var(--primary-color)] text-[14px] font-medium
+                                   py-2 px-4 rounded-[8px] bg-white text-[var(--primary-color)]
+                                   hover:bg-[#F0F6FF] focus:outline-none
+                                   hover:cursor-pointer transition-colors duration-300">
+                        Add Sub-article
+                    </button>
+                </div>
+            </div>
+
+            <div class="flex flex-col gap-5">
+                <!-- Sub-article title -->
+                <div class="flex flex-col gap-1">
+                    <label class="text-[14px] text-[var(--primary-text-color)] font-medium">Sub-article title</label>
+                    <input type="text" [(ngModel)]="article.title" placeholder="Add the title for the title of the sub-article"
+                           class="w-full h-[40px] px-3 bg-white border border-[var(--border-color)] rounded-[8px] text-[var(--primary-text-color)] font-[family-name:var(--font-lato)] outline-none focus:border-[var(--primary-color)] transition-colors">
+                </div>
+
+                <!-- Sub-article paragraph -->
+                <div class="flex flex-col gap-1">
+                    <label class="text-[14px] text-[var(--primary-text-color)] font-medium">Sub-article paragraph</label>
+                    <textarea [(ngModel)]="article.content" placeholder="Add the paragraph of the sub-article" rows="8"
+                              class="w-full px-3 py-3 bg-white border border-[var(--border-color)] rounded-[8px] text-[var(--primary-text-color)] font-[family-name:var(--font-lato)] outline-none focus:border-[var(--primary-color)] transition-colors resize-none"></textarea>
+                </div>
+
+                <!-- Sub-article media -->
+                <div class="flex flex-col gap-1">
+                    <label class="text-[14px] text-[var(--primary-text-color)] font-medium">Sub-article media (optional)</label>
+                    <div class="flex items-center gap-4">
+                        <div class="w-[80px] h-[80px] bg-[#E0E5E9] rounded-[8px] flex items-center justify-center shrink-0">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#9EAAAE" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-image">
+                                <rect width="18" height="18" x="3" y="3" rx="2" ry="2"/>
+                                <circle cx="9" cy="9" r="2"/>
+                                <path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/>
+                            </svg>
+                        </div>
+                        <div class="flex flex-col gap-2 w-full">
+                            <span class="text-[14px] italic text-[var(--secondary-text-color)]">Please upload a file with a maximum size of 1MB</span>
+                            <div class="flex items-center bg-[#FAFAFA] border border-[var(--border-color)] rounded-[8px] overflow-hidden w-full h-[40px]">
+                                <button class="bg-white border-r border-[var(--border-color)] px-4 h-full text-[14px] text-[var(--primary-color)] font-medium hover:bg-gray-50 flex items-center justify-center focus:outline-none">
+                                    Choose File
+                                </button>
+                                <span class="px-4 text-[14px] text-[var(--secondary-text-color)]">No File Chosen</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Spacer divider if it's not the last one -->
+        <hr *ngIf="i < formData.subArticles!.length - 1" class="border-t border-[#E5E7EB] my-2 w-full">
+    </ng-container>
+
+</div>

@@ -1,0 +1,102 @@
+<div class="flex flex-col gap-6 font-[family-name:var(--font-lato)] p-2 bg-[#FFFFFF]">
+    <!-- Header -->
+    <div class="flex flex-row justify-between items-start">
+        <div class="flex flex-col gap-1">
+            <h2 class="text-[32px] font-bold text-[var(--primary-text-color)] m-0 leading-tight">Complaint information
+            </h2>
+            <p class="text-[16px] italic text-[#6B7280] m-0">these are the details of the complaint</p>
+        </div>
+
+        <div class="flex flex-row gap-3 items-center">
+            <button (click)="openReply()" class="border-none flex items-center justify-center font-[family-name:var(--font-lato)]
+                           h-[40px] px-6 rounded-[12px] bg-[#00899B] text-[#FFFFFF] text-[15px] font-medium
+                           hover:bg-[#007A8A] hover:cursor-pointer transition-colors duration-300">
+                Reply
+            </button>
+        </div>
+    </div>
+
+    <!-- Content -->
+    <div class="flex flex-col gap-5 mt-2">
+        <h3 class="text-[20px] font-medium text-[var(--primary-text-color)] m-0">Complaint Main Information</h3>
+
+        <div class="flex flex-col gap-5">
+            <!-- Title -->
+            <div class="flex flex-col gap-1">
+                <span class="text-[14px] italic text-[#6B7280]">Title</span>
+                <span class="text-[16px] text-[#4B5563]">{{ complaint.title }}</span>
+            </div>
+
+            <!-- Submitted by -->
+            <div class="flex flex-col gap-1">
+                <span class="text-[14px] italic text-[#6B7280]">Submitted by</span>
+                <span class="text-[16px] text-[#4B5563]">{{ $any(complaint).author_name || 'Anonymous' }}</span>
+            </div>
+
+            <!-- Category -->
+            <div class="flex flex-col gap-1" *ngIf="$any(complaint).category || complaint.categorieId">
+                <span class="text-[14px] italic text-[#6B7280]">Complaint Category</span>
+                <span class="text-[16px] text-[#4B5563] capitalize">{{ $any(complaint).category || complaint.categorieId }}</span>
+            </div>
+
+            <!-- Location -->
+            <div class="flex flex-col gap-1" *ngIf="complaint.location">
+                <span class="text-[14px] italic text-[#6B7280]">Location</span>
+                <span class="text-[16px] text-[#4B5563]">{{ complaint.location }}</span>
+            </div>
+
+            <!-- Date -->
+            <div class="flex flex-col gap-1">
+                <span class="text-[14px] italic text-[#6B7280]">Complaint Date</span>
+                <span class="text-[16px] text-[#4B5563]">{{ (complaint.dateCreation || $any(complaint).date_creation) | date:'dd-MM-yyyy' }}</span>
+            </div>
+
+            <!-- State -->
+            <div class="flex flex-col gap-1">
+                <span class="text-[14px] italic text-[#6B7280]">State</span>
+                <span class="text-[16px] text-[#4B5563] capitalize">{{ complaint.status }}</span>
+            </div>
+
+            <!-- Description -->
+            <div class="flex flex-col gap-1 mt-1">
+                <span class="text-[14px] italic text-[#6B7280]">Description</span>
+                <div
+                    class="text-[15px] text-[#4B5563] p-4 border border-[#E5E7EB] rounded-[8px] bg-[#FFFFFF] whitespace-pre-wrap leading-relaxed mt-1">
+                    {{ complaint.description }}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Attachments (Image) -->
+    <div class="flex flex-col gap-3 mt-2" *ngIf="$any(complaint).image || (complaint.media && complaint.media.length > 0)">
+        <span class="text-[14px] italic text-[#6B7280]">Attachments</span>
+
+        <div class="flex flex-col gap-4">
+            <div class="flex flex-row gap-4 w-full h-[150px]">
+                <div
+                    class="w-[150px] h-full bg-[#E5E7EB] rounded-[6px] flex items-center justify-center shrink-0 overflow-hidden">
+                    <img [src]="$any(complaint).image || complaint.media[0].fileUrl" alt="Complaint media" class="w-full h-full object-cover">
+                </div>
+                <div class="flex flex-col justify-end flex-1 pb-1">
+                    <div
+                        class="border border-[#E5E7EB] rounded-[6px] h-[55px] flex flex-row items-center px-4 gap-4 bg-[#FFFFFF]">
+                        <button (click)="window.open($any(complaint).image || complaint.media[0].fileUrl, '_blank')"
+                            class="border border-[#00899B] bg-transparent text-[#00899B] text-[13px] font-medium px-5 py-1.5 rounded-[20px] hover:bg-[#00899B] hover:text-white transition-colors duration-300">View
+                            Full Image</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Complaint Replies -->
+    <div class="flex flex-col gap-3 mt-4" *ngIf="complaint.reponse">
+        <h3 class="text-[20px] font-semibold text-[var(--primary-text-color)] m-0">Complaint Replies</h3>
+
+        <div
+            class="text-[15px] text-[#4B5563] p-4 border border-[#E5E7EB] rounded-[8px] bg-[#FFFFFF] whitespace-pre-wrap leading-relaxed">
+            {{ complaint.reponse.contenu }}
+        </div>
+    </div>
+</div>

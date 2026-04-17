@@ -1,5 +1,5 @@
-export interface Faq {
+export interface Faqq {
   id: number;
   question: string;
-  answer?: string;
+  answer: string;
 }

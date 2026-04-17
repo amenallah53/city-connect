@@ -1,13 +1,13 @@
 import { Component, inject } from '@angular/core';
-import { Router, RouterLink } from '@angular/router';
-import { RouterModule } from '@angular/router';
+import { Router, RouterLink, RouterModule } from '@angular/router';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { UserAuthService } from '../../core/services/auth.service';
 import { LoginProjetDescrip } from '../../shared/components/login-projet-descrip/login-projet-descrip';
+
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [ReactiveFormsModule,LoginProjetDescrip,RouterModule, RouterLink],
+  imports: [ReactiveFormsModule, LoginProjetDescrip, RouterModule, RouterLink],
   templateUrl: './login.html',
   styleUrl: './login.css',
 })
@@ -17,26 +17,22 @@ export class Login {
   private auth = inject(UserAuthService);
   private router = inject(Router);
 
+  errorMessage: string | null = null;
+
   form = this.fb.group({
     email: ['', [Validators.required, Validators.email]],
-    password: ['', Validators.required]
+    password: ['', Validators.required],
   });
+
 
   submit() {
     if (this.form.invalid) return;
 
-    const { email, password } = this.form.value;
+    const { email, password } = this.form.getRawValue();
 
     this.auth.login(email!, password!).subscribe({
-      next: (res) => {
-        if (res.token) {
-          this.router.navigate(['/']);
-        }
-      },
-      error: (err) => {
-        console.error('Login failed:', err);
-        // Optionally add an error message to the UI
-      }
+      next: () => this.router.navigate(['/home']),
+      error: (err) => console.error(err.error?.message),
     });
   }
 }

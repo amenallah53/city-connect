@@ -12,6 +12,26 @@
 }
 
 /* ============================================
+   LOADING STATE
+   ============================================ */
+.loading-state {
+  padding: 48px 24px;
+  text-align: center;
+  font-size: 18px;
+  color: var(--text-color);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 400px;
+}
+
+.loading-state p {
+  font-size: 18px;
+  font-weight: 500;
+  color: var(--primary-color);
+}
+
+/* ============================================
    CATEGORY BAR
    ============================================ */
 .category-bar {
@@ -143,6 +163,42 @@
 }
 
 /* ============================================
+   MY REQUESTS BUTTON
+   ============================================ */
+.btn-my-requests {
+  padding: 10px 16px;
+  background-color: var(--primary-color);
+  color: #ffffff;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  box-shadow: 0px 2px 15px 0px rgba(0, 0, 0, 0.1);
+  white-space: nowrap;
+}
+
+.btn-my-requests:hover {
+  background-color: #005e71;
+  transform: translateY(-2px);
+  box-shadow: 0px 4px 20px 0px rgba(0, 94, 113, 0.3);
+}
+
+.btn-my-requests:active {
+  transform: translateY(0);
+}
+
+.btn-my-requests svg {
+  width: 20px;
+  height: 20px;
+  stroke-width: 2;
+}
+
+/* ============================================
    SERVICES GRID CONTAINER
    ============================================ */
 .services-grid-container {
@@ -248,6 +304,16 @@
     flex-direction: column;
     align-items: flex-start;
     gap: 12px;
+  }
+
+  .toolbar-actions {
+    width: 100%;
+    flex-wrap: wrap;
+  }
+
+  .btn-my-requests {
+    flex: 1;
+    min-width: 150px;
   }
 
   .category-bar {

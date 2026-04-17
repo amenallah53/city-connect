@@ -7,8 +7,8 @@
         *ngFor="let category of categories"
         (click)="selectCategory(category)"
         [ngClass]="{
-            'text-white bg-[#005E71]/50': selectedCategory?.code === category.code,
-            'hover:bg-[#005E71]/50': selectedCategory?.code !== category.code
+            'text-white bg-[#005E71]/50': selectedCategory.code === category.code,
+            'hover:bg-[#005E71]/50': selectedCategory.code !== category.code
         }"
         class="p-3 rounded-[12px] hover:cursor-pointer transition-colors duration-300">
         {{ category.name }}

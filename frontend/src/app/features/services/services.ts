@@ -1,12 +1,12 @@
 import { CommonModule, NgClass } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { SelectModule } from 'primeng/select';
 import { PaginatorModule, PaginatorState } from 'primeng/paginator';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Service } from '../../shared/models/service.model';
 import { ServiceCard } from '../../shared/components/cards/service-card/service-card';
-import { allServices } from '../../shared/mock/services.mock';
+import { ServicesService } from '../../core/services/services.service';
 
 interface ServiceFilter {
   name: string;
@@ -23,7 +23,8 @@ interface ServiceCategory {
   imports: [CommonModule, NgClass, FormsModule, SelectModule, PaginatorModule, ServiceCard],
   templateUrl: './services.html',
   styleUrl: './services.css',
-  standalone: true
+  standalone: true,
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class Services implements OnInit {
   filters: ServiceFilter[] = [];
@@ -32,9 +33,10 @@ export class Services implements OnInit {
   categories: ServiceCategory[] = [];
   selectedCategory: ServiceCategory = { name: 'All Services', code: 'all' };
 
-  allServicesList: Service[] = allServices;
+  allServicesList: Service[] = [];
   filteredServices: Service[] = [];
   pagedServices: Service[] = [];
+  isLoading = true;
 
   // Pagination
   first: number = 0;
@@ -46,13 +48,35 @@ export class Services implements OnInit {
     this.viewMode = mode;
   }
 
-  constructor(private router: Router, private route: ActivatedRoute) {}
+  constructor(
+    private router: Router,
+    private route: ActivatedRoute,
+    private servicesService: ServicesService,
+    private cdr: ChangeDetectorRef
+  ) { }
 
   ngOnInit() {
+    // Charger les services depuis l'API
+    this.servicesService.getAllServices().subscribe({
+      next: (services) => {
+        this.allServicesList = services;
+        this.isLoading = false;
+        this.setupFiltersAndCategories();
+        this.cdr.markForCheck();
+      },
+      error: (error) => {
+        console.error('Error loading services:', error);
+        this.isLoading = false;
+        this.setupFiltersAndCategories();
+        this.cdr.markForCheck();
+      }
+    });
+  }
+
+  private setupFiltersAndCategories() {
     this.filters = [
       { name: 'All', code: 'all' },
       { name: 'Electronic', code: 'electronic' },
-      { name: 'With Fees', code: 'with-fees' },
       { name: 'Not Immediate', code: 'not-immediate' },
     ];
 
@@ -72,15 +96,18 @@ export class Services implements OnInit {
 
       this.first = 0; // reset to page 1 on filter change
       this.applyFilters();
+      this.cdr.markForCheck();
     });
   }
 
   selectCategory(category: ServiceCategory) {
     this.selectedCategory = category;
+    this.cdr.markForCheck();
     this.updateQueryParams();
   }
 
   onFilterChange() {
+    this.cdr.markForCheck();
     this.updateQueryParams();
   }
 
@@ -88,6 +115,7 @@ export class Services implements OnInit {
     this.first = event.first ?? 0;
     this.rows = event.rows ?? 12;
     this.updatePagedServices();
+    this.cdr.markForCheck();
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
@@ -119,9 +147,14 @@ export class Services implements OnInit {
     });
 
     this.updatePagedServices();
+    this.cdr.markForCheck();
   }
 
   private updatePagedServices() {
     this.pagedServices = this.filteredServices.slice(this.first, this.first + this.rows);
+  }
+
+  goToMyRequests(): void {
+    this.router.navigate(['/services/requests']);
   }
 }

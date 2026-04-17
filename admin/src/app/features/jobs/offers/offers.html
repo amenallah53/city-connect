@@ -1,1 +1,75 @@
-<p>offers works!</p>
+<section class="flex flex-col h-full overflow-y-auto">
+
+    <!-- Header + Filter row -->
+    <div class="px-6 pt-6 pb-2 flex flex-col gap-1">
+        <h1 class="font-rubik text-[32px] font-medium text-[var(--primary-text-color)] m-0">
+            Job offers management
+        </h1>
+        <div class="flex flex-row items-center justify-between flex-wrap gap-4">
+            <p class="text-[18px] text-[var(--primary-subtitle-color)] font-[family-name:var(--font-lato)] m-0">
+                {{ filteredOffers.length }} offer(s) found
+            </p>
+            <div class="flex flex-row gap-3 items-center flex-wrap">
+
+                <!-- Search input -->
+                <div class="card flex justify-center rounded-[12px] shadow-[0px_2px_15px_0px_rgba(0,0,0,0.1)]">
+                    <div class="relative flex items-center bg-white rounded-[12px] overflow-hidden w-[260px]">
+                        <input type="text" placeholder="Search offers..." [(ngModel)]="searchQuery"
+                            (keydown)="onSearchKeydown($event)" class="w-full h-[42px] border-none bg-transparent pl-5 pr-10
+                                   font-[family-name:var(--font-lato)] text-[14px]
+                                   text-[var(--secondary-text-color)] outline-none
+                                   placeholder:text-[var(--primary-subtitle-color)]">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                            class="absolute right-4 text-[var(--primary-subtitle-color)] pointer-events-none">
+                            <circle cx="11" cy="11" r="8" />
+                            <path d="m21 21-4.3-4.3" />
+                        </svg>
+                    </div>
+                </div>
+
+                <!-- Filter by status -->
+                <div class="card flex justify-center rounded-[12px] shadow-[0px_2px_15px_0px_rgba(0,0,0,0.1)] bg-white">
+                    <p-select dataKey="code" [options]="statusFilters" [(ngModel)]="selectedStatusFilter"
+                        optionLabel="name" placeholder="Filter by status"
+                        class="w-full md:w-[150px] text-[var(--secondary-text-color)] bg-transparent border-0 shadow-none focus:ring-0"
+                        (onChange)="onFilterChange()" />
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- Offers list -->
+    <div class="flex flex-col gap-4 px-6 py-4">
+        @for (offer of pagedOffers; track offer.id) {
+        <app-offer-card 
+            [offer]="offer"
+            (onAccept)="handleAccept(offer.id)"
+            (onDecline)="handleDecline(offer.id)">
+        </app-offer-card>
+        }
+    </div>
+
+    <!-- Empty state -->
+    <div *ngIf="filteredOffers.length === 0"
+        class="flex flex-col items-center justify-center py-20 gap-4 text-[var(--primary-subtitle-color)]">
+        <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+            class="text-[var(--secondary-text-color)]">
+            <path d="m21 21-4.34-4.34" />
+            <circle cx="11" cy="11" r="8" />
+        </svg>
+        <p class="text-[18px] text-[var(--primary-subtitle-color)] font-medium">
+            No job offers found for the selected filters.
+        </p>
+    </div>
+
+    <!-- Paginator -->
+    <div class="flex justify-center py-6 pb-12" *ngIf="filteredOffers.length > 0">
+        <p-paginator (onPageChange)="onPageChange($event)" [first]="first" [rows]="rows"
+            [totalRecords]="filteredOffers.length" [showCurrentPageReport]="true" [showPageLinks]="true"
+            [showJumpToPageDropdown]="false" currentPageReportTemplate="Showing {first} to {last} of {totalRecords}" />
+    </div>
+
+</section>

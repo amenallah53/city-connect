@@ -13,5 +13,30 @@ import { allServices } from 'src/app/shared/mock/services.mock';
   standalone: true,
 })
 export class KeyServicesSection {
-  featuredServices: Service[] = allServices.slice(0,4);
+  featuredServices: Service[] = [
+    {
+      id: 'building-permit',
+      name: 'Building Permit',
+      type: 'Urban Planning',
+      badges: ['Online', 'Not immediate']
+    },
+    {
+      id: 'garbage-collection',
+      name: 'Garbage Collection',
+      type: 'Sanitation',
+      badges: ['Scheduled', 'Public Service']
+    },
+    {
+      id: 'complaint',
+      name: 'Complaint Submission',
+      type: 'Citizen Service',
+      badges: ['Online', 'Immediate']
+    },
+    {
+      id: 'birth-certificate',
+      name: 'Birth Certificate',
+      type: 'Civil Status',
+      badges: ['Online', 'Official']
+    }
+  ];
 }

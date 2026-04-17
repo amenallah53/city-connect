@@ -4,7 +4,10 @@ const { createProxyMiddleware } = require("http-proxy-middleware");
 
 const app = express();
 
+// Enable CORS for all routes
 app.use(cors());
+
+// Parse JSON
 app.use(express.json());
 
 app.use("/api/users", createProxyMiddleware({
@@ -35,7 +38,10 @@ app.use("/api/news-service", createProxyMiddleware({
 
 app.use("/api/services", createProxyMiddleware({
   target: "http://localhost:5006",
-  changeOrigin: true
+  changeOrigin: true,
+  pathRewrite: {
+    "^(.*)$": "/api/services$1"
+  }
 }));
 
 app.use("/api/faqs", createProxyMiddleware({

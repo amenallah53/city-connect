@@ -5,7 +5,6 @@ import { catchError, retry, switchMap } from 'rxjs/operators';
 import { Ticket } from '../../shared/models/ticket.model';
 import { environment } from '../../../environments/environment';
 import { UploadService } from './upload.service';
-import { of } from 'rxjs';
 
 export interface PaginatedTickets {
   data: Ticket[];
@@ -36,6 +35,7 @@ export class TicketService {
 
   getAllTickets(filters?: TicketFilters): Observable<PaginatedTickets> {
     let params = new HttpParams();
+    const token = localStorage.getItem('token');
 
     if (filters) {
       if (filters.location) params = params.set('city', filters.location);
@@ -45,7 +45,12 @@ export class TicketService {
       if (filters.limit) params = params.set('limit', filters.limit.toString());
     }
 
-    return this.http.get<PaginatedTickets>(this.apiUrl, { params })
+    return this.http.get<PaginatedTickets>(this.apiUrl, { 
+      params,
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    })
       .pipe(
         retry(1),
         catchError(this.handleError)
@@ -60,8 +65,8 @@ export class TicketService {
       );
   }
 
-  
-  createTicket(ticket: Ticket, file?: File): Observable<Ticket> {
+
+  /*createTicket(ticket: Ticket, file?: File): Observable<Ticket> {
     if (file) {
       return this.uploadService.uploadImage(file).pipe(
         switchMap(res => {
@@ -75,9 +80,42 @@ export class TicketService {
       .pipe(
         catchError(this.handleError)
       );
+  }*/
+
+  createTicket(ticket: Ticket, file?: File): Observable<Ticket> {
+    const token = localStorage.getItem('token');
+
+    if (file) {
+      return this.uploadService.uploadImage(file).pipe(
+        switchMap(res => {
+          ticket.image = res.url;
+          return this.http.post<Ticket>(this.apiUrl, ticket, {
+            headers: {
+              Authorization: `Bearer ${token}`
+            }
+          });
+        }),
+        catchError(this.handleError)
+      );
+    }
+
+    return this.http.post<Ticket>(this.apiUrl, ticket, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    })
+      .pipe(
+        catchError(this.handleError)
+      );
+
+    /*return this.http.post('http://localhost:5004/api/tickets', ticket, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    });*/
   }
 
-  
+
   updateTicket(id: string, ticket: Partial<Ticket>): Observable<Ticket> {
     return this.http.put<Ticket>(`${this.apiUrl}/${id}`, ticket)
       .pipe(
@@ -85,7 +123,7 @@ export class TicketService {
       );
   }
 
-  
+
   deleteTicket(id: string): Observable<any> {
     return this.http.delete(`${this.apiUrl}/${id}`)
       .pipe(
@@ -101,7 +139,7 @@ export class TicketService {
       );
   }
 
-  
+
   searchTickets(query: string): Observable<Ticket[]> {
     return this.http.get<Ticket[]>(`${this.apiUrl}/search?q=${query}`)
       .pipe(
@@ -109,7 +147,7 @@ export class TicketService {
       );
   }
 
-  
+
   private handleError(error: HttpErrorResponse) {
     let errorMessage = 'Something went wrong';
 

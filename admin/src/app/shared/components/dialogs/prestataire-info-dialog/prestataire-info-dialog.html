@@ -1,0 +1,97 @@
+<div class="flex flex-col gap-6 font-[family-name:var(--font-lato)] p-2">
+    <!-- Header -->
+    <div class="flex flex-row justify-between items-start">
+        <div class="flex flex-col gap-1">
+            <h2 class="text-[32px] font-bold text-[var(--primary-text-color)] m-0 leading-tight">Prestataire main information</h2>
+            <p class="text-[16px] italic text-[var(--secondary-text-color)] m-0">these are the details of the user</p>
+        </div>
+        
+        <div class="flex flex-row gap-3 items-center" *ngIf="prestataire.status === 'pending'">
+            <button (click)="approve()"
+                    class="border border-[var(--primary-color)] text-[14px] font-medium
+                           py-2 px-6 rounded-[8px] bg-[var(--primary-color)] text-[var(--secondary-color)]
+                           hover:bg-[#005E71] hover:cursor-pointer transition-colors duration-300">
+                Approve
+            </button>
+            <button (click)="reject()"
+                    class="border border-[#F44336] text-[14px] font-medium
+                           py-2 px-6 rounded-[8px] bg-[#F44336] text-white
+                           hover:bg-[#D32F2F] hover:cursor-pointer transition-colors duration-300">
+                Reject
+            </button>
+        </div>
+    </div>
+
+    <!-- Content -->
+    <div class="flex flex-col gap-5 ml-6">
+        <h3 class="text-[20px] font-medium text-[var(--primary-text-color)] m-0">Service request Main Information</h3>
+
+        <div class="flex flex-col gap-4">
+            <!-- Full Name -->
+            <div class="flex flex-col gap-1">
+                <span class="text-[14px] italic text-[var(--secondary-text-color)]">User's full name</span>
+                <span class="text-[16px] text-[var(--primary-text-color)]">{{ prestataire.firstName }} {{ prestataire.lastName }}</span>
+            </div>
+
+            <!-- Role -->
+            <div class="flex flex-col gap-1">
+                <span class="text-[14px] italic text-[var(--secondary-text-color)]">Role</span>
+                <span class="text-[16px] text-[var(--primary-text-color)] capitalize">{{ prestataire.role }}</span>
+            </div>
+
+            <!-- Email -->
+            <div class="flex flex-col gap-1">
+                <span class="text-[14px] italic text-[var(--secondary-text-color)]">Email address</span>
+                <span class="text-[16px] text-[var(--primary-text-color)]">{{ prestataire.email }}</span>
+            </div>
+
+            <!-- CIN -->
+            <div class="flex flex-col gap-1">
+                <span class="text-[14px] italic text-[var(--secondary-text-color)]">Cin</span>
+                <span class="text-[16px] text-[var(--primary-text-color)]">{{ prestataire.cin }}</span>
+            </div>
+
+            <!-- Phone -->
+            <div class="flex flex-col gap-1" *ngIf="prestataire.telephone">
+                <span class="text-[14px] italic text-[var(--secondary-text-color)]">Phone Number</span>
+                <span class="text-[16px] text-[var(--primary-text-color)]">{{ prestataire.telephone }}</span>
+            </div>
+
+            <!-- Address -->
+            <div class="flex flex-col gap-1" *ngIf="prestataire.addresse">
+                <span class="text-[14px] italic text-[var(--secondary-text-color)]">Address</span>
+                <span class="text-[16px] text-[var(--primary-text-color)]">{{ prestataire.addresse }}</span>
+            </div>
+
+            <!-- Specialty -->
+            <div class="flex flex-col gap-1" *ngIf="prestataire.specialty">
+                <span class="text-[14px] italic text-[var(--secondary-text-color)]">Specialty</span>
+                <span class="text-[16px] text-[var(--primary-text-color)]">{{ prestataire.specialty }}</span>
+            </div>
+
+            <!-- Reach -->
+            <div class="flex flex-col gap-1" *ngIf="prestataire.reach">
+                <span class="text-[14px] italic text-[var(--secondary-text-color)]">Reach</span>
+                <span class="text-[16px] text-[var(--primary-text-color)] capitalize">{{ prestataire.reach }}</span>
+            </div>
+
+            <!-- Description -->
+            <div class="flex flex-col gap-1" *ngIf="prestataire.description">
+                <span class="text-[14px] italic text-[var(--secondary-text-color)]">Description</span>
+                <span class="text-[16px] text-[var(--primary-text-color)]">{{ prestataire.description }}</span>
+            </div>
+
+            <!-- State -->
+            <div class="flex flex-col gap-1">
+                <span class="text-[14px] italic text-[var(--secondary-text-color)]">State</span>
+                <span class="text-[16px] text-[var(--primary-text-color)] capitalize">{{ prestataire.status }}</span>
+            </div>
+
+            <!-- Creation Date -->
+            <div class="flex flex-col gap-1">
+                <span class="text-[14px] italic text-[var(--secondary-text-color)]">Creation Date</span>
+                <span class="text-[16px] text-[var(--primary-text-color)]">{{ prestataire.submissionDate | date:'d MMM yyyy, HH:mm' }}</span>
+            </div>
+        </div>
+    </div>
+</div>

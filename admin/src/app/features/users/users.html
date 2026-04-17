@@ -1,48 +1,87 @@
-<div class="users-page vertical-div">
-    <div class="vertical-div titles">
-        <p class="title">User accounts management</p>
-        <p class="subtitle">Review citizen accounts.</p>
-    </div>
-    <div class="search-filters">
-        <div class="search-filters-left">
-            <div class="search-input-wrapper">
-                <input type="text" placeholder="Search for ..." class="search-input">
-                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
-                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                    class="lucide lucide-search search-icon">
-                    <circle cx="11" cy="11" r="8" />
-                    <path d="m21 21-4.3-4.3" />
-                </svg>
-            </div>
+<section class="flex flex-col h-full overflow-y-auto">
 
-            <div class="filter-wrapper">
-                <select class="filter-select">
-                    <option value="" disabled selected hidden>Filter by role</option>
-                    <option value="admin">Admin</option>
-                    <option value="user">User</option>
-                </select>
-                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
-                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                    class="lucide lucide-chevron-down filter-icon">
-                    <path d="m6 9 6 6 6-6" />
-                </svg>
+    <!-- Header + Filter row -->
+    <div class="px-6 pt-6 pb-2 flex flex-col gap-1">
+        <h1 class="font-rubik text-[32px] font-medium text-[var(--primary-text-color)]">
+            User accounts management
+        </h1>
+        <div class="flex flex-row items-center justify-between flex-wrap gap-4">
+            <p class="text-[18px] text-[var(--primary-subtitle-color)] font-[family-name:var(--font-lato)]">
+                {{ filteredUsers.length }} user(s) found
+            </p>
+            <div class="flex flex-row gap-3 items-center flex-wrap">
+
+                <!-- Search input -->
+                <div class="card flex justify-center rounded-[12px] shadow-[0px_2px_15px_0px_rgba(0,0,0,0.1)]">
+                    <div class="relative flex items-center bg-white rounded-[12px] overflow-hidden w-[260px]">
+                        <input type="text" placeholder="Search users..." [(ngModel)]="searchQuery"
+                            (keydown)="onSearchKeydown($event)" class="w-full h-[42px] border-none bg-transparent pl-5 pr-10
+                                   font-[family-name:var(--font-lato)] text-[14px]
+                                   text-[var(--secondary-text-color)] outline-none
+                                   placeholder:text-[var(--primary-subtitle-color)]">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                            class="absolute right-4 text-[var(--primary-subtitle-color)] pointer-events-none">
+                            <circle cx="11" cy="11" r="8" />
+                            <path d="m21 21-4.3-4.3" />
+                        </svg>
+                    </div>
+                </div>
+
+                <!-- Filter by role -->
+                <div class="card flex justify-center rounded-[12px] shadow-[0px_2px_15px_0px_rgba(0,0,0,0.1)] bg-white">
+                    <p-select dataKey="code" [options]="roleFilters" [(ngModel)]="selectedRoleFilter" optionLabel="name"
+                        placeholder="Filter by role"
+                        class="w-full md:w-[150px] text-[var(--secondary-text-color)] bg-transparent"
+                        (onChange)="onFilterChange()" />
+                </div>
+
+                <!-- Filter by status -->
+                <div class="card flex justify-center rounded-[12px] shadow-[0px_2px_15px_0px_rgba(0,0,0,0.1)] bg-white">
+                    <p-select dataKey="code" [options]="statusFilters" [(ngModel)]="selectedStatusFilter"
+                        optionLabel="name" placeholder="Filter by status"
+                        class="w-full md:w-[150px] text-[var(--secondary-text-color)] bg-transparent"
+                        (onChange)="onFilterChange()" />
+                </div>
+
+                <button (click)="callFormDialog()" class="border border-[var(--primary-color)] text-[14px] font-medium
+                       py-2 px-4 rounded-[12px] shadow-[0px_2px_15px_0px_rgba(0,0,0,0.1)]
+                       bg-[var(--primary-color)] text-[var(--secondary-color)]
+                       hover:bg-[var(--secondary-color)] hover:text-[var(--primary-color)]
+                       hover:cursor-pointer transition-colors duration-300">
+                    Add user
+                </button>
+
             </div>
         </div>
+    </div>
 
-        <button class="add-user-btn">Add user</button>
+    <!-- Users list -->
+    <div class="flex flex-col gap-4 px-6 py-4">
+        @for (user of pagedUsers; track user.id) {
+        <app-user-card [user]="user"></app-user-card>
+        }
     </div>
-    <div class="users-list vertical-div">
-        <!--only place 6 cards max so that the navigation is easy-->
-        <app-user-card></app-user-card>
-        <app-user-card></app-user-card>
-        <app-user-card></app-user-card>
-        <app-user-card></app-user-card>
-        <app-user-card></app-user-card>
-        <app-user-card></app-user-card>
+
+    <!-- Empty state -->
+    <div *ngIf="filteredUsers.length === 0"
+        class="flex flex-col items-center justify-center py-20 gap-4 text-[var(--primary-subtitle-color)]">
+        <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+            class="text-[var(--secondary-text-color)]">
+            <path d="m21 21-4.34-4.34" />
+            <circle cx="11" cy="11" r="8" />
+        </svg>
+        <p class="text-[18px] text-[var(--primary-subtitle-color)] font-medium">
+            No users found for the selected filters.
+        </p>
     </div>
-    <div class="card flex justify-center">
-        <div class="card flex justify-center">
-            <p-paginator (onPageChange)="onPageChange($event)" [first]="first" [rows]="rows" [totalRecords]="120"
-                [rowsPerPageOptions]="[10, 20, 30]" />
-        </div>
+
+    <!-- Paginator -->
+    <div class="flex justify-center py-6" *ngIf="filteredUsers.length > 0">
+        <p-paginator (onPageChange)="onPageChange($event)" [first]="first" [rows]="rows"
+            [totalRecords]="filteredUsers.length" [showCurrentPageReport]="true" [showPageLinks]="true"
+            [showJumpToPageDropdown]="false" currentPageReportTemplate="Showing {first} to {last} of {totalRecords}" />
     </div>
+
+</section>

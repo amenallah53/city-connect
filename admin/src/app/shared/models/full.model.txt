@@ -1,0 +1,234 @@
+/*
+// =============================================================
+//  FRONTEND MODELS — TypeScript
+//  Project: Municipal Citizen Services Platform
+//  Synchronized with PostgreSQL schema (Aiven)
+//  Rule: nested entities are composed inline (no separate fetching)
+// =============================================================
+
+
+// =============================================================
+//  1. USER & AUTH
+// =============================================================
+
+export interface User {
+  id: string;
+  cin: number;
+  firstName: string;
+  lastName: string;
+  email: string;
+  addresse?: string;
+  telephone?: string;
+  status: 'pending' | 'accepted' | 'rejected';
+  role: 'citoyen' | 'prestataire' | 'admin';
+  extraDocumentUrl?: string;   // Backblaze B2 URL
+  documentType?: string;
+  createdAt: Date;
+}
+
+// Prestataire extends User — specialty replaces generic role data
+export interface Prestataire extends User {
+  specialty?: string;
+  description?: string;
+  reach: 'new' | 'recommended' | 'on-demand';
+  socialLinks?: string[];        // TEXT[] in DB — e.g. ['https://facebook.com/x', ...]
+  submissionDate: Date;
+}
+
+export interface AuthSession {
+  id: string;
+  token: string;
+  expirationDate: Date;
+  userId: string;
+  createdAt: Date;
+}
+
+export interface Notification {
+  id: string;
+  message: string;
+  date: Date;
+  isRead: boolean;
+  userId: string;
+}
+
+
+// =============================================================
+//  2. MUNICIPALITY & RELATED
+// =============================================================
+
+export interface Municipalite {
+  id: number;
+  name: string;
+}
+
+export interface HoraireService {
+  id: string;
+  type?: string;
+  name?: string;
+  heureDeb: string;     // e.g. "07:00"
+  heureFin?: string;    // e.g. "15:00"
+  days?: string[];      // e.g. ['Monday', 'Tuesday']
+  municipaliteId?: number;
+}
+
+// News = news row + its sub-articles composed inline (no separate fetch)
+export interface News {
+  id: string;
+  slug: string;
+  author?: string;
+  date: Date;
+  badges: string[];
+  heroImg?: string;       // Backblaze B2 URL
+  heroTitle?: string;
+  heroSubtitle?: string;
+  municipaliteId?: number;
+  subArticles: NewsArticle[];
+}
+
+export interface NewsArticle {
+  id: string;
+  position: number;
+  title: string;
+  content: string;
+  mediaUrl?: string;    // Backblaze B2 URL
+  mediaType?: string;   // e.g. 'image/jpeg', 'video/mp4'
+}
+
+
+// =============================================================
+//  3. PLAINTE
+//  Plainte = plainte row + media[] + reponse composed inline
+// =============================================================
+
+export interface Plainte {
+  id: string;
+  title?: string;
+  description?: string;
+  status: 'pending' | 'in-process' | 'accepted' | 'rejected';
+  dateCreation: Date;
+  location?: string;
+  userId?: string;
+  categorieId?: number;
+  media: PlainteMedia[];
+  reponse?: PlainteReponse;   // 0 or 1 official response
+}
+
+export interface PlainteMedia {
+  id: string;
+  fileUrl: string;        // Backblaze B2 URL
+  fileType?: string;      // e.g. 'image/jpeg', 'video/mp4', 'application/pdf'
+}
+
+export interface PlainteReponse {
+  id: string;
+  expeditaire?: string;
+  recepteur?: string;
+  contenu?: string;
+  dateReponse: Date;
+}
+
+export interface PlainteCategorie {
+  id: number;
+  type: string;
+}
+
+
+// =============================================================
+//  4. SERVICE & DEMANDE DE SERVICE
+//  Service         → standalone model
+//  DemandeService  → demande row + certificat + documents[] composed inline
+// =============================================================
+
+export interface Service {
+  id: string;
+  type?: string;
+  name?: string;
+  badges: string[];
+  description?: string;
+  requirements?: string;
+  municipaliteId?: number;
+}
+
+export interface ServiceType {
+  id: number;
+  type: string;
+}
+
+export interface DemandeService {
+  id: string;
+  status: 'pending' | 'approved' | 'rejected';
+  submissionDate: Date;
+  description?: string;
+  // Citizen snapshot at submission time
+  cin?: number;
+  firstName?: string;
+  lastName?: string;
+  email?: string;
+  addresse?: string;
+  telephone?: string;
+  adminNotes?: string;
+  userId?: string;
+  serviceId?: string;
+  service?: Service;            // optionally populated
+  certificat?: CertificatService;        // 0 or 1
+  documents: DemandeServiceDocument[];   // 0..n attached files
+}
+
+export interface CertificatService {
+  id: number;
+  type?: string;
+  dateGeneration: Date;
+  fileUrl?: string;     // Backblaze B2 URL
+}
+
+export interface DemandeServiceDocument {
+  id: string;
+  fileUrl: string;      // Backblaze B2 URL
+  fileType?: string;    // e.g. 'application/pdf', 'image/png'
+}
+
+
+// =============================================================
+//  5. CHATBOT & MESSAGING
+//  ConversationSession = session row + messages[] composed inline
+// =============================================================
+
+export interface ConversationSession {
+  id: string;
+  sessionDate: Date;
+  sessionName: string;
+  userId?: string;
+  messages: Message[];
+}
+
+export interface Message {
+  id: string;
+  contenu: string;
+  date: Date;
+  sender: 'user' | 'bot';
+}
+
+
+// =============================================================
+//  6. PRESTATAIRE JOB OFFERS
+// =============================================================
+
+export interface JobOffer {
+  id: string;
+  status: 'pending' | 'approved' | 'rejected' | 'done' | 'cancelled';
+  dateJobSuggestion: Date;
+  dateCreation: Date;
+  prestataire?: Prestataire;   // optionally populated
+  prestataireId: string;
+}
+
+
+// =============================================================
+//  7. FAQ
+// =============================================================
+
+export interface Faq {
+  id: number;
+  question: string;
+  answer?: string;
+}*/

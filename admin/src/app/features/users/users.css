@@ -1,123 +1,22 @@
-.users-page {
-    padding: 10px;
-    gap: 24px;
-}
-
-
-.titles {
-    padding: 0 24px;
-}
-
-.search-filters {
+/* Users component fills its container and scrolls independently */
+:host {
     display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 0px 24px;
-}
-
-.search-filters-left {
-    display: flex;
-    gap: 16px;
-    align-items: center;
-}
-
-.search-input-wrapper,
-.filter-wrapper {
-    position: relative;
-    display: flex;
-    align-items: center;
-    background-color: white;
-    border: 1px solid var(--border-color);
-    border-radius: 24px;
-    height: 48px;
+    flex-direction: column;
+    flex: 1;
+    min-height: 0;
     overflow: hidden;
 }
 
-.search-input-wrapper {
-    width: 320px;
-}
-
-.filter-wrapper {
-    width: 200px;
-}
-
-.search-input,
-.filter-select {
-    width: 100%;
-    height: 100%;
+/* ── p-select — match jobs filter look (no extra border-radius) ── */
+:host ::ng-deep .p-select {
     border: none;
-    background: transparent;
-    padding-left: 20px;
-    padding-right: 48px;
-
+    height: 42px;
     font-family: var(--font-lato);
-    font-size: 18px;
-    color: var(--secondary-text-color);
-    outline: none;
+    font-size: 14px;
 }
 
-.search-input::placeholder {
-    color: var(--secondary-text-color);
-}
-
-.filter-select {
-    appearance: none;
-    -webkit-appearance: none;
-    -moz-appearance: none;
-    cursor: pointer;
-}
-
-.filter-select:invalid {
-    color: var(--secondary-text-color);
-}
-
-.search-icon,
-.filter-icon {
-    position: absolute;
-    right: 20px;
-    color: var(--secondary-text-color);
-    pointer-events: none;
-}
-
-.add-user-btn {
-    background-color: var(--primary-color);
-    border: 1px solid var(--primary-color);
-    color: white;
-    border-radius: 12px;
-    padding: 12px 18px;
-    font-family: var(--font-lato);
-    font-size: 18px;
-    font-weight: 400;
-    cursor: pointer;
-    transition: 0.2s;
-}
-
-.add-user-btn:hover {
-    background-color: white;
-    color: var(--primary-color);
-}
-
-.users-list {
-    gap: 16px;
-}
-
-
-/*paginator styling*/
-:host ::ng-deep .p-paginator {
-    background: transparent;
-    border: none;
-}
-
-:host ::ng-deep .p-paginator-page {
-    width: 36px;
-    height: 36px;
-    display: inline-flex;
+:host ::ng-deep .p-select .p-select-label {
+    padding: 0 1rem;
+    display: flex;
     align-items: center;
-    justify-content: center;
-    border-radius: 50%;
-}
-
-:host ::ng-deep .p-paginator-page.p-highlight {
-    background: #6366f1;
-    color: #fff;
 }
