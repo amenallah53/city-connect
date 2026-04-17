@@ -130,6 +130,34 @@ app.get('/api/tickets', optionalAuthenticateToken, async (req, res) => {
 });
 
 /**
+ * @api {get} /api/tickets/:id Get single ticket details
+ */
+app.get('/api/tickets/:id', optionalAuthenticateToken, async (req, res) => {
+  try {
+    const { id } = req.params;
+    const query = `
+      SELECT p.*, p.location as location, pc.type as category, pm.file_url as image,
+             COALESCE(u.first_name || ' ' || u.last_name, 'Anonymous') as author_name
+      FROM plainte p
+      LEFT JOIN plainte_categorie pc ON p.categorie_id = pc.id
+      LEFT JOIN plainte_media pm ON p.id = pm.plainte_id
+      LEFT JOIN users u ON p.user_id = u.id
+      WHERE p.id = $1
+    `;
+    const result = await pool.query(query, [id]);
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({ error: 'Ticket not found' });
+    }
+
+    res.json(result.rows[0]);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+/**
  * @api {post} /api/tickets Create a new ticket
  */
 app.post('/api/tickets', authenticateToken, async (req, res) => {
@@ -208,4 +236,19 @@ app.patch('/api/tickets/:id/status', authenticateToken, async (req, res) => {
 const PORT = process.env.PORT || 5004;
 app.listen(PORT, () => {
   console.log(`Tickets service running on port ${PORT} 🎫`);
+});
+
+
+
+/**
+ * @api {get} /api/tickets/categories Get all ticket categories
+ */
+app.get('/api/tickets/categories', async (req, res) => {
+  try {
+    const result = await pool.query('SELECT id, type FROM plainte_categorie ORDER BY id');
+    res.json(result.rows);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Failed to fetch categories' });
+  }
 });

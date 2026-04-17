@@ -45,7 +45,7 @@ export class TicketService {
       if (filters.limit) params = params.set('limit', filters.limit.toString());
     }
 
-    return this.http.get<PaginatedTickets>(this.apiUrl, { 
+    return this.http.get<PaginatedTickets>(this.apiUrl, {
       params,
       headers: {
         Authorization: `Bearer ${token}`
@@ -162,9 +162,13 @@ export class TicketService {
     console.error(errorMessage);
     return throwError(() => new Error(errorMessage));
   }
+
+  getCategories(): Observable<{ id: number; type: string }[]> {
+    return this.http.get<{ id: number; type: string }[]>(`${this.apiUrl}/categories`)
+      .pipe(catchError(this.handleError));
+  }
+
 }
-
-
 
 
 

@@ -26,7 +26,6 @@ export class Report {
     private ticketService: TicketService,
     private router: Router
   ) { }
-
   cities = CITIES;
   categories = TICKET_CATEGORIES;
 
@@ -43,6 +42,18 @@ export class Report {
   imagePreview: string | null = null;
   fileError: string = '';
   selectedFile: File | null = null;
+
+  ngOnInit(): void {
+    this.ticketService.getCategories().subscribe({
+      next: (data) => {
+        this.categories = data.map(c => c.type);
+      },
+      error: (err) => {
+        console.error('Failed to load categories:', err);
+      }
+    });
+  }
+
 
   onFileChange(event: Event): void {
     const input = event.target as HTMLInputElement;

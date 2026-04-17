@@ -120,6 +120,13 @@ export class TicketService {
       );
   }
 
+  getCategories(): Observable<{ id: number; type: string }[]> {
+    return this.http.get<{ id: number; type: string }[]>(`${this.apiUrl}/categories`, { headers: this.getAuthHeaders() })
+      .pipe(
+        catchError(this.handleError)
+      );
+  }
+
   private handleError(error: HttpErrorResponse) {
     let errorMessage = 'Something went wrong';
     if (error.error instanceof ErrorEvent) {
