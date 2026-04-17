@@ -105,3 +105,8 @@ input{
     cursor: pointer;
     text-decoration: underline;
 }
+.error {
+    color: red;
+    font-size: 0.9em;
+    margin-top: 5px;
+}

@@ -50,7 +50,7 @@ app.post('/google', async (req, res) => {
 
     // Check if user already exists
     let result = await pool.query(
-      'SELECT id, email, first_name, last_name, status FROM users WHERE LOWER(email) = LOWER($1)',
+      'SELECT id, email, first_name, last_name, status, role FROM users WHERE LOWER(email) = LOWER($1)',
       [email]
     );
 
@@ -60,15 +60,18 @@ app.post('/google', async (req, res) => {
       // First time Google login — create the account
       const inserted = await pool.query(
         `INSERT INTO users (email, first_name, last_name, password, role, status)
-         VALUES ($1, $2, $3, $4, 'citoyen', TRUE)
-         RETURNING id, email, first_name, last_name, status`,
+         VALUES ($1, $2, $3, $4, 'citoyen', 'accepted')
+         RETURNING id, email, first_name, last_name, status, role`,
         [email, given_name, family_name, email] // no real password or CIN
       );
       user = inserted.rows[0];
     }
 
-    if (!user.status) {
+    if (user.status === 'pending') {
       return res.status(403).json({ error: 'Account is not activated yet' });
+    }
+    if (user.status === 'rejected') {
+      return res.status(403).json({ error: 'Account registration was rejected' });
     }
 
     const token = generateToken(user);
@@ -124,7 +127,7 @@ app.post('/login', async (req, res) => {  //login
       return res.status(400).json({ error: 'Email and password are required' });
     }
 
-    const result = await pool.query('SELECT id, email, password, first_name, last_name, cin, role FROM users WHERE LOWER(email) = LOWER($1)', [email]);
+    const result = await pool.query('SELECT id, email, password, first_name, last_name, cin, role,status FROM users WHERE LOWER(email) = LOWER($1)', [email]);
     const user = result.rows[0];
     if (!user) {
       return res.status(401).json({ error: 'Invalid credentials' });
@@ -134,11 +137,23 @@ app.post('/login', async (req, res) => {  //login
     if (!validPassword) {
       return res.status(401).json({ error: 'Invalid credentials' });
     }
-
+    if(user.status === 'pending') {
+      return res.status(403).json({ error: 'Account is not activated yet' });
+    }
+    if(user.status === 'rejected') {
+      return res.status(403).json({ error: 'Account registration was rejected' });
+    }
     const token = generateToken(user);
     return res.status(200).json({
       token: token,
-      user: {id: user.id,email: user.email,name: user.name}
+      user: {
+        id: user.id,
+        email: user.email,
+        first_name: user.first_name,
+        last_name: user.last_name,
+        cin: user.cin,
+        role: user.role,
+      }
     });
   } catch (err) {
     console.error('Login error:', err);
@@ -167,7 +182,21 @@ app.post('/register', async (req, res) => {      //register
       [CIN, email]
     );
     if (existing.rows.length > 0) {
-      return res.status(409).json({ error: 'CIN or email is already registered' });
+      if(existing.rows[0].status === 'pending') {
+        return res.status(409).json({ error: 'Account with this CIN or email already exists and is pending approval' });
+      }
+      else if(existing.rows[0].status === 'rejected') {
+        const result = await pool.query(
+          `update users set password = $1, first_name = $2, last_name = $3, cin = $4, document = $5, status = 'pending'
+           WHERE id = $6
+           RETURNING id, email, first_name, last_name, cin`,
+          [hashedPassword, firstname, lastname, CIN, documentUrl, existing.rows[0].id]
+        );
+        return res.status(201).json({ error: 'Account with this CIN or email already exists and was rejected , we will review your new request again' });
+      }
+      else{
+        return res.status(409).json({ error: 'Account with this CIN or email already exists' });
+      }
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
@@ -184,7 +213,6 @@ app.post('/register', async (req, res) => {      //register
       user: result.rows[0],
     });
   } catch (err) {
-    console.error('Register error:', err);
     return res.status(500).json({ error: err.message });
   }
 });

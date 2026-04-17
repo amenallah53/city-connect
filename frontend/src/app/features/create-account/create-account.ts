@@ -15,6 +15,8 @@ import { LoginProjetDescrip } from '../../shared/components/login-projet-descrip
 export class CreateAccount {
   registerForm: FormGroup;
   selectedFile: File | null = null;
+  messageerror: string | null = null;
+  
 
   constructor(
     private fb: FormBuilder,
@@ -51,7 +53,7 @@ export class CreateAccount {
 
     this.authService.register(formData).subscribe({
       next: () => this.router.navigate(['/login']),
-      error: (err) => console.error(err.error.message)
+      error: (err) => this.messageerror = err.error?.error || 'An error occurred during registration. Please try again.'
     });
   }
 }

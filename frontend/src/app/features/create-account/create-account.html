@@ -10,7 +10,7 @@
       <div id="div3">First Name</div>
       <input type="text" formControlName="firstname" placeholder="">
       @if(registerForm.get('firstname')?.invalid && registerForm.get('firstname')?.touched){
-           <div>
+           <div class="red">
               First name is required
            </div>
       }
@@ -18,7 +18,7 @@
       <div id="div3">Last Name</div>
       <input type="text" formControlName="lastname" placeholder="">
       @if(registerForm.get('lastname')?.invalid && registerForm.get('lastname')?.touched){
-           <div>
+           <div class="red">
               Last name is required
            </div>
       }
@@ -26,7 +26,7 @@
       <div id="div3">Email</div>
       <input type="text" formControlName="email" placeholder="you@example.com">
       @if(registerForm.get('email')?.invalid && registerForm.get('email')?.touched){
-           <div>
+           <div class="red">
               Valid email is required
            </div>
       }
@@ -34,7 +34,7 @@
       <div id="pass">CIN</div>
       <input type="text" formControlName="CIN" placeholder="12345678">
       @if(registerForm.get('CIN')?.invalid && registerForm.get('CIN')?.touched){
-           <div>
+           <div class="red">
               CIN must be 8 digits
            </div>
       }
@@ -42,7 +42,7 @@
       <div id="pass">Password</div>
       <input type="password" formControlName="password" placeholder="Enter your password">
       @if(registerForm.get('password')?.invalid && registerForm.get('password')?.touched){
-          <div>
+          <div class="red">
             Password must be at least 8 characters
           </div>
         }
@@ -60,10 +60,15 @@
         <label for="fileUpload" class="custom-file">
           Drag and drop documents here, or click to select files <br>
         @if(selectedFile){
-              {{ selectedFile.name }}
+            {{ selectedFile.name }}
         }
         </label>
       </div>
+      @if(messageerror){
+          <div class="red">
+            {{ messageerror }}
+          </div>
+      }
       <div id="wrap">
         <button id="button1" type="button" routerLink="/login">Cancel</button>
         <button id="button2" type="submit" [disabled]="registerForm.invalid || !selectedFile">
