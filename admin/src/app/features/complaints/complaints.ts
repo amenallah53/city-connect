@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { SelectModule } from 'primeng/select';
-import { PaginatorModule, PaginatorState } from 'primeng/paginator';
+import { Paginator, PaginatorState } from 'primeng/paginator';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { ComplaintCard } from '../../shared/components/cards/complaint-card/complaint-card';
 import { ComplaintFormDialog } from '../../shared/components/dialogs/complaint-form-dialog/complaint-form-dialog';
@@ -15,7 +15,7 @@ interface BadgeFilter { name: string; code: string; }
 @Component({
   selector: 'app-complaints',
   standalone: true,
-  imports: [CommonModule, FormsModule, SelectModule, PaginatorModule, ComplaintCard],
+  imports: [CommonModule, FormsModule, SelectModule, Paginator, ComplaintCard],
   providers: [DialogService],
   templateUrl: './complaints.html',
   styleUrl: './complaints.css'
@@ -130,3 +130,4 @@ export class Complaints implements OnInit {
     });
   }
 }
+

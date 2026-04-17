@@ -7,9 +7,6 @@ const app = express();
 // Enable CORS for all routes
 app.use(cors());
 
-// Parse JSON
-app.use(express.json());
-
 app.use("/api/users", createProxyMiddleware({
   target: "http://localhost:5001",
   changeOrigin: true
@@ -41,6 +38,30 @@ app.use("/api/services", createProxyMiddleware({
   changeOrigin: true,
   pathRewrite: {
     "^(.*)$": "/api/services$1"
+  }
+}));
+
+app.use("/api/service-requests", createProxyMiddleware({
+  target: "http://localhost:5006",
+  changeOrigin: true,
+  pathRewrite: {
+    "^(.*)$": "/api/service-requests$1"
+  }
+}));
+
+app.use("/api/offers", createProxyMiddleware({
+  target: "http://localhost:5011",
+  changeOrigin: true,
+  pathRewrite: {
+    "^(.*)$": "/api/offers$1"
+  }
+}));
+
+app.use("/api/prestataires", createProxyMiddleware({
+  target: "http://localhost:5012",
+  changeOrigin: true,
+  pathRewrite: {
+    "^(.*)$": "/api/prestataires$1"
   }
 }));
 

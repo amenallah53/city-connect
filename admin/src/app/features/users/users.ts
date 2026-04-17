@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { SelectModule } from 'primeng/select';
-import { PaginatorModule, PaginatorState } from 'primeng/paginator';
+import { Paginator, PaginatorState } from 'primeng/paginator';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { UserCard } from '../../shared/components/cards/user-card/user-card';
 import { User } from '../../shared/models/user.model';
@@ -15,7 +15,7 @@ interface StatusFilter { name: string; code: string; }
 
 @Component({
   selector: 'app-users',
-  imports: [CommonModule, FormsModule, SelectModule, PaginatorModule, UserCard],
+  imports: [CommonModule, FormsModule, SelectModule, Paginator, UserCard],
   providers: [DialogService],
   templateUrl: './users.html',
   styleUrl: './users.css',
@@ -125,3 +125,4 @@ export class Users implements OnInit {
     this.pagedUsers = this.filteredUsers.slice(this.first, this.first + this.rows);
   }
 }
+

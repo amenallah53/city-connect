@@ -241,10 +241,13 @@ export class StartService implements OnInit, OnDestroy {
     this.cdr.markForCheck();
 
     // Create request object with all data
+    const attachmentFiles = Array.from(this.requirementDocuments.values());
     const requestPayload: any = {
       cin: formData.cin ? parseInt(formData.cin) : null,
       service_id: this.serviceId,
-      description: formData.requestdescription || ''
+      description: formData.requestdescription || '',
+      telephone: formData.phone || null,
+      attachments: attachmentFiles
     };
     
     this.serviceRequestsService.createServiceRequest(requestPayload).subscribe({
@@ -256,7 +259,7 @@ export class StartService implements OnInit, OnDestroy {
         
         // Reset form and redirect to my-requests after 2 seconds
         setTimeout(() => {
-          this.router.navigate(['/my-requests']);
+          this.router.navigate(['/services/requests']);
         }, 2000);
       },
       error: (error) => {

@@ -216,6 +216,8 @@ CREATE TABLE demande_service (
     addresse VARCHAR(255),
     telephone VARCHAR(50),
     admin_notes TEXT,
+    attachments_name TEXT[],
+    attachments TEXT[],
     user_id UUID REFERENCES users (id) ON DELETE SET NULL,
     service_id UUID REFERENCES service (id) ON DELETE SET NULL
 );

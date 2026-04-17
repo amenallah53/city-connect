@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { PaginatorModule, PaginatorState } from 'primeng/paginator';
+import { Paginator, PaginatorState } from 'primeng/paginator';
 import { SelectModule } from 'primeng/select';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { FaqCard } from '../../shared/components/cards/faq-card/faq-card';
@@ -14,7 +14,7 @@ interface RoleFilter { name: string; code: string; }
 @Component({
   selector: 'app-faq',
   standalone: true,
-  imports: [CommonModule, FormsModule, PaginatorModule, SelectModule, FaqCard],
+  imports: [CommonModule, FormsModule, Paginator, SelectModule, FaqCard],
   providers: [DialogService],
   templateUrl: './faq.html',
   styleUrl: './faq.css'
@@ -94,3 +94,4 @@ export class FaqComponent implements OnInit {
     this.pagedFaqs = this.filteredFaqs.slice(this.first, this.first + this.rows);
   }
 }
+
