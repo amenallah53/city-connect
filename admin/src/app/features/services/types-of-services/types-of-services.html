@@ -52,7 +52,7 @@
 
     <!-- Services Grid -->
     <div
-        class="px-6 py-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 place-items-center auto-rows-min">
+        class="max-w-7xl mx-auto px-6 py-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 place-items-center auto-rows-min">
         @for (service of pagedServices; track service.id) {
         <app-service-card [service]="service"></app-service-card>
         }

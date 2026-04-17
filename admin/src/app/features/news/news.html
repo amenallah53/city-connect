@@ -42,7 +42,7 @@
     </div>
 
     <!-- News List / Grid -->
-    <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 px-6 py-4 auto-rows-[1fr]">
+    <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 px-6 py-4 auto-rows-[1fr]">
         @for (news of pagedNews; track news.id) {
         <app-news-card [news]="news"></app-news-card>
         }

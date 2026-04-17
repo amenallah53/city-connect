@@ -6,9 +6,10 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "concurrently \"npm:start-frontend\" \"npm:start-backend\"",
-    "dev:admin": "cd admin && ng serve --open --port 4201",
+    "dev:admin": "concurrently \"npm:start-admin\" \"npm:start-backend\"",
     "start-frontend": "cd frontend && ng serve --open",
-    "start-backend": "cd backend && npm run dev"
+    "start-backend": "cd backend && npm run dev",
+    "start-admin": "cd admin && ng serve --open --port 4201"
   },
   "repository": {
     "type": "git",
