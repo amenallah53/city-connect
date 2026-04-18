@@ -3,7 +3,7 @@ const cors = require('cors');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const { Pool } = require('pg');
-require('dotenv').config({ path: __dirname + '/.env' });
+require('dotenv').config({ path: __dirname + '/../.env' });
 
 const app = express();
 const port = parseInt(process.env.PORT, 10) || 5008;

@@ -127,15 +127,17 @@ export class UserAuthService {
     );
   }
 
+
+  // Fix 2: read userId correctly from JWT payload
   private extractUserDataFromToken(token: string): any {
     try {
       const payload = token.split('.')[1];
       const decodedPayload = atob(payload);
       const data = JSON.parse(decodedPayload);
       return {
-        id: data.id,
+        id: data.userId || data.id,   // ✅ JWT uses userId
         cin: data.cin,
-        name: data.first_name + ' ' + (data.last_name || ''),
+        name: (data.first_name || '') + ' ' + (data.last_name || ''),
         email: data.email,
         role: data.role,
         addresse: data.adresse,
