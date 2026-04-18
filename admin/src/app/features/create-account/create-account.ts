@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
-import { UserAuthService } from '../../core/services/auth.service';  
+import { AuthService } from '../../../core/services/auth-service';  
 import { ReactiveFormsModule } from '@angular/forms';
 import { LoginProjetDescrip } from '../../shared/components/login-projet-descrip/login-projet-descrip';
 
@@ -20,7 +20,7 @@ export class CreateAccount {
 
   constructor(
     private fb: FormBuilder,
-    private authService: UserAuthService,
+    private authService: AuthService,
     private router: Router
   ) {
     this.registerForm = this.fb.group({
@@ -48,7 +48,8 @@ export class CreateAccount {
 
     const formData = {
       ...this.registerForm.value,
-      documentUrl: this.selectedFile.name // replace with real upload URL later
+      documentUrl: this.selectedFile.name,  // replace with real upload URL later
+      role : 'admin' 
     };
 
     this.authService.register(formData).subscribe({

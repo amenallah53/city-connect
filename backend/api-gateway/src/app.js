@@ -14,7 +14,8 @@ app.use("/api/users", createProxyMiddleware({
 
 app.use("/api/auth", createProxyMiddleware({
   target: "http://localhost:5002",
-  changeOrigin: true
+  changeOrigin: true,
+  pathRewrite: { "^/api/admin": "" },
 }));
 
 app.use("/api/admin", createProxyMiddleware({

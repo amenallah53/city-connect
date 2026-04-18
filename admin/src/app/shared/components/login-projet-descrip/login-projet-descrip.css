@@ -1,0 +1,50 @@
+#body{
+    display: flex;
+    flex-direction: column;
+}
+#title {
+    color : var(--primary-text-color);
+    font-family: var(--font-rubik);
+    font-weight: 500;
+    font-size: 40px;
+}
+#description{
+    color: var(--secondary-text-color);
+    margin-top: 1%;
+    font-size: 20px;
+}
+#parent {
+    margin-top: 5%;
+    display: flex;
+    flex-direction: column;
+}
+#sub1{
+    display: flex;
+    flex-direction: row;
+    gap: 8%;
+}
+#sub2{
+    display: flex;
+    flex-direction: row;
+    margin-top: 8%;
+    gap: 8%;
+}
+#div1, #div2, #div3, #div4{
+    background-color: white;
+    border-radius: 10px;
+    width: 15vw;
+    height: 15vh;
+    font-size: 110%;
+    box-shadow: -5px 10px 20px rgba(0,0,0,0.2);
+    gap:10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+}
+.dark{
+    color: var(--primary-text-color);
+    font-weight: 500;
+    font-family: var(--font-rubik);
+    font-size: 20px;
+}
