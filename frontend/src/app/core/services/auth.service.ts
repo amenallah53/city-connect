@@ -22,7 +22,7 @@ export class UserAuthService {
   private USER_TOKEN_KEY = 'token';
   private API_URL = 'http://localhost:5002';
   private USER_DATA_KEY = 'userData';
-  private MYPROFILE_API_URL = 'http://localhost:5008/api/myprofile';
+  private MYPROFILE_API_URL = 'http://localhost:5000/api/myprofile';
 
   private currentUserSubject = new BehaviorSubject<User | null>(null);
   public currentUser$ = this.currentUserSubject.asObservable();

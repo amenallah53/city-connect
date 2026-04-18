@@ -29,7 +29,7 @@ export class DetailsPage implements OnInit {
     private http: HttpClient,
     private auth: UserAuthService,
     private cdr: ChangeDetectorRef
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.route.params.subscribe(params => {
@@ -81,33 +81,39 @@ export class DetailsPage implements OnInit {
   sendRequest() {
     if (!this.selectedDate || !this.job) return;
 
-    this.auth.getCurrentLoggedUser().subscribe(user => {
-      if (!user) {
-        alert('Please login to request an offer');
-        return;
-      }
-
-      const payload = {
-        prestataireId: this.job.id,
-        offerorId: user.id,
-        dateJobSuggestion: this.selectedDate,
-        status: 'pending'
-      };
-
-      this.requestSent = true;
-      this.http.post(environment.offersUrl, payload).subscribe({
-        next: () => {
-          alert('Request sent successfully!');
-          setTimeout(() => {
-            this.requestSent = false;
-          }, 3000);
-        },
-        error: (err) => {
-          console.error('Failed to send request:', err);
-          alert('Failed to send request. Please try again later.');
-          this.requestSent = false;
+    // ✅ getCurrentLoggedUser() returns Observable<User|null>, must subscribe
+    this.auth.getCurrentLoggedUser().subscribe({
+      next: (user) => {
+        if (!user) {
+          alert('Please login to request an offer');
+          return;
         }
-      });
+
+        const payload = {
+          prestataireId: this.job.id,
+          offerorId: user.id,
+          dateJobSuggestion: this.selectedDate,
+          status: 'pending'
+        };
+
+        console.log('Sending payload:', payload);
+
+        this.requestSent = true;
+        this.http.post(environment.offersUrl, payload).subscribe({
+          next: () => {
+            alert('Request sent successfully!');
+            setTimeout(() => { this.requestSent = false; }, 3000);
+          },
+          error: (err) => {
+            console.error('Failed to send request:', err);
+            alert('Failed to send request. Please try again later.');
+            this.requestSent = false;
+          }
+        });
+      },
+      error: () => {
+        alert('Could not verify your session. Please login again.');
+      }
     });
   }
 }
