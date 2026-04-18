@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "node src/App.js",
-    "dev": "node src/App.js",
+    "dev": "nodemon src/App.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
@@ -18,5 +18,8 @@
     "express": "^5.2.1",
     "jsonwebtoken": "^9.0.3",
     "pg": "^8.20.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.14"
   }
 }
