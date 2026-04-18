@@ -112,8 +112,8 @@ app.put('/me', authenticateToken, async (req, res) => {   //update user informat
        RETURNING id, email, first_name, last_name`,
       [
         first_name || null,
-        last_name  || null,
-        email      || null,
+        last_name || null,
+        email || null,
         hashedPassword,
         req.user.userId,
       ]
