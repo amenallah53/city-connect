@@ -84,6 +84,52 @@ app.post('/google', async (req, res) => {
 
 
 
+app.post('/google2', async (req, res) => {    //for admin project
+  try {
+    const { idToken } = req.body;
+    if (!idToken) {
+      return res.status(400).json({ error: 'ID token is required' });
+    }
+
+    // Verify the token with Google
+    const ticket = await googleClient.verifyIdToken({
+      idToken,
+      audience: process.env.GOOGLE_CLIENT_ID,
+    });
+
+    const { email, given_name, family_name } = ticket.getPayload();
+
+    // Check if user already exists
+    let result = await pool.query(
+      'SELECT id, email, first_name, last_name, status, role FROM users WHERE LOWER(email) = LOWER($1) and role = \'admin\'',
+      [email]
+    );
+
+    let user = result.rows[0];
+
+    if (!user) {
+      // First time Google login — create the account
+      return res.status(403).json({ error: 'there\'s no admin account associated with this Google account' });
+    }
+
+    if (user.status === 'pending') {
+      return res.status(403).json({ error: 'Account is not activated yet' });
+    }
+    if (user.status === 'rejected') {
+      return res.status(403).json({ error: 'Account registration was rejected' });
+    }
+
+    const token = generateToken(user);
+    return res.status(200).json({ token, user });
+  } catch (err) {
+    console.error('Google auth error:', err);
+    return res.status(500).json({ error: 'Google authentication failed' });
+  }
+});
+
+
+
+
 
 function generateToken(user) {
   return jwt.sign(

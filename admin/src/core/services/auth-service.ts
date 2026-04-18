@@ -155,7 +155,7 @@ export class AuthService {
   }
 
   googleLogin(idToken: string): Observable<any> {
-    return this.http.post(`${this.API_URL}/api/auth/google`, { idToken }).pipe(
+    return this.http.post(`${this.API_URL}/api/auth/google2`, { idToken }).pipe(
       tap((response: any) => {
         if (response.token) {
           localStorage.setItem(this.USER_TOKEN_KEY, response.token);

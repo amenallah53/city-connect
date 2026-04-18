@@ -60,11 +60,7 @@ export class Login {
           next: (res) => {
             this.errorMessage = null;
             this.cdr.detectChanges();
-            if(res.user.role === 'prestataire' || res.user.role === 'citoyen') {
-              this.router.navigate(['/home']);
-            } else if(res.user.role === 'admin') {
-              this.router.navigate(['/dashboard']);
-            }
+            this.router.navigate(['/dashboard']);
           },
           error: (err) => {
             this.errorMessage = err.error?.error || 'Google login failed';
