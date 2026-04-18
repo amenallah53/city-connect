@@ -12,6 +12,7 @@ export interface DemandeService {
   email?: string;
   addresse?: string;
   telephone?: string;
+  date_naissance?: string;
   adminNotes?: string;
   userId?: string;
   serviceId?: string;

@@ -44,6 +44,8 @@ export class StartService implements OnInit, OnDestroy {
       // Disable CIN and Name only if user is already logged in
       cin: [{ value: '', disabled: isLoggedIn }, [Validators.required, Validators.pattern(/^\d{8}$/)]],
       name: [{ value: '', disabled: isLoggedIn }, [Validators.required]],
+      address: ['', [Validators.required]],
+      date_naissance: ['', [Validators.required]],
       phone: ['', [Validators.required, Validators.pattern(/^\d{8}$/)]],
       requestdescription: ['']
     });
@@ -66,10 +68,13 @@ export class StartService implements OnInit, OnDestroy {
     
     // Pre-fill form with logged-in user data if available
     const currentUser = this.authService.getCurrentUser();
+    const fullUser = this.authService.getCurrentLoggedUser();
     if (currentUser) {
       this.personalInfoForm.patchValue({
         cin: currentUser.cin,
-        name: currentUser.name || ''
+        name: currentUser.name || (fullUser ? `${fullUser.firstName} ${fullUser.lastName}` : ''),
+        address: fullUser?.addresse || '',
+        date_naissance: fullUser?.date_naissance || ''
       });
     }
   }
@@ -247,6 +252,9 @@ export class StartService implements OnInit, OnDestroy {
       service_id: this.serviceId,
       description: formData.requestdescription || '',
       telephone: formData.phone || null,
+      addresse: formData.address || null,
+      date_naissance: formData.date_naissance || null,
+      name: formData.name || null,
       attachments: attachmentFiles
     };
     

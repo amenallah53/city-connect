@@ -10,7 +10,7 @@ import { ServiceFormDialog } from '../../../shared/components/dialogs/service-fo
 import { Service } from '../../../shared/models/service.model';
 import { environment } from '../../../../environments/environment';
 
-interface BadgeFilter { name: string; code: string; }
+interface TypeFilter { name: string; code: string; }
 
 interface CreateServicePayload {
   name: string;
@@ -44,8 +44,8 @@ interface ServicesApiResponse {
   styleUrl: './types-of-services.css'
 })
 export class TypesOfServices implements OnInit {
-  badgeFilters: BadgeFilter[] = [];
-  selectedBadgeCode: string = 'all';
+  typeFilters: TypeFilter[] = [];
+  selectedTypeCode: string = 'all';
 
   searchQuery: string = '';
 
@@ -55,7 +55,7 @@ export class TypesOfServices implements OnInit {
   isLoading: boolean = false;
 
   first: number = 0;
-  rows: number = 12;
+  rows: number = 6;
 
   private dialogRef: DynamicDialogRef | null = null;
 
@@ -63,13 +63,17 @@ export class TypesOfServices implements OnInit {
     private dialogService: DialogService,
     private http: HttpClient,
     private cdr: ChangeDetectorRef
-  ) {}
+  ) { }
 
   ngOnInit() {
-    this.badgeFilters = [
-      { name: 'All Badges', code: 'all' }
+    this.typeFilters = [
+      { name: 'All Types', code: 'all' },
+      { name: 'Business licenses', code: 'Business licenses' },
+      { name: 'Honoring the dead', code: 'Honoring the dead' },
+      { name: 'Building permits', code: 'Building permits' },
+      { name: 'Civil Records', code: 'Civil Records' }
     ];
-    this.selectedBadgeCode = 'all';
+    this.selectedTypeCode = 'all';
     this.loadServices();
   }
 
@@ -160,7 +164,6 @@ export class TypesOfServices implements OnInit {
       next: (response: ServicesApiResponse) => {
         const services = (response?.data || []).map((item) => this.mapToService(item));
         this.allServices = services;
-        this.buildBadgeFilters(services);
         this.deferViewUpdate(() => {
           this.applyFilters();
           this.isLoading = false;
@@ -207,33 +210,18 @@ export class TypesOfServices implements OnInit {
     };
   }
 
-  private buildBadgeFilters(services: Service[]) {
-    const uniqueBadges = [...new Set(
-      services.flatMap(service => service.badges || []).filter(Boolean)
-    )].sort((a, b) => a.localeCompare(b));
-
-    this.badgeFilters = [
-      { name: 'All Badges', code: 'all' },
-      ...uniqueBadges.map(badge => ({ name: badge, code: badge }))
-    ];
-
-    if (!this.badgeFilters.some(filter => filter.code === this.selectedBadgeCode)) {
-      this.selectedBadgeCode = 'all';
-    }
-  }
-
   private applyFilters() {
     const q = this.searchQuery.toLowerCase().trim();
     this.filteredServices = this.allServices.filter(s => {
-      const matchBadge =
-        this.selectedBadgeCode === 'all' ||
-        (s.badges && s.badges.includes(this.selectedBadgeCode));
+      const matchType =
+        this.selectedTypeCode === 'all' ||
+        (s.type && s.type.toLowerCase() === this.selectedTypeCode.toLowerCase());
       const matchSearch =
         !q ||
         (s.name && s.name.toLowerCase().includes(q)) ||
         (s.type && s.type.toLowerCase().includes(q));
-      
-      return matchBadge && matchSearch;
+
+      return matchType && matchSearch;
     });
     this.updatePagedServices();
   }

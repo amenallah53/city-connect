@@ -2,12 +2,13 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
+import { SelectModule } from 'primeng/select';
 import { Service } from '../../../models/service.model';
 
 @Component({
   selector: 'app-service-form-dialog',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, SelectModule],
   templateUrl: './service-form-dialog.html',
   styleUrl: './service-form-dialog.css'
 })
@@ -16,6 +17,13 @@ export class ServiceFormDialog implements OnInit {
   
   newBadge: string = '';
   requirementText: string = '';
+
+  serviceTypes = [
+    { name: 'Business licenses', code: 'Business licenses' },
+    { name: 'Honoring the dead', code: 'Honoring the dead' },
+    { name: 'Building permits', code: 'Building permits' },
+    { name: 'Civil Records', code: 'Civil Records' }
+  ];
 
   constructor(public config: DynamicDialogConfig, public ref: DynamicDialogRef) {}
 

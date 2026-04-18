@@ -214,6 +214,7 @@ CREATE TABLE demande_service (
     last_name VARCHAR(255),
     email VARCHAR(255),
     addresse VARCHAR(255),
+    date_naissance date,
     telephone VARCHAR(50),
     admin_notes TEXT,
     attachments_name TEXT[],
@@ -223,8 +224,8 @@ CREATE TABLE demande_service (
 );
 
 CREATE TABLE certificat_service (
-    id SERIAL PRIMARY KEY,
-    type VARCHAR(100),
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    type VARCHAR(100) DEFAULT 'pdf',
     date_generation TIMESTAMP NOT NULL DEFAULT NOW(),
     file_url TEXT, -- Backblaze B2 URL
     demande_id UUID UNIQUE NOT NULL REFERENCES demande_service (id) ON DELETE CASCADE

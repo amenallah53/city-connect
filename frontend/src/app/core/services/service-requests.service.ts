@@ -27,6 +27,7 @@ export interface ServiceRequest {
   attachments?: string[];
   attachments_name?: string[];
   type?: string;
+  addresse?: string;
 }
 
 export interface ServiceRequestResponse {
@@ -62,6 +63,8 @@ export class ServiceRequestsService {
     description?: string;
     telephone?: string;
     phone?: string;
+    addresse?: string;
+    name?: string;
     attachments?: File[];
   }): Observable<ServiceRequest> {
     const files = Array.isArray(request.attachments) ? request.attachments : [];
@@ -73,6 +76,8 @@ export class ServiceRequestsService {
       description?: string;
       telephone?: string;
       phone?: string;
+      addresse?: string;
+      name?: string;
       attachments?: string[];
       attachments_name?: string[];
       attachment_types?: string[];
@@ -127,6 +132,8 @@ export class ServiceRequestsService {
       description?: string;
       telephone?: string;
       phone?: string;
+      addresse?: string;
+      name?: string;
       attachments?: string[];
       attachments_name?: string[];
       attachment_types?: string[];

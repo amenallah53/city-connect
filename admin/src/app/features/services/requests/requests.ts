@@ -11,13 +11,17 @@ interface ServiceRequest {
   id: string;
   userName: string;
   serviceName: string;
+  type: string;
+  cin?: string;
+  address?: string;
   date: string;
-  status: 'pending' | 'done';
+  status: 'pending' | 'approved' | 'rejected' | 'in_progress' | 'completed' | string;
   backendStatus: 'pending' | 'in_progress' | 'approved' | 'rejected' | 'completed';
   email?: string;
   phone?: string;
   description?: string;
   location?: string;
+  date_naissance?: string;
   attachments?: Array<{
     id?: number;
     name?: string;
@@ -38,6 +42,10 @@ interface ServiceRequestsApiResponse {
     email?: string;
     telephone?: string;
     service_name?: string;
+    type?: string;
+    cin?: string;
+    address?: string;
+    date_naissance?: string;
     status: 'pending' | 'in_progress' | 'approved' | 'rejected' | 'completed';
     description?: string;
     submission_date?: string;
@@ -65,11 +73,14 @@ export class Requests implements OnInit {
   pagedRequests: ServiceRequest[] = [];
 
   searchQuery: string = '';
-  
+
   statusFilters = [
     { name: 'All Statuses', value: null },
     { name: 'Pending', value: 'pending' },
-    { name: 'Done', value: 'done' }
+    //{ name: 'In Progress', value: 'in_progress' },
+    { name: 'Approved', value: 'approved' },
+    { name: 'Rejected', value: 'rejected' },
+    //{ name: 'Completed', value: 'completed' },
   ];
   selectedFilter: any = this.statusFilters[0];
 
@@ -84,7 +95,7 @@ export class Requests implements OnInit {
   private readonly directServiceRequestsUrl = 'http://localhost:5006/api/service-requests';
   private readonly gatewayServiceRequestsUrl = environment.serviceRequestsUrl;
 
-  constructor(private http: HttpClient, private cdr: ChangeDetectorRef) {}
+  constructor(private http: HttpClient, private cdr: ChangeDetectorRef) { }
 
   ngOnInit() {
     this.loadRequests();
@@ -130,13 +141,17 @@ export class Requests implements OnInit {
       id: request.id,
       userName: normalizedFullname || fallbackName || 'Unknown user',
       serviceName: request.service_name || 'Unknown service',
+      type: request.type || 'Unknown type',
+      cin: request.cin || '',
+      address: request.address || '',
       date: this.formatDate(request.submission_date),
-      status: backendStatus === 'pending' ? 'pending' : 'done',
+      status: backendStatus,
       backendStatus,
       email: request.email || '',
       phone: request.telephone || '',
       description: request.description || '',
       location: '',
+      date_naissance: request.date_naissance || '',
       attachments: Array.isArray(request.attachments) ? request.attachments : []
     };
   }
@@ -153,6 +168,58 @@ export class Requests implements OnInit {
     return `${day}-${month}-${year}`;
   }
 
+  async generateServiceRequestCertificate(data: any) {
+
+    const payload = {
+      id: data.id || '',
+      userName: data.userName || '',
+      serviceName: data.serviceName || '',
+      type: data.type || '',
+      cin: data.cin || '',
+      address: data.address || '',
+      date_naissance: this.formatDate(data.date_naissance) || '',
+      date: this.formatDate(data.date) || '',
+      status: data.status || '',
+      backendStatus: data.backendStatus || '',
+      email: data.email || '',
+      phone: data.phone || '',
+      description: data.description || '',
+      attachments: data.attachments || [],
+      adminNotes: data.adminNotes || '', /** mch ma5douma */
+      location: data.location || '', /** mch ma5douma */
+    };
+
+    const response = await fetch('https://amenallah23.app.n8n.cloud/webhook-test/7d27e881-89a9-4039-add7-b6cd784fb0ca', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(payload)
+    });
+
+    const result = await response.json();
+    console.log('n8n response: ', result);
+
+    if (result && result.file_url) {
+      this.saveServiceRequestCertificate({
+        file_url: result.file_url,
+        demande_id: data.id,
+        date_generation: new Date().toISOString()
+      });
+    }
+  }
+
+  private saveServiceRequestCertificate(payload: any) {
+    this.http.post(`${this.directServiceRequestsUrl}/certificate`, payload).subscribe({
+      next: (response) => {
+        console.log('Certificate saved successfully:', response);
+      },
+      error: (error) => {
+        console.error('Failed to save certificate:', error);
+      }
+    });
+  }
+
   onStatusUpdate(event: { requestId: string; status: 'approved' | 'rejected' }) {
     if (!event?.requestId) {
       this.setActionMessage('Could not update request: missing request ID.', 'error');
@@ -160,15 +227,19 @@ export class Requests implements OnInit {
     }
 
     // Optimistic local update so admin sees immediate feedback even before reload.
-    this.requests = this.requests.map((request) =>
-      request.id === event.requestId
-        ? {
-            ...request,
-            backendStatus: event.status,
-            status: 'done'
-          }
-        : request
-    );
+    this.requests = this.requests.map((request) => {
+      if (request.id === event.requestId) {
+        const updated = {
+          ...request,
+          backendStatus: event.status,
+          //status: 'done' as const
+        };
+        this.generateServiceRequestCertificate(updated);
+        console.log('Updated service request:', updated);
+        return updated;
+      }
+      return request;
+    });
     this.applyFilters();
 
     this.updateRequestStatus(this.directServiceRequestsUrl, event.requestId, event.status);
@@ -212,8 +283,8 @@ export class Requests implements OnInit {
 
     if (this.searchQuery.trim()) {
       const q = this.searchQuery.toLowerCase();
-      filtered = filtered.filter(r => 
-        r.userName.toLowerCase().includes(q) || 
+      filtered = filtered.filter(r =>
+        r.userName.toLowerCase().includes(q) ||
         r.serviceName.toLowerCase().includes(q)
       );
     }

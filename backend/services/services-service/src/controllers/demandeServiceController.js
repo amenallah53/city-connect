@@ -22,6 +22,9 @@ exports.createServiceRequest = async (req, res) => {
       description,
       telephone,
       phone,
+      addresse,
+      address,
+      date_naissance,
       attachments,
       attachments_name,
       attachment_types
@@ -52,6 +55,7 @@ exports.createServiceRequest = async (req, res) => {
     const userId = user.id;
     const requestPhone = (telephone || phone || '').toString().trim();
     const resolvedTelephone = requestPhone || user.telephone || null;
+    const resolvedAddresse = addresse || address || user.adresse || null;
 
     // Vérifier que le service existe
     const serviceCheck = await client.query(
@@ -103,10 +107,11 @@ exports.createServiceRequest = async (req, res) => {
         email,
         addresse,
         telephone,
+        date_naissance,
         attachments_name,
         attachments
       ) VALUES (
-        $1, $2, 'pending', $3, $4, $5, $6, $7, $8, $9, $10, $11
+        $1, $2, 'pending', $3, $4, $5, $6, $7, $8, $9, $10, $11, $12
       )
       RETURNING 
         id,
@@ -120,6 +125,7 @@ exports.createServiceRequest = async (req, res) => {
         email,
         addresse,
         telephone,
+        date_naissance,
         attachments_name,
         attachments,
         submission_date
@@ -133,8 +139,9 @@ exports.createServiceRequest = async (req, res) => {
       user.first_name || null,
       user.last_name || null,
       user.email || null,
-      user.addresse || null,
+      resolvedAddresse,
       resolvedTelephone,
+      date_naissance || null,
       attachmentNames,
       attachmentUrls
     ]);
@@ -180,6 +187,150 @@ exports.createServiceRequest = async (req, res) => {
     client.release();
   }
 };
+
+// ===== SAUVEGARDER LA CERTIFICAT D'UNE DEMANDE DE SERVICE =====
+/**
+ * POST /api/service-requests/certificate
+ * L'utilisateur insère le certificat d'une demande de service
+ * Body: { file_url, date_generation ,demande_id }
+ */
+
+exports.saveServiceRequestCertificate = async (req, res) => {
+  const client = await pool.connect();
+  try {
+    const { file_url, date_generation, demande_id } = req.body;
+
+    // Validation
+    if (!file_url || !demande_id) {
+      return res.status(400).json({
+        success: false,
+        error: 'file_url and demande_id are required'
+      });
+    }
+
+    // Vérifier que la demande existe
+    const demandeCheck = await client.query(
+      'SELECT id FROM demande_service WHERE id = $1',
+      [demande_id]
+    );
+    if (demandeCheck.rows.length === 0) {
+      return res.status(404).json({
+        success: false,
+        error: 'Demande not found'
+      });
+    }
+
+    await client.query('BEGIN');
+
+    // Insérer le certificat
+    const query = `
+      INSERT INTO certificat_service (
+        file_url,
+        date_generation,
+        demande_id
+      ) VALUES (
+        $1, $2, $3
+      )
+      RETURNING 
+        id,
+        file_url,
+        date_generation,
+        demande_id
+    `;
+
+    const result = await client.query(query, [
+      file_url,
+      date_generation || null,
+      demande_id
+    ]);
+
+    const createdCertificate = result.rows[0];
+
+    await client.query('COMMIT');
+
+    res.status(201).json({
+      success: true,
+      message: 'Service request certificate saved successfully',
+      data: createdCertificate
+    });
+  } catch (error) {
+    try {
+      await client.query('ROLLBACK');
+    } catch (_) {
+      // ignore rollback errors
+    }
+    console.error('Error saving service request certificate:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Failed to save service request certificate',
+      message: error.message
+    });
+  } finally {
+    client.release();
+  }
+};
+
+
+// ===== RÉCUPÉRER LE CERTIFICAT D'UNE DEMANDE DE SERVICE =====
+/**
+ * GET /api/service-requests/certificate/:demande_id
+ * Récupère le certificat d'une demande de service
+ */
+
+exports.getServiceRequestCertificate = async (req, res) => {
+  const client = await pool.connect();
+  try {
+    const { demande_id } = req.params;
+
+    // Vérifier que la demande existe
+    const demandeCheck = await client.query(
+      'SELECT id FROM demande_service WHERE id = $1',
+      [demande_id]
+    );
+    if (demandeCheck.rows.length === 0) {
+      return res.status(404).json({
+        success: false,
+        error: 'Demande not found'
+      });
+    }
+
+    // Récupérer le certificat
+    const query = `
+      SELECT 
+        id,
+        file_url,
+        date_generation,
+        demande_id
+      FROM certificat_service
+      WHERE demande_id = $1
+    `;
+
+    const result = await pool.query(query, [demande_id]);
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({
+        success: false,
+        error: 'Certificate not found'
+      });
+    }
+
+    const certificate = result.rows[0];
+
+    res.status(200).json({
+      success: true,
+      message: 'Service request certificate retrieved successfully',
+      data: certificate
+    });
+  } catch (error) {
+    console.error('Error retrieving service request certificate:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Failed to retrieve service request certificate',
+      message: error.message
+    });
+  }
+};
+
 
 // ===== RÉCUPÉRER LES DEMANDES DE L'UTILISATEUR =====
 /**
@@ -265,7 +416,9 @@ exports.getServiceRequestById = async (req, res) => {
         COALESCE(ds.first_name, u.first_name) as first_name,
         COALESCE(ds.last_name, u.last_name) as last_name,
         COALESCE(ds.email, u.email) as email,
-        COALESCE(ds.telephone, u.telephone) as telephone
+        COALESCE(ds.telephone, u.telephone) as telephone,
+        COALESCE(ds.addresse, u.adresse) as address,
+        COALESCE(ds.date_naissance, u.date_naissance) as date_naissance
       FROM demande_service ds
       LEFT JOIN service s ON ds.service_id = s.id
       LEFT JOIN users u ON ds.user_id = u.id
@@ -394,6 +547,8 @@ exports.getAllServiceRequests = async (req, res) => {
         COALESCE(ds.last_name, u.last_name) as last_name,
         COALESCE(ds.email, u.email) as email,
         COALESCE(ds.telephone, u.telephone) as telephone,
+        COALESCE(ds.addresse, u.adresse) as address,
+        COALESCE(ds.date_naissance, u.date_naissance) as date_naissance,
         s.name as service_name,
         s.type,
         ds.status,
