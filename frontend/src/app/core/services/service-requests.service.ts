@@ -44,7 +44,7 @@ export interface ServiceRequestResponse {
 
 @Injectable({ providedIn: 'root' })
 export class ServiceRequestsService {
-  private gatewayApiUrl = 'http://localhost:5000/api/service-requests';
+  private gatewayApiUrl = 'http://localhost:5006/api/service-requests';
   private directApiUrl = 'http://localhost:5006/api/service-requests';
   private apiUrl = this.gatewayApiUrl;
 
