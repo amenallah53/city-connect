@@ -6,6 +6,7 @@ export interface User {
   email: string;
   addresse?: string;
   telephone?: string;
+  date_naissance?: string;
   status: 'pending' | 'accepted' | 'rejected';
   role: 'citoyen' | 'prestataire' | 'admin';
   document?: string;   // Backblaze B2 URL

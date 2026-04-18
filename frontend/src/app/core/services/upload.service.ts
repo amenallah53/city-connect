@@ -12,13 +12,24 @@ export class UploadService {
   constructor(private http: HttpClient) {}
 
   /**
-   * Uploads an image file and returns the server response containing the image URL.
-   * @param file The image file to upload
+   * Uploads any supported file and returns its accessible URL.
    */
-  uploadImage(file: File): Observable<{ url: string }> {
+  uploadFile(file: File): Observable<{ url: string }> {
     const formData = new FormData();
     formData.append('image', file);
 
-    return this.http.post<{ url: string }>(this.apiUrl, formData);
+    const token = localStorage.getItem('token');
+    return this.http.post<{ url: string }>(this.apiUrl, formData, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    });
+  }
+
+  /**
+   * Backward-compatible alias used by older features.
+   */
+  uploadImage(file: File): Observable<{ url: string }> {
+    return this.uploadFile(file);
   }
 }

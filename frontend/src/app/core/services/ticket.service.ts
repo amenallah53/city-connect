@@ -12,9 +12,9 @@ export interface PaginatedTickets {
 }
 
 export interface TicketFilters {
-  city?: string;
+  location?: string;
   category?: string;
-  status?: 'pending' | 'approved' | 'rejected';
+  status?: 'pending' | 'approved' | 'rejected' | 'in-process';
   page?: number;
   limit?: number;
 }
@@ -35,16 +35,22 @@ export class TicketService {
 
   getAllTickets(filters?: TicketFilters): Observable<PaginatedTickets> {
     let params = new HttpParams();
+    const token = localStorage.getItem('token');
 
     if (filters) {
-      if (filters.city) params = params.set('city', filters.city);
+      if (filters.location) params = params.set('city', filters.location);
       if (filters.category) params = params.set('category', filters.category);
       if (filters.status) params = params.set('status', filters.status);
       if (filters.page) params = params.set('page', filters.page.toString());
       if (filters.limit) params = params.set('limit', filters.limit.toString());
     }
 
-    return this.http.get<PaginatedTickets>(this.apiUrl, { params })
+    return this.http.get<PaginatedTickets>(this.apiUrl, {
+      params,
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    })
       .pipe(
         retry(1),
         catchError(this.handleError)
@@ -156,9 +162,13 @@ export class TicketService {
     console.error(errorMessage);
     return throwError(() => new Error(errorMessage));
   }
+
+  getCategories(): Observable<{ id: number; type: string }[]> {
+    return this.http.get<{ id: number; type: string }[]>(`${this.apiUrl}/categories`)
+      .pipe(catchError(this.handleError));
+  }
+
 }
-
-
 
 
 

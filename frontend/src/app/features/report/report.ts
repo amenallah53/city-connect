@@ -7,7 +7,7 @@ import { Ticket } from '../../shared/models/ticket.model';
 import { CITIES, TICKET_CATEGORIES } from '../../core/constants/app.constants';
 
 interface ReportFormData {
-  city: string;
+  location: string;
   category: string;
   title: string;
   description: string;
@@ -26,12 +26,11 @@ export class Report {
     private ticketService: TicketService,
     private router: Router
   ) { }
-
   cities = CITIES;
   categories = TICKET_CATEGORIES;
 
   formData: ReportFormData = {
-    city: '',
+    location: '',
     category: '',
     title: '',
     description: '',
@@ -43,6 +42,18 @@ export class Report {
   imagePreview: string | null = null;
   fileError: string = '';
   selectedFile: File | null = null;
+
+  ngOnInit(): void {
+    this.ticketService.getCategories().subscribe({
+      next: (data) => {
+        this.categories = data.map(c => c.type);
+      },
+      error: (err) => {
+        console.error('Failed to load categories:', err);
+      }
+    });
+  }
+
 
   onFileChange(event: Event): void {
     const input = event.target as HTMLInputElement;
@@ -92,7 +103,7 @@ export class Report {
     const ticket: Ticket = {
       title: this.formData.title,
       description: this.formData.description,
-      city: this.formData.city,
+      location: this.formData.location,
       category: this.formData.category,
       status: 'pending'
     };

@@ -1,0 +1,30 @@
+/* FAQ component fills its container and scrolls independently */
+:host {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-height: 0;
+    overflow: hidden;
+}
+
+/* ── p-select — remove weird outline/border ── */
+:host ::ng-deep .p-select {
+    border: none;
+    height: 48px;
+    font-family: var(--font-lato);
+    font-size: 15px;
+    box-shadow: none;
+}
+
+:host ::ng-deep .p-select:hover,
+:host ::ng-deep .p-select-focus {
+    border: none !important;
+    outline: none !important;
+    box-shadow: none !important;
+}
+
+:host ::ng-deep .p-select .p-select-label {
+    padding: 0 1rem;
+    display: flex;
+    align-items: center;
+}

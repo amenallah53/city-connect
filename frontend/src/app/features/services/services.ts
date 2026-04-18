@@ -82,9 +82,10 @@ export class Services implements OnInit {
 
     this.categories = [
       { name: 'All Services', code: 'all' },
-      { name: 'Building Permits', code: 'building-permits' },
-      { name: 'Honoring the Dead', code: 'honoring-the-dead' },
       { name: 'Business Licenses', code: 'business-licenses' },
+      { name: 'Honoring the Dead', code: 'honoring-the-dead' },
+      { name: 'Building Permits', code: 'building-permits' },
+      { name: 'Civil Records', code: 'civil-records' },
     ];
 
     this.route.queryParams.subscribe(params => {

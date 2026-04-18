@@ -1,0 +1,76 @@
+<div class="flex flex-col gap-6 font-[family-name:var(--font-lato)] p-2 bg-[#FFFFFF]">
+    <!-- Header -->
+    <div class="flex flex-row justify-between items-start pb-4 border-b border-[#E5E7EB] border-dashed">
+        <div class="flex flex-col gap-1">
+            <h2 class="text-[32px] font-bold text-[#1E293B] m-0 leading-tight">Add a new service</h2>
+            <p class="text-[15px] italic text-[#6B7280] m-0 mt-1">fill in the details below to create a new service.</p>
+        </div>
+        
+        <div class="flex flex-row gap-3 items-center">
+            <button (click)="saveForm()" class="border-none flex items-center justify-center font-[family-name:var(--font-lato)]
+                           h-[42px] px-6 rounded-[8px] bg-[#00899B] text-[#FFFFFF] text-[15px] font-medium
+                           hover:bg-[#007A8A] hover:cursor-pointer transition-colors duration-300">
+                Save service
+            </button>
+        </div>
+    </div>
+
+    <!-- Content -->
+    <div class="flex flex-col gap-4 mt-1">
+        <h3 class="text-[18px] font-semibold text-[#1E293B] m-0">Service main Information</h3>
+
+        <div class="flex flex-col gap-5">
+            <!-- Title -->
+            <div class="flex flex-col gap-1.5">
+                <span class="text-[14px] text-[#1E293B] font-medium">Service Title</span>
+                <input type="text" [(ngModel)]="service.name" placeholder="Add the title of the service"
+                       class="w-full h-[45px] px-4 text-[14px] text-[#4B5563] border border-[#E5E7EB] rounded-[10px] bg-[#FFFFFF] outline-none focus:border-[#00899B] transition-colors">
+            </div>
+
+            <!-- Type -->
+            <div class="flex flex-col gap-1.5">
+                <span class="text-[14px] text-[#1E293B] font-medium">Service Type</span>
+                <div class="card flex justify-center w-full">
+                    <p-select [options]="serviceTypes" [(ngModel)]="service.type" optionLabel="name" optionValue="code"
+                        placeholder="Select service type" class="w-full text-[14px] text-[#4B5563]"
+                        appendTo="body" />
+                </div>
+            </div>
+
+            <!-- Badges -->
+            <div class="flex flex-col gap-1.5">
+                <span class="text-[14px] text-[#1E293B] font-medium">Service Badges</span>
+                <div class="flex flex-row gap-4 items-center">
+                    <input type="text" [(ngModel)]="newBadge" placeholder="Add the title for the title of the sub-article"
+                           (keydown.enter)="addBadge()"
+                           class="flex-1 h-[45px] px-4 text-[14px] text-[#4B5563] border border-[#E5E7EB] rounded-[10px] bg-[#FFFFFF] outline-none focus:border-[#00899B] transition-colors">
+                    <button (click)="addBadge()" class="w-[120px] h-[45px] rounded-[10px] border border-[#00899B] bg-transparent text-[#00899B] text-[14px] font-medium hover:bg-[#00899B] hover:text-white transition-colors duration-300 cursor-pointer">
+                        Add Badge
+                    </button>
+                </div>
+                <!-- Badge chips preview -->
+                <div class="flex flex-row items-center gap-2 flex-wrap mt-2" *ngIf="service.badges && service.badges.length > 0">
+                    <div *ngFor="let badge of service.badges; let i=index" 
+                         class="px-3 py-1 bg-[#E2E8F0] text-[#4A5568] text-[13px] font-medium rounded-[12px] flex items-center gap-2">
+                        {{ badge }}
+                        <svg (click)="removeBadge(i)" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="cursor-pointer hover:text-red-500"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Description -->
+            <div class="flex flex-col gap-1.5">
+                <span class="text-[14px] text-[#1E293B] font-medium">Service description</span>
+                <textarea [(ngModel)]="service.description" placeholder="Add Service description"
+                          class="w-full h-[100px] p-4 text-[14px] text-[#4B5563] border border-[#E5E7EB] rounded-[10px] bg-[#FFFFFF] resize-none outline-none focus:border-[#00899B] transition-colors"></textarea>
+            </div>
+
+            <!-- Requirements -->
+            <div class="flex flex-col gap-1.5">
+                <span class="text-[14px] text-[#1E293B] font-medium">Service requirements</span>
+                <textarea [(ngModel)]="requirementText" placeholder="Add Service requirements"
+                          class="w-full h-[100px] p-4 text-[14px] text-[#4B5563] border border-[#E5E7EB] rounded-[10px] bg-[#FFFFFF] resize-none outline-none focus:border-[#00899B] transition-colors"></textarea>
+            </div>
+        </div>
+    </div>
+</div>

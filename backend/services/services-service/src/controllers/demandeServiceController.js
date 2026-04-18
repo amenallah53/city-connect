@@ -14,8 +14,21 @@ const pool = require('../config/db');
  * Body: { cin, service_id, description }
  */
 exports.createServiceRequest = async (req, res) => {
+  const client = await pool.connect();
   try {
-    const { cin, service_id, description } = req.body;
+    const {
+      cin,
+      service_id,
+      description,
+      telephone,
+      phone,
+      addresse,
+      address,
+      date_naissance,
+      attachments,
+      attachments_name,
+      attachment_types
+    } = req.body;
 
     // Validation
     if (!cin || !service_id) {
@@ -26,8 +39,10 @@ exports.createServiceRequest = async (req, res) => {
     }
 
     // Vérifier que l'utilisateur existe et récupérer son UUID
-    const userCheck = await pool.query(
-      'SELECT id FROM users WHERE cin = $1',
+    const userCheck = await client.query(
+      `SELECT id, first_name, last_name, email, adresse, telephone
+       FROM users
+       WHERE cin = $1`,
       [cin]
     );
     if (userCheck.rows.length === 0) {
@@ -36,10 +51,14 @@ exports.createServiceRequest = async (req, res) => {
         error: 'User not found'
       });
     }
-    const userId = userCheck.rows[0].id;
+    const user = userCheck.rows[0];
+    const userId = user.id;
+    const requestPhone = (telephone || phone || '').toString().trim();
+    const resolvedTelephone = requestPhone || user.telephone || null;
+    const resolvedAddresse = addresse || address || user.adresse || null;
 
     // Vérifier que le service existe
-    const serviceCheck = await pool.query(
+    const serviceCheck = await client.query(
       'SELECT id FROM service WHERE id = $1',
       [service_id]
     );
@@ -50,38 +69,268 @@ exports.createServiceRequest = async (req, res) => {
       });
     }
 
+    const attachmentUrls = Array.isArray(attachments)
+      ? attachments.map((value) => String(value).trim()).filter(Boolean)
+      : [];
+
+    const attachmentNames = Array.isArray(attachments_name)
+      ? attachments_name.map((value) => String(value).trim())
+      : [];
+
+    const attachmentTypes = Array.isArray(attachment_types)
+      ? attachment_types.map((value) => String(value).trim())
+      : [];
+
+    const resolveFileType = (mime, url) => {
+      const mimeValue = String(mime || '').toLowerCase();
+      if (mimeValue.startsWith('image/')) return 'image';
+      if (mimeValue.startsWith('video/')) return 'video';
+
+      const cleanUrl = String(url || '').toLowerCase().split('?')[0];
+      if (/\.(png|jpg|jpeg|gif|webp|bmp|svg)$/.test(cleanUrl)) return 'image';
+      if (/\.(mp4|mov|avi|webm|mkv)$/.test(cleanUrl)) return 'video';
+      return 'document';
+    };
+
+    await client.query('BEGIN');
+
     // Créer la demande
     const query = `
       INSERT INTO demande_service (
-        user_id, service_id, status, description, cin
+        user_id,
+        service_id,
+        status,
+        description,
+        cin,
+        first_name,
+        last_name,
+        email,
+        addresse,
+        telephone,
+        date_naissance,
+        attachments_name,
+        attachments
       ) VALUES (
-        $1, $2, 'pending', $3, $4
+        $1, $2, 'pending', $3, $4, $5, $6, $7, $8, $9, $10, $11, $12
       )
       RETURNING 
-        id, user_id, service_id, status, description, submission_date
+        id,
+        user_id,
+        service_id,
+        status,
+        description,
+        cin,
+        first_name,
+        last_name,
+        email,
+        addresse,
+        telephone,
+        date_naissance,
+        attachments_name,
+        attachments,
+        submission_date
     `;
 
-    const result = await pool.query(query, [
+    const result = await client.query(query, [
       userId, 
       service_id, 
       description || '',
-      cin
+      cin,
+      user.first_name || null,
+      user.last_name || null,
+      user.email || null,
+      resolvedAddresse,
+      resolvedTelephone,
+      date_naissance || null,
+      attachmentNames,
+      attachmentUrls
     ]);
+
+    const createdRequest = result.rows[0];
+
+    if (attachmentUrls.length > 0) {
+      for (let index = 0; index < attachmentUrls.length; index++) {
+        const url = attachmentUrls[index];
+        const mime = attachmentTypes[index] || null;
+        const fileType = resolveFileType(mime, url);
+
+        await client.query(
+          `
+            INSERT INTO demande_service_document (file_url, file_type, demande_id)
+            VALUES ($1, $2, $3)
+          `,
+          [url, fileType, createdRequest.id]
+        );
+      }
+    }
+
+    await client.query('COMMIT');
 
     res.status(201).json({
       success: true,
       message: 'Service request created successfully',
-      data: result.rows[0]
+      data: createdRequest
     });
   } catch (error) {
+    try {
+      await client.query('ROLLBACK');
+    } catch (_) {
+      // ignore rollback errors
+    }
     console.error('Error creating service request:', error);
     res.status(500).json({
       success: false,
       error: 'Failed to create service request',
       message: error.message
     });
+  } finally {
+    client.release();
   }
 };
+
+// ===== SAUVEGARDER LA CERTIFICAT D'UNE DEMANDE DE SERVICE =====
+/**
+ * POST /api/service-requests/certificate
+ * L'utilisateur insère le certificat d'une demande de service
+ * Body: { file_url, date_generation ,demande_id }
+ */
+
+exports.saveServiceRequestCertificate = async (req, res) => {
+  const client = await pool.connect();
+  try {
+    const { file_url, date_generation, demande_id } = req.body;
+
+    // Validation
+    if (!file_url || !demande_id) {
+      return res.status(400).json({
+        success: false,
+        error: 'file_url and demande_id are required'
+      });
+    }
+
+    // Vérifier que la demande existe
+    const demandeCheck = await client.query(
+      'SELECT id FROM demande_service WHERE id = $1',
+      [demande_id]
+    );
+    if (demandeCheck.rows.length === 0) {
+      return res.status(404).json({
+        success: false,
+        error: 'Demande not found'
+      });
+    }
+
+    await client.query('BEGIN');
+
+    // Insérer le certificat
+    const query = `
+      INSERT INTO certificat_service (
+        file_url,
+        date_generation,
+        demande_id
+      ) VALUES (
+        $1, $2, $3
+      )
+      RETURNING 
+        id,
+        file_url,
+        date_generation,
+        demande_id
+    `;
+
+    const result = await client.query(query, [
+      file_url,
+      date_generation || null,
+      demande_id
+    ]);
+
+    const createdCertificate = result.rows[0];
+
+    await client.query('COMMIT');
+
+    res.status(201).json({
+      success: true,
+      message: 'Service request certificate saved successfully',
+      data: createdCertificate
+    });
+  } catch (error) {
+    try {
+      await client.query('ROLLBACK');
+    } catch (_) {
+      // ignore rollback errors
+    }
+    console.error('Error saving service request certificate:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Failed to save service request certificate',
+      message: error.message
+    });
+  } finally {
+    client.release();
+  }
+};
+
+
+// ===== RÉCUPÉRER LE CERTIFICAT D'UNE DEMANDE DE SERVICE =====
+/**
+ * GET /api/service-requests/certificate/:demande_id
+ * Récupère le certificat d'une demande de service
+ */
+
+exports.getServiceRequestCertificate = async (req, res) => {
+  const client = await pool.connect();
+  try {
+    const { demande_id } = req.params;
+
+    // Vérifier que la demande existe
+    const demandeCheck = await client.query(
+      'SELECT id FROM demande_service WHERE id = $1',
+      [demande_id]
+    );
+    if (demandeCheck.rows.length === 0) {
+      return res.status(404).json({
+        success: false,
+        error: 'Demande not found'
+      });
+    }
+
+    // Récupérer le certificat
+    const query = `
+      SELECT 
+        id,
+        file_url,
+        date_generation,
+        demande_id
+      FROM certificat_service
+      WHERE demande_id = $1
+    `;
+
+    const result = await pool.query(query, [demande_id]);
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({
+        success: false,
+        error: 'Certificate not found'
+      });
+    }
+
+    const certificate = result.rows[0];
+
+    res.status(200).json({
+      success: true,
+      message: 'Service request certificate retrieved successfully',
+      data: certificate
+    });
+  } catch (error) {
+    console.error('Error retrieving service request certificate:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Failed to retrieve service request certificate',
+      message: error.message
+    });
+  }
+};
+
 
 // ===== RÉCUPÉRER LES DEMANDES DE L'UTILISATEUR =====
 /**
@@ -115,6 +364,8 @@ exports.getUserServiceRequests = async (req, res) => {
         s.type,
         ds.status,
         ds.description,
+        ds.attachments_name,
+        ds.attachments,
         ds.submission_date
       FROM demande_service ds
       LEFT JOIN service s ON ds.service_id = s.id
@@ -159,11 +410,15 @@ exports.getServiceRequestById = async (req, res) => {
         s.type,
         ds.status,
         ds.description,
+        ds.attachments_name,
+        ds.attachments,
         ds.submission_date,
-        u.first_name,
-        u.last_name,
-        u.email,
-        u.telephone
+        COALESCE(ds.first_name, u.first_name) as first_name,
+        COALESCE(ds.last_name, u.last_name) as last_name,
+        COALESCE(ds.email, u.email) as email,
+        COALESCE(ds.telephone, u.telephone) as telephone,
+        COALESCE(ds.addresse, u.adresse) as address,
+        COALESCE(ds.date_naissance, u.date_naissance) as date_naissance
       FROM demande_service ds
       LEFT JOIN service s ON ds.service_id = s.id
       LEFT JOIN users u ON ds.user_id = u.id
@@ -266,68 +521,116 @@ exports.updateServiceRequestStatus = async (req, res) => {
  */
 exports.getAllServiceRequests = async (req, res) => {
   try {
-    const status = req.query.status || 'pending';
+    const requestedStatus = (req.query.status || 'all').toLowerCase();
     const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 10;
     const offset = (page - 1) * limit;
 
     // Valid status values (English status as stored in database)
     const validStatuses = ['pending', 'in_progress', 'approved', 'rejected', 'completed'];
-    const dbStatus = validStatuses.includes(status) ? status : 'pending';
+    if (requestedStatus !== 'all' && !validStatuses.includes(requestedStatus)) {
+      return res.status(400).json({
+        success: false,
+        error: `Invalid status. Allowed values: all, pending, in_progress, approved, rejected, completed`
+      });
+    }
+
+    const hasStatusFilter = requestedStatus !== 'all';
 
     // Récupérer les requêtes de service
-    const query = `
+    const baseQuery = `
       SELECT 
         ds.id,
         ds.user_id,
         ds.cin,
-        u.first_name,
-        u.last_name,
-        u.email,
-        u.telephone,
+        COALESCE(ds.first_name, u.first_name) as first_name,
+        COALESCE(ds.last_name, u.last_name) as last_name,
+        COALESCE(ds.email, u.email) as email,
+        COALESCE(ds.telephone, u.telephone) as telephone,
+        COALESCE(ds.addresse, u.adresse) as address,
+        COALESCE(ds.date_naissance, u.date_naissance) as date_naissance,
         s.name as service_name,
         s.type,
         ds.status,
         ds.description,
+        ds.attachments_name,
+        ds.attachments,
         ds.submission_date
       FROM demande_service ds
       LEFT JOIN users u ON ds.user_id = u.id
       LEFT JOIN service s ON ds.service_id = s.id
-      WHERE ds.status = $1
       ORDER BY ds.submission_date DESC
-      LIMIT $2 OFFSET $3
+      LIMIT $${hasStatusFilter ? '2' : '1'} OFFSET $${hasStatusFilter ? '3' : '2'}
     `;
 
-    const result = await pool.query(query, [dbStatus, limit, offset]);
+    const query = hasStatusFilter
+      ? `${baseQuery.replace('ORDER BY ds.submission_date DESC', 'WHERE ds.status = $1\n      ORDER BY ds.submission_date DESC')}`
+      : baseQuery;
+
+    const queryParams = hasStatusFilter
+      ? [requestedStatus, limit, offset]
+      : [limit, offset];
+
+    const result = await pool.query(query, queryParams);
 
     // Récupérer les documents pour chaque requête
     const requestsWithDocuments = await Promise.all(
       result.rows.map(async (request) => {
         let attachments = [];
+
+        if (Array.isArray(request.attachments) && request.attachments.length > 0) {
+          attachments = request.attachments.map((url, idx) => {
+            const nameFromArray = Array.isArray(request.attachments_name) ? request.attachments_name[idx] : null;
+            const fallbackName = url ? String(url).split('/').pop() : null;
+            const fileName = nameFromArray || fallbackName || `Document_${idx + 1}`;
+            const lowered = String(fileName).toLowerCase();
+            const type = /\.(png|jpg|jpeg|gif|webp|bmp|svg)$/.test(lowered)
+              ? 'image'
+              : /\.(mp4|mov|avi|webm|mkv)$/.test(lowered)
+                ? 'video'
+                : 'document';
+
+            return {
+              id: idx + 1,
+              name: fileName,
+              type,
+              size: '',
+              url,
+              bgColor: ['#FEE2E2', '#E0E7FF', '#DBEAFE', '#F3E8FF', '#FCE7F3', '#FEF3C7'][idx % 6]
+            };
+          });
+        }
         
         try {
-          const docQuery = `
-            SELECT 
-              id,
-              file_type as type,
-              nom as filename,
-              taille as size
-            FROM demande_service_document
-            WHERE demande_id = $1
-            ORDER BY id ASC
-          `;
-          const docResult = await pool.query(docQuery, [request.id]);
-          
-          attachments = docResult.rows.map((doc, idx) => ({
-            id: idx + 1,
-            name: doc.filename || `Document_${doc.id}`,
-            type: doc.type === 'image' ? 'image' : (doc.type === 'video' ? 'document' : 'pdf'),
-            size: doc.size || '1.0 MB',
-            bgColor: ['#FEE2E2', '#E0E7FF', '#DBEAFE', '#F3E8FF', '#FCE7F3', '#FEF3C7'][idx % 6]
-          }));
+          if (!attachments.length) {
+            const docQuery = `
+              SELECT 
+                id,
+                file_url,
+                file_type
+              FROM demande_service_document
+              WHERE demande_id = $1
+              ORDER BY id ASC
+            `;
+            const docResult = await pool.query(docQuery, [request.id]);
+
+            attachments = docResult.rows.map((doc, idx) => {
+              const fallbackName = doc.file_url ? String(doc.file_url).split('/').pop() : null;
+              return {
+                id: idx + 1,
+                name: fallbackName || `Document_${doc.id}`,
+                type: doc.file_type || 'document',
+                size: '',
+                url: doc.file_url,
+                bgColor: ['#FEE2E2', '#E0E7FF', '#DBEAFE', '#F3E8FF', '#FCE7F3', '#FEF3C7'][idx % 6]
+              };
+            });
+          }
         } catch (docError) {
           // Document table doesn't exist or query failed - just continue with empty attachments
-          attachments = [];
+          if (!attachments.length) {
+            attachments = [];
+          }
         }
         
         return {
@@ -339,8 +642,12 @@ exports.getAllServiceRequests = async (req, res) => {
     );
 
     // Compter le total
-    const countQuery = 'SELECT COUNT(*) as total FROM demande_service WHERE status = $1';
-    const countResult = await pool.query(countQuery, [dbStatus]);
+    const countQuery = hasStatusFilter
+      ? 'SELECT COUNT(*) as total FROM demande_service WHERE status = $1'
+      : 'SELECT COUNT(*) as total FROM demande_service';
+    const countResult = hasStatusFilter
+      ? await pool.query(countQuery, [requestedStatus])
+      : await pool.query(countQuery);
 
     res.status(200).json({
       success: true,

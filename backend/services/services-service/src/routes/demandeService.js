@@ -25,6 +25,12 @@ router.get('/user/:cin', demandeServiceController.getUserServiceRequests);
 // PUT /api/service-requests/:id/status - Mettre à jour le statut
 router.put('/:id/status', demandeServiceController.updateServiceRequestStatus);
 
+// POST /api/service-requests/certificate - Sauvegarder le certificat
+router.post('/certificate', demandeServiceController.saveServiceRequestCertificate);
+
+// GET /api/service-requests/certificate/:demande_id - Récupérer le certificat d'une demande de service
+router.get('/certificate/:demande_id', demandeServiceController.getServiceRequestCertificate);
+
 // ===== GENERIC ROUTES (Less specific, come last) =====
 // POST /api/service-requests - Soumettre une nouvelle demande
 router.post('/', demandeServiceController.createServiceRequest);

@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { SelectModule } from 'primeng/select';
-import { PaginatorModule, PaginatorState } from 'primeng/paginator';
+import { Paginator, PaginatorState } from 'primeng/paginator';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 
 import { ServiceScheduleCard } from '../../shared/components/cards/service-schedule-card/service-schedule-card';
@@ -18,7 +18,7 @@ interface RoleFilter {
 
 @Component({
   selector: 'app-service-schedule',
-  imports: [CommonModule, FormsModule, SelectModule, PaginatorModule, ServiceScheduleCard],
+  imports: [CommonModule, FormsModule, SelectModule, Paginator, ServiceScheduleCard],
   providers: [DialogService],
   templateUrl: './service-schedule.html',
   styleUrl: './service-schedule.css',
@@ -132,3 +132,4 @@ export class ServiceSchedule implements OnInit {
     );
   }
 }
+

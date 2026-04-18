@@ -11,6 +11,9 @@ export interface UserData {
   name?: string;
   email?: string;
   role?: string;
+  addresse?: string;
+  telephone?: string;
+  date_naissance?: string;
 }
 
 @Injectable({ providedIn: 'root' })
@@ -38,7 +41,10 @@ export class UserAuthService {
         role: decoded.role,
         cin: decoded.cin ? Number(decoded.cin) : 0,
         email: decoded.email,
-        name: decoded.name
+        name: decoded.name,
+        addresse: decoded.addresse || decoded.address,
+        telephone: decoded.telephone || decoded.phone,
+        date_naissance: decoded.date_naissance
       };
     } catch (err) {
       console.error('Failed to extract user data from token:', err);
@@ -46,33 +52,27 @@ export class UserAuthService {
     }
   }
   getCurrentLoggedUser(): User {
-    // this is a helper method where u can get the current user info after logging in
-    // with the help of the jwt token return object: mak bch trajaa {key, id, email} (mathalan)
     const userData = this.getCurrentUser();
-    /*return {
-      id: userData!.id,
-      cin: String(userData!.cin),
-      firstName: userData!.name,
-      lastName: userData!.name,
-      email: userData!.email,
-      role: userData!.role as "citoyen" | "prestataire" | "admin",
-      status: "accepted",
-      addresse: "mourouj",
-      telephone: "22222222",
-      createdAt: new Date()
-    };*/
+    
+    // Split name into firstName and lastName if possible
+    const fullName = userData?.name || '';
+    const nameParts = fullName.trim().split(/\s+/);
+    const firstName = nameParts[0] || 'User';
+    const lastName = nameParts.slice(1).join(' ') || '';
+
     return {
-      id: "1",
-      cin: "14674032",
-      firstName: "amenallah",
-      lastName: "kalai",
-      email: "amenkalai53@gmail.com",
-      role: "prestataire",
-      status: "accepted",
-      addresse: "mourouj",
-      telephone: "22222222",
+      id: userData?.id || '',
+      cin: String(userData?.cin || ''),
+      firstName: firstName,
+      lastName: lastName,
+      email: userData?.email || '',
+      role: (userData?.role as 'citoyen' | 'prestataire' | 'admin') || 'citoyen',
+      addresse: userData?.addresse || '',
+      telephone: userData?.telephone || '',
+      date_naissance: userData?.date_naissance || '',
+      status: 'accepted',
       createdAt: new Date()
-    }
+    };
   }
 
   isLoggedUserPrestataire(): boolean {

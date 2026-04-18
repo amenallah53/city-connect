@@ -55,9 +55,41 @@ app.use((err, req, res, next) => {
 });
 
 // ===== DÉMARRAGE DU SERVEUR =====
-app.listen(PORT, () => {
+const server = app.listen(PORT, () => {
   console.log(`✅ Services-Service running on port ${PORT}`);
   console.log(`📍 API available at http://localhost:${PORT}/api/services`);
 });
+
+server.on('error', (error) => {
+  if (error && error.code === 'EADDRINUSE') {
+    console.error(`❌ Port ${PORT} is already in use. Stop the existing process and retry.`);
+    return;
+  }
+
+  console.error('❌ Failed to start Services-Service:', error);
+});
+
+server.on('close', () => {
+  console.warn('⚠️ Services-Service server has closed.');
+});
+
+process.on('unhandledRejection', (reason) => {
+  console.error('❌ Unhandled promise rejection:', reason);
+});
+
+process.on('uncaughtException', (error) => {
+  console.error('❌ Uncaught exception:', error);
+});
+
+const shutdown = (signal) => {
+  console.log(`\n🛑 Received ${signal}. Shutting down Services-Service...`);
+  server.close(() => {
+    console.log('✅ Services-Service stopped cleanly.');
+    process.exit(0);
+  });
+};
+
+process.on('SIGINT', () => shutdown('SIGINT'));
+process.on('SIGTERM', () => shutdown('SIGTERM'));
 
 module.exports = app;
