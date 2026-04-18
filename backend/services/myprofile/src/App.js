@@ -3,7 +3,7 @@ const cors = require('cors');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const { Pool } = require('pg');
-require('dotenv').config({ path: __dirname + '/.env' });
+require('dotenv').config({ path: __dirname + '/../.env' });
 
 const app = express();
 const port = parseInt(process.env.PORT, 10) || 5008;
@@ -104,8 +104,8 @@ app.put('/me', authenticateToken, async (req, res) => {   //update user informat
        RETURNING id, email, first_name, last_name`,
       [
         first_name || null,
-        last_name  || null,
-        email      || null,
+        last_name || null,
+        email || null,
         hashedPassword,
         req.user.userId,
       ]

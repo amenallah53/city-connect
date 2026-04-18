@@ -14,7 +14,7 @@ export interface PaginatedTickets {
 export interface TicketFilters {
   location?: string;
   category?: string;
-  status?: 'pending' | 'approved' | 'rejected' | 'in-process';
+  status?: 'pending' | 'approved' | 'rejected' | 'in-process' | 'accepted';
   page?: number;
   limit?: number;
 }
@@ -30,7 +30,7 @@ export class TicketService {
     private http: HttpClient,
     private uploadService: UploadService
   ) {
-    console.log('TicketService initialized with apiUrl:', this.apiUrl);
+
   }
 
   getAllTickets(filters?: TicketFilters): Observable<PaginatedTickets> {
