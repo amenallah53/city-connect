@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { DynamicDialogRef } from 'primeng/dynamicdialog';
@@ -8,6 +8,8 @@ import { SelectModule } from 'primeng/select';
 import { UserAuthService } from 'src/app/core/services/auth.service';
 import { User } from 'src/app/shared/models/user.model';
 import { Prestataire } from 'src/app/shared/models/prestataire.model';
+import { HttpClient } from '@angular/common/http';
+import { environment } from 'src/environments/environment';
 
 interface ReachOption { name: string; code: 'new' | 'recommended' | 'on-demand'; }
 
@@ -36,6 +38,14 @@ export class PrestataireFormDialog implements OnInit {
   socialLinksRaw: string = ''; // comma-separated input → split on submit
   extraDocumentFile: File | null = null;
 
+  // Track field disabling states
+  isFirstNameDisabled = false;
+  isLastNameDisabled = false;
+  isEmailDisabled = false;
+  isCinDisabled = false;
+  isTelephoneDisabled = false;
+  isAddresseDisabled = false;
+
   reachOptions: ReachOption[] = [
     { name: 'New', code: 'new' },
     { name: 'Recommended', code: 'recommended' },
@@ -45,16 +55,31 @@ export class PrestataireFormDialog implements OnInit {
   constructor(
     private authService: UserAuthService,
     private ref: DynamicDialogRef,
+    private http: HttpClient,
+    private cdr: ChangeDetectorRef
   ) { }
 
   ngOnInit(): void {
-    this.currentUser = this.authService.getCurrentLoggedUser();
-    this.firstName = this.currentUser.firstName;
-    this.lastName = this.currentUser.lastName;
-    this.email = this.currentUser.email;
-    this.cin = this.currentUser.cin;
-    this.telephone = this.currentUser.telephone ?? '';
-    this.addresse = this.currentUser.addresse ?? '';
+    this.authService.getCurrentLoggedUser().subscribe(user => {
+      if (user) {
+        this.currentUser = user;
+        this.firstName = user.firstName || '';
+        this.lastName = user.lastName || '';
+        this.email = user.email || '';
+        this.cin = user.cin || '';
+        this.telephone = user.telephone || '';
+        this.addresse = user.addresse || '';
+
+        // Dynamic disabling: if field is already filled, lock it
+        this.isFirstNameDisabled = !!this.firstName;
+        this.isLastNameDisabled = !!this.lastName;
+        this.isEmailDisabled = !!this.email;
+        this.isCinDisabled = !!this.cin;
+        this.isTelephoneDisabled = !!this.telephone;
+        this.isAddresseDisabled = !!this.addresse;
+        this.cdr.markForCheck();
+      }
+    });
   }
 
   onFileChange(event: Event): void {
@@ -63,22 +88,13 @@ export class PrestataireFormDialog implements OnInit {
   }
 
   onSubmit(): void {
-    const prestataire: Prestataire = {
-      // From current user (locked)
-      id: this.currentUser.id,
-      cin: this.currentUser.cin,
+    const payload = {
       firstName: this.firstName,
       lastName: this.lastName,
       email: this.email,
-      addresse: this.addresse,
+      cin: this.cin,
       telephone: this.telephone,
-      role: 'prestataire',
-      createdAt: this.currentUser.createdAt,
-
-      // Always pending on new submission
-      status: 'pending',
-
-      // From form
+      addresse: this.addresse,
       specialty: this.specialty,
       description: this.description,
       reach: this.selectedReach.code,
@@ -86,15 +102,21 @@ export class PrestataireFormDialog implements OnInit {
         .split(',')
         .map(s => s.trim())
         .filter(s => s.length > 0),
-      document: this.extraDocumentFile
-        ? `[file: ${this.extraDocumentFile.name}]`
-        : undefined,
-      submissionDate: new Date(),
-      rating: 0,
+      document: this.extraDocumentFile ? this.extraDocumentFile.name : null,
+      documentType: this.extraDocumentFile ? this.extraDocumentFile.type : null,
     };
 
-    console.log('📋 New Prestataire Submission:', prestataire);
-    this.ref.close(prestataire);
+    console.log('📋 Submitting Prestataire Registration:', payload);
+
+    this.http.post(environment.prestatairesUrl, payload).subscribe({
+      next: (response: any) => {
+        console.log('✅ Prestataire registered successfully:', response);
+        this.ref.close(response.data);
+      },
+      error: (err) => {
+        console.error('❌ Failed to register prestataire:', err);
+      }
+    });
   }
 
   onCancel(): void {

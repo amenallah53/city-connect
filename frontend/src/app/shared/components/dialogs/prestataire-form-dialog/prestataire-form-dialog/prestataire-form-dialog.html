@@ -19,22 +19,20 @@
         <input
           pInputText
           [(ngModel)]="firstName"
-          disabled
+          [disabled]="isFirstNameDisabled"
           placeholder="First Name"
-          class="w-full rounded-[10px] border border-[var(--border-color)]
-                 px-3 py-2 text-[14px] bg-[var(--background-color)]
-                 text-[var(--secondary-text-color)] cursor-not-allowed" />
+          class="w-full rounded-[10px] border border-[var(--border-color)] px-3 py-2 text-[14px]"
+          [ngClass]="isFirstNameDisabled ? 'bg-[var(--background-color)] text-[var(--secondary-text-color)] cursor-not-allowed' : 'bg-white text-[var(--primary-text-color)]'" />
       </div>
       <div class="flex flex-col gap-1">
         <label class="text-[13px] font-medium text-[var(--primary-text-color)]">Last Name</label>
         <input
           pInputText
           [(ngModel)]="lastName"
-          disabled
+          [disabled]="isLastNameDisabled"
           placeholder="Last Name"
-          class="w-full rounded-[10px] border border-[var(--border-color)]
-                 px-3 py-2 text-[14px] bg-[var(--background-color)]
-                 text-[var(--secondary-text-color)] cursor-not-allowed" />
+          class="w-full rounded-[10px] border border-[var(--border-color)] px-3 py-2 text-[14px]"
+          [ngClass]="isLastNameDisabled ? 'bg-[var(--background-color)] text-[var(--secondary-text-color)] cursor-not-allowed' : 'bg-white text-[var(--primary-text-color)]'" />
       </div>
     </div>
 
@@ -44,11 +42,10 @@
       <input
         pInputText
         [(ngModel)]="email"
-        disabled
+        [disabled]="isEmailDisabled"
         placeholder="Email"
-        class="w-full rounded-[10px] border border-[var(--border-color)]
-               px-3 py-2 text-[14px] bg-[var(--background-color)]
-               text-[var(--secondary-text-color)] cursor-not-allowed" />
+        class="w-full rounded-[10px] border border-[var(--border-color)] px-3 py-2 text-[14px]"
+        [ngClass]="isEmailDisabled ? 'bg-[var(--background-color)] text-[var(--secondary-text-color)] cursor-not-allowed' : 'bg-white text-[var(--primary-text-color)]'" />
     </div>
 
     <!-- CIN / Phone -->
@@ -57,23 +54,21 @@
         <label class="text-[13px] font-medium text-[var(--primary-text-color)]">CIN</label>
         <input
           pInputText
-          [ngModel]="cin"
-          disabled
+          [(ngModel)]="cin"
+          [disabled]="isCinDisabled"
           placeholder="CIN"
-          class="w-full rounded-[10px] border border-[var(--border-color)]
-                 px-3 py-2 text-[14px] bg-[var(--background-color)]
-                 text-[var(--secondary-text-color)] cursor-not-allowed" />
+          class="w-full rounded-[10px] border border-[var(--border-color)] px-3 py-2 text-[14px]"
+          [ngClass]="isCinDisabled ? 'bg-[var(--background-color)] text-[var(--secondary-text-color)] cursor-not-allowed' : 'bg-white text-[var(--primary-text-color)]'" />
       </div>
       <div class="flex flex-col gap-1">
         <label class="text-[13px] font-medium text-[var(--primary-text-color)]">Phone Number</label>
         <input
           pInputText
           [(ngModel)]="telephone"
-          disabled
+          [disabled]="isTelephoneDisabled"
           placeholder="Phone Number"
-          class="w-full rounded-[10px] border border-[var(--border-color)]
-                 px-3 py-2 text-[14px] bg-[var(--background-color)]
-                 text-[var(--secondary-text-color)] cursor-not-allowed" />
+          class="w-full rounded-[10px] border border-[var(--border-color)] px-3 py-2 text-[14px]"
+          [ngClass]="isTelephoneDisabled ? 'bg-[var(--background-color)] text-[var(--secondary-text-color)] cursor-not-allowed' : 'bg-white text-[var(--primary-text-color)]'" />
       </div>
     </div>
 
@@ -83,11 +78,10 @@
       <input
         pInputText
         [(ngModel)]="addresse"
-        disabled
+        [disabled]="isAddresseDisabled"
         placeholder="Address"
-        class="w-full rounded-[10px] border border-[var(--border-color)]
-               px-3 py-2 text-[14px] bg-[var(--background-color)]
-               text-[var(--secondary-text-color)] cursor-not-allowed" />
+        class="w-full rounded-[10px] border border-[var(--border-color)] px-3 py-2 text-[14px]"
+        [ngClass]="isAddresseDisabled ? 'bg-[var(--background-color)] text-[var(--secondary-text-color)] cursor-not-allowed' : 'bg-white text-[var(--primary-text-color)]'" />
     </div>
   </div>
 

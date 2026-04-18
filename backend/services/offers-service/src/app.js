@@ -53,7 +53,7 @@ app.get('/health', async (_req, res) => {
 
 app.get('/api/offers', async (req, res) => {
 	try {
-		const { status, q = '', page = '1', limit = '1000' } = req.query;
+		const { status, q = '', offerorId, prestataireId, page = '1', limit = '1000' } = req.query;
 		const parsedPage = Math.max(1, Number(page) || 1);
 		const parsedLimit = Math.min(1000, Math.max(1, Number(limit) || 1000));
 		const offset = (parsedPage - 1) * parsedLimit;
@@ -64,6 +64,16 @@ app.get('/api/offers', async (req, res) => {
 		if (typeof status === 'string' && status.trim() && status !== 'all') {
 			values.push(status.trim());
 			where.push(`jo.status = $${values.length}`);
+		}
+
+		if (offerorId) {
+			values.push(offerorId);
+			where.push(`jo.offeror_id = $${values.length}`);
+		}
+
+		if (prestataireId) {
+			values.push(prestataireId);
+			where.push(`jo.prestataire_id = $${values.length}`);
 		}
 
 		if (typeof q === 'string' && q.trim()) {
