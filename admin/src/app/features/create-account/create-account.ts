@@ -48,7 +48,8 @@ export class CreateAccount {
 
     const formData = {
       ...this.registerForm.value,
-      documentUrl: this.selectedFile.name // replace with real upload URL later
+      documentUrl: this.selectedFile.name,  // replace with real upload URL later
+      role : 'admin' 
     };
 
     this.authService.register(formData).subscribe({

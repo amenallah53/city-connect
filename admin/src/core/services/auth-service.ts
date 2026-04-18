@@ -149,7 +149,7 @@ export class AuthService {
     lastname: string;
     CIN: string;
     documentUrl: string;
-    role: 'admin';
+    role: string;
   }): Observable<any> {
     return this.http.post(`${this.API_URL}/api/auth/register`, data);
   }

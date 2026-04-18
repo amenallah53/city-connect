@@ -38,12 +38,15 @@ export class Login {
       {
         this.errorMessage = null;
         this.cdr.detectChanges();
-        if(res.user.role === 'prestataire' || res.user.role === 'citoyen') {
-          this.router.navigate(['/home']);
-        } else if(res.user.role === 'admin') {
-          const token = localStorage.getItem('token');
-          window.location.href = `http://localhost:4300?token=${token}`;
+        if(res.user.role === 'admin') {
+            this.router.navigate(['/dashboard']);
+            const token = localStorage.getItem('token');
         }
+        else
+        {
+          this.errorMessage = "you don't have the permission to access this page";
+          this.cdr.detectChanges();
+        }  
       },
       error: (err) => {
         this.errorMessage = err.error?.error || 'Login failed';
