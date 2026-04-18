@@ -1,36 +1,16 @@
-import { Injectable, Inject, PLATFORM_ID } from '@angular/core';
-import { isPlatformBrowser } from '@angular/common';
-import { CanActivate, CanActivateChild } from '@angular/router';
-import { jwtDecode } from 'jwt-decode';
+import { Injectable } from '@angular/core';
+import { CanMatch, Router, UrlTree } from '@angular/router';
+import { AuthService } from '../services/auth-service';
 
 @Injectable({ providedIn: 'root' })
-export class AuthGuard implements CanActivate, CanActivateChild {
+export class AuthGuard implements CanMatch {
 
-  constructor(@Inject(PLATFORM_ID) private platformId: Object) {}
+  constructor(private auth: AuthService, private router: Router) {}
 
-  private check(): boolean {
-  if (!isPlatformBrowser(this.platformId)) return false;
-
-  const params = new URLSearchParams(window.location.search);
-  const urlToken = params.get('token');
-  if (urlToken) {
-    localStorage.setItem('token', urlToken);
-    window.history.replaceState({}, '', window.location.pathname); // clean URL
+  canMatch(): boolean | UrlTree {
+    console.log('AdminGuard check:', this.auth.isLoggedUserAdmin());
+    return this.auth.isLoggedIn() && this.auth.isLoggedUserAdmin()
+      ? true
+      : this.router.parseUrl('/login');
   }
-
-  // Now check localStorage as usual
-  const token = localStorage.getItem('token');
-  if (token) {
-    try {
-      const decoded: any = jwtDecode(token);
-      if (decoded.role === 'admin') return true;
-    } catch {}
-  }
-
-  window.location.href = 'http://localhost:4200/login';
-  return false;
-}
-
-  canActivate(): boolean { return this.check(); }
-  canActivateChild(): boolean { return this.check(); }
 }

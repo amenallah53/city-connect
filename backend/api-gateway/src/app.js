@@ -7,8 +7,6 @@ const app = express();
 // Enable CORS for all routes
 app.use(cors());
 
-// Parse JSON
-app.use(express.json());
 
 app.use("/api/users", createProxyMiddleware({
   target: "http://localhost:5001",
@@ -17,7 +15,8 @@ app.use("/api/users", createProxyMiddleware({
 
 app.use("/api/auth", createProxyMiddleware({
   target: "http://localhost:5002",
-  changeOrigin: true
+  changeOrigin: true,
+  pathRewrite: { "^/api/admin": "" },
 }));
 
 app.use("/api/admin", createProxyMiddleware({

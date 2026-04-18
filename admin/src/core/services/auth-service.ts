@@ -3,8 +3,7 @@ import { isPlatformBrowser } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { tap } from 'rxjs/operators';
-import { User } from 'src/app/shared/models/user.model';
-
+import { User } from '../../app/shared/models/user.model';
 export interface UserData {
   id: string;
   cin: number;
@@ -13,9 +12,10 @@ export interface UserData {
   role?: string;
 }
 
-@Injectable({ providedIn: 'root' })
-export class UserAuthService {
-
+@Injectable({
+  providedIn: 'root',
+})
+export class AuthService {
   private USER_TOKEN_KEY = 'token';
   private API_URL = 'http://localhost:5000';
   private USER_DATA_KEY = 'userData';
@@ -75,8 +75,8 @@ export class UserAuthService {
     }
   }
 
-  isLoggedUserPrestataire(): boolean {
-    return this.getCurrentUser()?.role === "prestataire";
+  isLoggedUserAdmin(): boolean {
+    return this.getCurrentUser()?.role === "admin";
   }
 
   /*isLoggedIn(): boolean {
@@ -138,7 +138,7 @@ export class UserAuthService {
   }
 
   forgotPassword(email: string): Observable<any> {
-    return this.http.post(`${this.API_URL}/api/auth/forgot-password`, { email, CLIENT_URL: 'http://localhost:4200' });
+    return this.http.post(`${this.API_URL}/api/auth/forgot-password`, { email, CLIENT_URL: 'http://localhost:4300' });
   }
 
   register(data: {
@@ -149,7 +149,7 @@ export class UserAuthService {
     lastname: string;
     CIN: string;
     documentUrl: string;
-    role : 'citoyen';
+    role: 'admin';
   }): Observable<any> {
     return this.http.post(`${this.API_URL}/api/auth/register`, data);
   }
@@ -169,3 +169,5 @@ export class UserAuthService {
     );
   }
 }
+
+

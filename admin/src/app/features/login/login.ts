@@ -1,7 +1,7 @@
 import { Component, inject,ChangeDetectorRef } from '@angular/core';
 import { Router, RouterLink, RouterModule } from '@angular/router';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
-import { UserAuthService } from '../../core/services/auth.service';
+import { AuthService } from '../../../core/services/auth-service';  
 import { LoginProjetDescrip } from '../../shared/components/login-projet-descrip/login-projet-descrip';
 
 declare const google: any;
@@ -15,7 +15,7 @@ declare const google: any;
 export class Login {
 
   private fb = inject(FormBuilder);
-  private auth = inject(UserAuthService);
+  private auth = inject(AuthService);
   private router = inject(Router);
   private cdr = inject(ChangeDetectorRef);
   
@@ -41,7 +41,8 @@ export class Login {
         if(res.user.role === 'prestataire' || res.user.role === 'citoyen') {
           this.router.navigate(['/home']);
         } else if(res.user.role === 'admin') {
-          this.errorMessage = 'you\'re admin go to the admin panel';
+          const token = localStorage.getItem('token');
+          window.location.href = `http://localhost:4300?token=${token}`;
         }
       },
       error: (err) => {
@@ -62,8 +63,7 @@ export class Login {
             if(res.user.role === 'prestataire' || res.user.role === 'citoyen') {
               this.router.navigate(['/home']);
             } else if(res.user.role === 'admin') {
-                this.errorMessage = 'you\'re admin go to the admin panel';
-                this.cdr.detectChanges();
+              this.router.navigate(['/dashboard']);
             }
           },
           error: (err) => {

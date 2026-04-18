@@ -163,7 +163,7 @@ app.post('/login', async (req, res) => {  //login
 
 app.post('/register', async (req, res) => {      //register
   try {
-    const { email, password, confirmPassword, firstname, lastname, CIN, documentUrl } = req.body;
+    const { email, password, confirmPassword, firstname, lastname, CIN, documentUrl, role } = req.body;
 
     if (!email || !password || !firstname || !lastname || !CIN) {
       return res.status(400).json({ error: 'All fields are required' });
@@ -202,10 +202,10 @@ app.post('/register', async (req, res) => {      //register
     const hashedPassword = await bcrypt.hash(password, 10);
 
     const result = await pool.query(
-      `INSERT INTO users (email, password, first_name, last_name, cin, document)
-       VALUES ($1, $2, $3, $4, $5, $6)
+      `INSERT INTO users (email, password, first_name, last_name, cin, document, role)
+       VALUES ($1, $2, $3, $4, $5, $6, $7)
        RETURNING id, email, first_name, last_name, cin`,
-      [email, hashedPassword, firstname, lastname, CIN, documentUrl]
+      [email, hashedPassword, firstname, lastname, CIN, documentUrl, role]
     );
 
     return res.status(201).json({
@@ -251,7 +251,7 @@ app.put('/me/password', async (req, res) => {
 
 app.post('/forgot-password', async (req, res) => {     //email sending link reset password
   try {
-    const { email } = req.body;
+    const { email, CLIENT_URL} = req.body;
     if (!email) {
       return res.status(400).json({ error: 'Email is required' });
     }
@@ -265,8 +265,7 @@ app.post('/forgot-password', async (req, res) => {     //email sending link rese
     }
 
     const resetToken = jwt.sign({ userId: user.id, email: user.email }, jwtSecret, { expiresIn: '15m' });
-    const resetLink = `${process.env.CLIENT_URL}/login/reset-page-link?token=${resetToken}`;
-    console.log("RESET LINK:", resetLink);
+    const resetLink = `${CLIENT_URL}/login/reset-page-link?token=${resetToken}`;
 
     await transporter.sendMail({
       from: process.env.GMAIL_USER,

@@ -1,0 +1,83 @@
+<!-- register.component.html -->
+<div id="body">
+  <app-login-projet-descrip></app-login-projet-descrip>
+  <div class="card">
+    <div id="div1">Create an account</div>
+    <div id="div2">Enter your details and upload documents that confirm your identity.</div>
+
+    <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+
+      <div id="div3">First Name</div>
+      <input type="text" formControlName="firstname" placeholder="">
+      @if(registerForm.get('firstname')?.invalid && registerForm.get('firstname')?.touched){
+           <div class="red">
+              First name is required
+           </div>
+      }
+      
+      <div id="div3">Last Name</div>
+      <input type="text" formControlName="lastname" placeholder="">
+      @if(registerForm.get('lastname')?.invalid && registerForm.get('lastname')?.touched){
+           <div class="red">
+              Last name is required
+           </div>
+      }
+      
+      <div id="div3">Email</div>
+      <input type="text" formControlName="email" placeholder="you@example.com">
+      @if(registerForm.get('email')?.invalid && registerForm.get('email')?.touched){
+           <div class="red">
+              Valid email is required
+           </div>
+      }
+
+      <div id="pass">CIN</div>
+      <input type="text" formControlName="CIN" placeholder="12345678">
+      @if(registerForm.get('CIN')?.invalid && registerForm.get('CIN')?.touched){
+           <div class="red">
+              CIN must be 8 digits
+           </div>
+      }
+
+      <div id="pass">Password</div>
+      <input type="password" formControlName="password" placeholder="Enter your password">
+      @if(registerForm.get('password')?.invalid && registerForm.get('password')?.touched){
+          <div class="red">
+            Password must be at least 8 characters
+          </div>
+        }
+      <div id="pass">Confirm Password</div>
+      <input type="password" formControlName="confirmPassword" placeholder="********">
+      @if(registerForm.hasError('passwordMismatch') && registerForm.get('confirmPassword')?.touched){
+          <div class="red">
+            Passwords do not match
+          </div>
+      }
+
+      <div id="pass">Supporting documents</div>
+      <div class="file-container">
+        <input type="file" id="fileUpload" hidden (change)="onFileSelected($event)">
+        <label for="fileUpload" class="custom-file">
+          Drag and drop documents here, or click to select files <br>
+        @if(selectedFile){
+            {{ selectedFile.name }}
+        }
+        </label>
+      </div>
+      @if(messageerror){
+          <div class="red">
+            {{ messageerror }}
+          </div>
+      }
+      <div id="wrap">
+        <button id="button1" type="button" routerLink="/login">Cancel</button>
+        <button id="button2" type="submit" [disabled]="registerForm.invalid || !selectedFile">
+          Create account
+        </button>
+      </div>
+
+    </form>
+
+    <div id="div4">We will review your documents before activating your account.</div>
+  </div>
+</div>
