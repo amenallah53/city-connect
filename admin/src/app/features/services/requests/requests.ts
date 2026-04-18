@@ -189,7 +189,7 @@ export class Requests implements OnInit {
       location: data.location || '', /** mch ma5douma */
     };
 
-    const response = await fetch('https://amenallah23.app.n8n.cloud/webhook-test/7d27e881-89a9-4039-add7-b6cd784fb0ca', {
+    const response = await fetch('https://amenallah23.app.n8n.cloud/webhook/7d27e881-89a9-4039-add7-b6cd784fb0ca', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
