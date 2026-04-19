@@ -22,7 +22,8 @@ export class UserAuthService {
   private USER_TOKEN_KEY = 'token';
   private API_URL = 'http://localhost:5000';
   private USER_DATA_KEY = 'userData';
-  private MYPROFILE_API_URL = 'http://localhost:5000/api/users-service-admin';
+  //private MYPROFILE_API_URL = 'http://localhost:5000/api/users-service-admin';
+  private MYPROFILE_API_URL = 'http://localhost:5000/api/myprofile';
 
   private currentUserSubject = new BehaviorSubject<User | null>(null);
   public currentUser$ = this.currentUserSubject.asObservable();
@@ -42,7 +43,7 @@ export class UserAuthService {
       this.currentUserSubject.next(null);
       return of(null);
     }
-  
+
     return this.http.get<any>(`${this.MYPROFILE_API_URL}/me`, {
       headers: this.getHeaders()
     }).pipe(
@@ -200,7 +201,7 @@ export class UserAuthService {
     lastname: string;
     CIN: string;
     documentUrl: string;
-    role : 'citoyen';
+    role: 'citoyen';
   }): Observable<any> {
     return this.http.post(`${this.API_URL}/api/auth/register`, data);
   }

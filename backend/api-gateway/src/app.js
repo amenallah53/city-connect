@@ -88,7 +88,18 @@ app.use("/api/faqs", createProxyMiddleware({
   changeOrigin: true
 }));*/
 
-// Removed /api/myprofile as it is decommissioned in favor of users-service-admin
+/*app.use("/api/myprofile", createProxyMiddleware({
+  target: "http://localhost:5008",
+  changeOrigin: true,
+  pathRewrite: { "^/api/myprofile": "" }  // /api/myprofile/me → /me ✓
+}));*/
+
+app.use("/api/myprofile", createProxyMiddleware({
+  target: "http://localhost:5008",
+  changeOrigin: true,
+  pathRewrite: { "^/api/myprofile": "/" }  // /api/myprofile/me → /me ✓
+}));
+
 
 
 app.use("/api/uploads", createProxyMiddleware({
