@@ -17,12 +17,18 @@ export class ServiceScheduleFormDialog implements OnInit {
   formData: Partial<HoraireService> = {
     name: '',
     type: '',
-    heureDeb: '07:30 AM',
-    heureFin: '05:00 PM',
+    heureDeb: '07:30',
+    heureFin: '17:00',
     days: []
   };
 
-  allDays = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+  allDays = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+  shortDays: { [key: string]: string } = {
+    'Mon': 'Monday', 'Tue': 'Tuesday', 'Wed': 'Wednesday',
+    'Thu': 'Thursday', 'Fri': 'Friday', 'Sat': 'Saturday', 'Sun': 'Sunday',
+    'Monday': 'Monday', 'Tuesday': 'Tuesday', 'Wednesday': 'Wednesday',
+    'Thursday': 'Thursday', 'Friday': 'Friday', 'Saturday': 'Saturday', 'Sunday': 'Sunday'
+  };
 
   constructor(
     public config: DynamicDialogConfig,
@@ -32,7 +38,12 @@ export class ServiceScheduleFormDialog implements OnInit {
   ngOnInit() {
     if (this.config.data?.schedule) {
       this.isEditMode = true;
-      this.formData = { ...this.config.data.schedule };
+      const schedule = this.config.data.schedule;
+      // Map short names to long names if necessary
+      this.formData = { 
+        ...schedule,
+        days: schedule.days?.map((d: string) => this.shortDays[d] || d) || []
+      };
     }
   }
 
