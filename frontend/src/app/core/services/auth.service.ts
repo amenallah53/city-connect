@@ -20,7 +20,7 @@ export interface UserData {
 export class UserAuthService {
 
   private USER_TOKEN_KEY = 'token';
-  private API_URL = 'http://localhost:5002';
+  private API_URL = 'http://localhost:5000';
   private USER_DATA_KEY = 'userData';
   private MYPROFILE_API_URL = 'http://localhost:5000/api/users-service-admin';
 
@@ -42,7 +42,7 @@ export class UserAuthService {
       this.currentUserSubject.next(null);
       return of(null);
     }
-
+  
     return this.http.get<any>(`${this.MYPROFILE_API_URL}/me`, {
       headers: this.getHeaders()
     }).pipe(
@@ -87,7 +87,10 @@ export class UserAuthService {
       })
     );
   }
-
+  getUserRole(): string | null {
+    const user = this.currentUserSubject.value;
+    return user ? user.role : null;
+  }
   getCurrentLoggedUser(): Observable<User | null> {
     if (this.currentUserSubject.value) {
       return of(this.currentUserSubject.value);
@@ -113,7 +116,7 @@ export class UserAuthService {
   }
 
   login(email: string, password: string): Observable<any> {
-    return this.http.post(`${this.API_URL}/login`, { email, password }).pipe(
+    return this.http.post(`${this.API_URL}/api/auth/login`, { email, password }).pipe(
       tap((response: any) => {
         if (response.token) {
           localStorage.setItem(this.USER_TOKEN_KEY, response.token);
@@ -153,7 +156,7 @@ export class UserAuthService {
   }
 
   resetPassword(token: string, newPassword: string): Observable<any> {
-    return this.http.put(`${this.API_URL}/me/password`, { token, newPassword, confirmPassword: newPassword });
+    return this.http.put(`${this.API_URL}/api/auth/me/password`, { token, newPassword, confirmPassword: newPassword });
   }
 
   getCurrentUser(): UserData | null {
@@ -186,7 +189,7 @@ export class UserAuthService {
   }
 
   forgotPassword(email: string): Observable<any> {
-    return this.http.post(`${this.API_URL}/forgot-password`, { email });
+    return this.http.post(`${this.API_URL}/api/auth/forgot-password`, { email, CLIENT_URL: 'http://localhost:4200' });
   }
 
   register(data: {
@@ -197,12 +200,13 @@ export class UserAuthService {
     lastname: string;
     CIN: string;
     documentUrl: string;
+    role : 'citoyen';
   }): Observable<any> {
-    return this.http.post(`${this.API_URL}/register`, data);
+    return this.http.post(`${this.API_URL}/api/auth/register`, data);
   }
 
   googleLogin(idToken: string): Observable<any> {
-    return this.http.post(`${this.API_URL}/google`, { idToken }).pipe(
+    return this.http.post(`${this.API_URL}/api/auth/google`, { idToken }).pipe(
       tap((response: any) => {
         if (response.token) {
           localStorage.setItem(this.USER_TOKEN_KEY, response.token);

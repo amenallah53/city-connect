@@ -9,7 +9,7 @@
     "dev:admin": "concurrently \"npm:start-admin\" \"npm:start-frontend\" \"npm:start-backend\"",
     "start-frontend": "cd frontend && ng serve --open",
     "start-backend": "cd backend && npm run dev",
-    "start-admin": "cd admin && ng serve --open --port 4201"
+    "start-admin": "cd admin && ng serve --open --port 4300"
   },
   "repository": {
     "type": "git",

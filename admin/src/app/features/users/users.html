@@ -7,15 +7,18 @@
         </h1>
         <div class="flex flex-row items-center justify-between flex-wrap gap-4">
             <p class="text-[18px] text-[var(--primary-subtitle-color)] font-[family-name:var(--font-lato)]">
-                {{ filteredUsers.length }} user(s) found
+                {{ filteredUsers().length }} user(s) found
             </p>
             <div class="flex flex-row gap-3 items-center flex-wrap">
 
                 <!-- Search input -->
                 <div class="card flex justify-center rounded-[12px] shadow-[0px_2px_15px_0px_rgba(0,0,0,0.1)]">
                     <div class="relative flex items-center bg-white rounded-[12px] overflow-hidden w-[260px]">
-                        <input type="text" placeholder="Search users..." [(ngModel)]="searchQuery"
-                            (keydown)="onSearchKeydown($event)" class="w-full h-[42px] border-none bg-transparent pl-5 pr-10
+                        <input type="text" placeholder="Search users..."
+                            [value]="searchQuery()"
+                            (input)="onSearchInput($event)"
+                            (keydown)="onSearchKeydown($event)"
+                            class="w-full h-[42px] border-none bg-transparent pl-5 pr-10
                                    font-[family-name:var(--font-lato)] text-[14px]
                                    text-[var(--secondary-text-color)] outline-none
                                    placeholder:text-[var(--primary-subtitle-color)]">
@@ -30,18 +33,20 @@
 
                 <!-- Filter by role -->
                 <div class="card flex justify-center rounded-[12px] shadow-[0px_2px_15px_0px_rgba(0,0,0,0.1)] bg-white">
-                    <p-select dataKey="code" [options]="roleFilters" [(ngModel)]="selectedRoleFilter" optionLabel="name"
-                        placeholder="Filter by role"
-                        class="w-full md:w-[150px] text-[var(--secondary-text-color)] bg-transparent"
-                        (onChange)="onFilterChange()" />
+                    <p-select dataKey="code" [options]="roleFilters"
+                        [ngModel]="selectedRoleFilter()"
+                        (ngModelChange)="onRoleFilterChange($event)"
+                        optionLabel="name" placeholder="Filter by role"
+                        class="w-full md:w-[150px] text-[var(--secondary-text-color)] bg-transparent" />
                 </div>
 
                 <!-- Filter by status -->
                 <div class="card flex justify-center rounded-[12px] shadow-[0px_2px_15px_0px_rgba(0,0,0,0.1)] bg-white">
-                    <p-select dataKey="code" [options]="statusFilters" [(ngModel)]="selectedStatusFilter"
+                    <p-select dataKey="code" [options]="statusFilters"
+                        [ngModel]="selectedStatusFilter()"
+                        (ngModelChange)="onStatusFilterChange($event)"
                         optionLabel="name" placeholder="Filter by status"
-                        class="w-full md:w-[150px] text-[var(--secondary-text-color)] bg-transparent"
-                        (onChange)="onFilterChange()" />
+                        class="w-full md:w-[150px] text-[var(--secondary-text-color)] bg-transparent" />
                 </div>
 
                 <button (click)="callFormDialog()" class="border border-[var(--primary-color)] text-[14px] font-medium
@@ -51,37 +56,59 @@
                        hover:cursor-pointer transition-colors duration-300">
                     Add user
                 </button>
-
             </div>
         </div>
     </div>
 
-    <!-- Users list -->
-    <div class="flex flex-col gap-4 px-6 py-4">
-        @for (user of pagedUsers; track user.id) {
-        <app-user-card [user]="user"></app-user-card>
+    <!-- Loading -->
+    @if (loading()) {
+        <div class="flex justify-center py-10">
+            <p class="text-[var(--primary-subtitle-color)]">Loading...</p>
+        </div>
+    }
+
+    <!-- Error -->
+    @if (error()) {
+        <div class="flex justify-center py-4">
+            <p class="text-red-500">{{ error() }}</p>
+        </div>
+    }
+
+    @if (!loading()) {
+        <!-- Users list -->
+        <div class="flex flex-col gap-4 px-6 py-4">
+            @for (user of pagedUsers(); track user.id) {
+                <app-user-card [user]="user" (userUpdated)="loadUsers()"></app-user-card>
+            }
+            @empty {
+                <div class="flex flex-col items-center justify-center py-20 gap-4 text-[var(--primary-subtitle-color)]">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                        class="text-[var(--secondary-text-color)]">
+                        <path d="m21 21-4.34-4.34" />
+                        <circle cx="11" cy="11" r="8" />
+                    </svg>
+                    <p class="text-[18px] text-[var(--primary-subtitle-color)] font-medium">
+                        No users found for the selected filters.
+                    </p>
+                </div>
+            }
+        </div>
+
+        <!-- Paginator -->
+        @if (filteredUsers().length > 0) {
+            <div class="flex justify-center py-6">
+                <p-paginator
+                    (onPageChange)="onPageChange($event)"
+                    [first]="first()"
+                    [rows]="rows()"
+                    [totalRecords]="filteredUsers().length"
+                    [showCurrentPageReport]="true"
+                    [showPageLinks]="true"
+                    [showJumpToPageDropdown]="false"
+                    currentPageReportTemplate="Showing {first} to {last} of {totalRecords}" />
+            </div>
         }
-    </div>
-
-    <!-- Empty state -->
-    <div *ngIf="filteredUsers.length === 0"
-        class="flex flex-col items-center justify-center py-20 gap-4 text-[var(--primary-subtitle-color)]">
-        <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none"
-            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-            class="text-[var(--secondary-text-color)]">
-            <path d="m21 21-4.34-4.34" />
-            <circle cx="11" cy="11" r="8" />
-        </svg>
-        <p class="text-[18px] text-[var(--primary-subtitle-color)] font-medium">
-            No users found for the selected filters.
-        </p>
-    </div>
-
-    <!-- Paginator -->
-    <div class="flex justify-center py-6" *ngIf="filteredUsers.length > 0">
-        <p-paginator (onPageChange)="onPageChange($event)" [first]="first" [rows]="rows"
-            [totalRecords]="filteredUsers.length" [showCurrentPageReport]="true" [showPageLinks]="true"
-            [showJumpToPageDropdown]="false" currentPageReportTemplate="Showing {first} to {last} of {totalRecords}" />
-    </div>
+    }
 
 </section>

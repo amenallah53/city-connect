@@ -14,12 +14,14 @@ app.use("/api/users", createProxyMiddleware({
 
 app.use("/api/auth", createProxyMiddleware({
   target: "http://localhost:5002",
-  changeOrigin: true
+  changeOrigin: true,
+  pathRewrite: { "^/api/admin": "" },
 }));
 
 app.use("/api/admin", createProxyMiddleware({
-  target: "http://localhost:5003",
-  changeOrigin: true
+  target: "http://localhost:5009",
+  changeOrigin: true,
+  pathRewrite: { "^/api/admin": "" }
 }));
 
 app.use("/api/tickets", createProxyMiddleware({
@@ -76,7 +78,8 @@ app.use("/api/prestataires", createProxyMiddleware({
 
 app.use("/api/faqs", createProxyMiddleware({
   target: "http://localhost:5007",
-  changeOrigin: true
+  changeOrigin: true,
+  pathRewrite: { "^/api/admin": "" },
 }));
 
 
@@ -86,11 +89,6 @@ app.use("/api/faqs", createProxyMiddleware({
 }));*/
 
 // Removed /api/myprofile as it is decommissioned in favor of users-service-admin
-
-app.use("/api/users-service-admin", createProxyMiddleware({
-  target: "http://localhost:5009",
-  changeOrigin: true
-}));
 
 
 app.use("/api/uploads", createProxyMiddleware({

@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { FaqAdminPage } from './faq-admin-page';
+import { SimpleLayout } from './simple-layout';
 
-describe('FaqAdminPage', () => {
-  let component: FaqAdminPage;
-  let fixture: ComponentFixture<FaqAdminPage>;
+describe('SimpleLayout', () => {
+  let component: SimpleLayout;
+  let fixture: ComponentFixture<SimpleLayout>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [FaqAdminPage]
+      imports: [SimpleLayout]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(FaqAdminPage);
+    fixture = TestBed.createComponent(SimpleLayout);
     component = fixture.componentInstance;
     await fixture.whenStable();
   });

@@ -6,7 +6,7 @@ const { Pool } = require('pg');
 require('dotenv').config();
 
 const app = express();
-const port = parseInt(process.env.PORT, 10) || 5003;
+const port = parseInt(process.env.PORT, 10) || 5009;
 
 if (!process.env.JWT_SECRET) throw new Error('JWT_SECRET must be set in .env');
 const jwtSecret = process.env.JWT_SECRET;
@@ -45,73 +45,66 @@ function authorizeAdmin(req, res, next) {
   next();
 }
 
-app.get('/me', authenticateToken, async (req, res) => {
+app.put('/:id', authenticateToken, authorizeAdmin, async (req, res) => {
   try {
-    const result = await pool.query(
-      'SELECT id, email, first_name AS "firstName", last_name AS "lastName", cin FROM users WHERE id = $1',
-      [req.user.userId]
-    );
-    const user = result.rows[0];
-    if (!user) return res.status(404).json({ error: 'User not found' });
+    const { first_name, last_name, email, cin, role, status } = req.body;
 
-    return res.status(200).json(user);
+    // build dynamic query — only update fields that were sent
+    const fields = [];
+    const values = [];
+    let i = 1;
+
+    if (first_name !== undefined) { fields.push(`first_name = $${i++}`); values.push(first_name); }
+    if (last_name !== undefined)  { fields.push(`last_name = $${i++}`);  values.push(last_name); }
+    if (email !== undefined)      { fields.push(`email = $${i++}`);      values.push(email); }
+    if (cin !== undefined)        { fields.push(`cin = $${i++}`);        values.push(cin); }
+    if (role !== undefined)       { fields.push(`role = $${i++}`);       values.push(role); }
+    if (status !== undefined)     { fields.push(`status = $${i++}`);     values.push(status); }
+    
+
+    if (fields.length === 0) {
+      return res.status(400).json({ error: 'No fields to update' });
+    }
+
+    values.push(req.params.id);
+    const result = await pool.query(
+      `UPDATE users SET ${fields.join(', ')} WHERE id = $${i} RETURNING id, email, first_name as "firstName", last_name as "lastName", cin, role, status`,
+      values
+    );
+
+    if (result.rows.length === 0) return res.status(404).json({ error: 'User not found' });
+    res.json(result.rows[0]);
   } catch (err) {
-    console.error('Get profile error:', err);
-    return res.status(500).json({ error: 'Internal server error' });
+    res.status(500).json({ error: err.message });
   }
 });
 
-app.put('/edit-profile', authenticateToken, async (req, res) => {
+app.post('/', authenticateToken, authorizeAdmin, async (req, res) => {
   try {
-    const { first_name, last_name, email, newPassword, confirmPassword } = req.body;
+    const { first_name, last_name, email, cin, role, status } = req.body;
 
-    if (!first_name && !last_name && !email && !newPassword) {
-      return res.status(400).json({ error: 'At least one field is required' });
+    if (!first_name || !last_name || !email) {
+      return res.status(400).json({ error: 'First name, last name and email are required' });
+    }
+
+    const existing = await pool.query(
+      'SELECT id FROM users WHERE LOWER(email) = LOWER($1)',
+      [email]
+    );
+    if (existing.rows.length > 0) {
+      return res.status(409).json({ error: 'Email already registered' });
     }
 
     const result = await pool.query(
-      'SELECT id, email, first_name, last_name FROM users WHERE id = $1',
-      [req.user.userId]
-    );
-    const user = result.rows[0];
-    if (!user) return res.status(404).json({ error: 'User not found' });
-
-    if (email && email.toLowerCase() !== user.email.toLowerCase()) {
-      const existing = await pool.query(
-        'SELECT id FROM users WHERE LOWER(email) = LOWER($1) AND id != $2',
-        [email, req.user.userId]
-      );
-      if (existing.rows.length > 0) {
-        return res.status(409).json({ error: 'Email is already taken' });
-      }
-    }
-
-    let hashedPassword = null;
-    if (newPassword) {
-      if (newPassword !== confirmPassword) {
-        return res.status(400).json({ error: 'Passwords do not match' });
-      }
-      hashedPassword = await bcrypt.hash(newPassword, 10);
-    }
-
-    const updated = await pool.query(
-      `UPDATE users SET
-        first_name = COALESCE($1, first_name),
-        last_name  = COALESCE($2, last_name),
-        email      = COALESCE($3, email),
-        password   = COALESCE($4, password)
-       WHERE id = $5
-       RETURNING id, email, first_name AS "firstName", last_name AS "lastName"`,
-      [first_name || null, last_name || null, email || null, hashedPassword, req.user.userId]
+      `INSERT INTO users (first_name, last_name, email, cin, role, status, password)
+       VALUES ($1, $2, $3, $4, $5, $6, $7)
+       RETURNING id, email, first_name as "firstName", last_name as "lastName", cin, role, status`,
+      [first_name, last_name, email, cin, role || 'citoyen', status || 'pending', 'changeme']
     );
 
-    return res.status(200).json({
-      message: 'Profile updated successfully',
-      user: updated.rows[0],
-    });
+    res.status(201).json(result.rows[0]);
   } catch (err) {
-    console.error('Update profile error:', err);
-    return res.status(500).json({ error: 'Internal server error' });
+    res.status(500).json({ error: err.message });
   }
 });
 
@@ -119,72 +112,56 @@ app.put('/edit-profile', authenticateToken, async (req, res) => {
 app.get('/users', authenticateToken, authorizeAdmin, async (req, res) => {
   try {
     const { role, status } = req.query;
-
-    let query = 'SELECT id, email, first_name, last_name, cin, role, status, created_at FROM users WHERE 1=1';
+    let query = 'SELECT id, email, first_name as "firstName", last_name as "lastName", cin, role, status, created_at FROM users WHERE 1=1';
     const params = [];
 
-    if (role) {
-      params.push(role);
-      query += ` AND role = $${params.length}`;
-    }
-
-    if (status !== undefined) {
-      params.push(status === 'true');
-      query += ` AND status = $${params.length}`;
-    }
+    if (role) { params.push(role); query += ` AND role = $${params.length}`; }
+    if (status) { params.push(status); query += ` AND status = $${params.length}`; }  // ← fix: no boolean conversion
 
     query += ' ORDER BY created_at DESC';
-
     const result = await pool.query(query, params);
-    return res.status(200).json(result.rows);
+    res.status(200).json(result.rows);
   } catch (err) {
-    console.error('Get users error:', err);
-    return res.status(500).json({ error: 'Internal server error' });
+    res.status(500).json({ error: err.message });
   }
 });
 
 // Delete a user
-app.delete('/users/:id', authenticateToken, authorizeAdmin, async (req, res) => {
+app.delete('/:id', authenticateToken, authorizeAdmin, async (req, res) => {
   try {
-    const { id } = req.params;
-
     const result = await pool.query(
-      'DELETE FROM users WHERE id = $1 RETURNING id',
-      [id]
+      'DELETE FROM users WHERE id = $1 RETURNING *',
+      [req.params.id]
     );
-
-    if (result.rows.length === 0) {
-      return res.status(404).json({ error: 'User not found' });
-    }
-
-    return res.status(200).json({ message: 'User deleted successfully' });
+    if (result.rows.length === 0) return res.status(404).json({ error: 'User not found' });
+    res.json({ message: 'User deleted successfully' });
   } catch (err) {
-    console.error('Delete user error:', err);
-    return res.status(500).json({ error: 'Internal server error' });
+    res.status(500).json({ error: err.message });
   }
 });
 
-// Validate a user
-app.patch('/users/:id/validate', authenticateToken, authorizeAdmin, async (req, res) => {
+
+app.get('/:id', authenticateToken, authorizeAdmin, async (req, res) => {
   try {
-    const { id } = req.params;
-
     const result = await pool.query(
-      'UPDATE users SET status = TRUE WHERE id = $1 RETURNING id, email, first_name, last_name, status',
-      [id]
+      'SELECT id, email, first_name as "firstName", last_name as "lastName", cin, role, status, created_at FROM users WHERE id = $1',
+      [req.params.id]
     );
-
-    if (result.rows.length === 0) {
-      return res.status(404).json({ error: 'User not found' });
-    }
-
-    return res.status(200).json({
-      message: 'User validated successfully',
-      user: result.rows[0],
-    });
+    if (result.rows.length === 0) return res.status(404).json({ error: 'User not found' });
+    res.json(result.rows[0]);
   } catch (err) {
-    console.error('Validate user error:', err);
-    return res.status(500).json({ error: 'Internal server error' });
+    res.status(500).json({ error: err.message });
+  }
+});
+
+app.get('/', authenticateToken, authorizeAdmin, async (req, res) => {
+  try {
+    const result = await pool.query(
+      'SELECT id, email, first_name as "firstName", last_name as "lastName", cin, role, status, created_at FROM users ORDER BY created_at DESC'
+    );
+    res.json(result.rows);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
   }
 });
 

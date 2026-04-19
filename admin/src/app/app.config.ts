@@ -28,7 +28,7 @@ import Aura from '@primeuix/themes/aura';
 import { definePreset } from '@primeuix/themes';
 
 import { provideAnimations } from '@angular/platform-browser/animations';
-
+import { provideZoneChangeDetection } from '@angular/core';
 // Create a custom preset that overrides the green accent
 const MyPreset = definePreset(Aura, {
   semantic: {
