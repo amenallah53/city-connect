@@ -111,6 +111,11 @@ app.use("/uploads", createProxyMiddleware({
   pathRewrite: (path) => `/uploads${path === "/" ? "" : path}`
 }));
 
+app.use("/api/schedules", createProxyMiddleware({
+  target: "http://localhost:5015",
+  changeOrigin: true
+}));
+
 
 
 app.get("/", (req, res) => {

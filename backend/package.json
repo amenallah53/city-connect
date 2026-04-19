@@ -18,7 +18,9 @@
     "users": "cd \"services/users-service (admin)\" && npm run dev",
     "offers": "cd services/offers-service && npm run dev",
     "prestataires": "cd services/prestataire-service && npm run dev",
-    "myprofile": "cd services/myprofile && npm run dev"
+    "myprofile": "cd services/myprofile && npm run dev",
+    "schedules": "cd services/schedules-service && npm run dev",
+    "faq": "cd services/faq-service && npm run dev"
   },
   "keywords": [],
   "author": "",

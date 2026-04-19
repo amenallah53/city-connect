@@ -196,7 +196,7 @@ app.put('/news/:id', authenticateToken, authorizeAdmin, async (req, res) => {
        WHERE id = $8
        RETURNING *`,
       [slug || null, author || null, badges || null, hero_img || null,
-       hero_title || null, hero_subtitle || null, municipalite_id || null, id]
+      hero_title || null, hero_subtitle || null, municipalite_id || null, id]
     );
 
     if (newsResult.rows.length === 0) {

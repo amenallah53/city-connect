@@ -44,23 +44,18 @@
     }
   </div>
 
-  <button
-    class="mt-4 w-full h-[45px] rounded-[15px] bg-[var(--primary-color)] text-white text-[16px] font-semibold flex items-center justify-center gap-2 hover:bg-[#005E71] transition-colors font-[family-name:var(--font-lato)]"
-  >
-    View Details
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      width="18"
-      height="18"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      stroke-width="2"
-      stroke-linecap="round"
-      stroke-linejoin="round"
+  <div class="flex gap-2 mt-4">
+    <button
+      (click)="onEdit()"
+      class="flex-1 h-[45px] rounded-[15px] border border-[var(--primary-color)] text-[var(--primary-color)] text-[16px] font-semibold flex items-center justify-center gap-2 hover:bg-[#F0F9FB] transition-colors font-[family-name:var(--font-lato)]"
     >
-      <line x1="5" y1="12" x2="19" y2="12" />
-      <polyline points="12 5 19 12 12 19" />
-    </svg>
-  </button>
+      Edit
+    </button>
+    <button
+      (click)="onDelete()"
+      class="flex-1 h-[45px] rounded-[15px] bg-[#FF4D4F] text-white text-[16px] font-semibold flex items-center justify-center gap-2 hover:bg-[#D9363E] transition-colors font-[family-name:var(--font-lato)]"
+    >
+      Delete
+    </button>
+  </div>
 </div>

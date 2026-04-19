@@ -8,7 +8,7 @@ import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 
 import { ServiceScheduleCard } from '../../shared/components/cards/service-schedule-card/service-schedule-card';
 import { HoraireService } from '../../shared/models/horaire-service.model';
-import { MOCK_HORAIRE_SERVICES } from '../../shared/mock/horaire-service.mock';
+import { SchedulesService } from '../../core/services/schedules.service';
 import { ServiceScheduleFormDialog } from '../../shared/components/dialogs/service-schedule-form-dialog/service-schedule-form-dialog';
 
 interface RoleFilter {
@@ -30,7 +30,7 @@ export class ServiceSchedule implements OnInit {
 
   searchQuery: string = '';
 
-  allSchedules: HoraireService[] = MOCK_HORAIRE_SERVICES;
+  allSchedules: HoraireService[] = [];
   filteredSchedules: HoraireService[] = [];
   pagedSchedules: HoraireService[] = [];
 
@@ -42,7 +42,8 @@ export class ServiceSchedule implements OnInit {
   constructor(
     private router: Router,
     private route: ActivatedRoute,
-    private dialogService: DialogService
+    private dialogService: DialogService,
+    private schedulesService: SchedulesService
   ) { }
 
   ngOnInit() {
@@ -54,6 +55,8 @@ export class ServiceSchedule implements OnInit {
       { name: 'Education', code: 'Education' },
     ];
 
+    this.loadSchedules();
+
     this.route.queryParams.subscribe((params) => {
       const roleCode = params['role'] || 'all';
       this.searchQuery = params['q'] || '';
@@ -61,6 +64,16 @@ export class ServiceSchedule implements OnInit {
         this.roleFilters.find((r) => r.code === roleCode) ?? this.roleFilters[0];
       this.first = 0;
       this.applyFilters();
+    });
+  }
+
+  loadSchedules() {
+    this.schedulesService.getSchedules().subscribe({
+      next: (data) => {
+        this.allSchedules = data;
+        this.applyFilters();
+      },
+      error: (err) => console.error('Failed to load schedules', err)
     });
   }
 
@@ -82,20 +95,50 @@ export class ServiceSchedule implements OnInit {
 
   callAddScheduleDialog() {
     this.dialogRef = this.dialogService.open(ServiceScheduleFormDialog, {
-      header: ' ',
+      header: 'Add New Schedule',
       width: '700px',
       modal: true,
       closable: true,
       styleClass: 'user-dialog',
     });
 
-    this.dialogRef!.onClose.subscribe((newSchedule: HoraireService) => {
+    this.dialogRef!.onClose.subscribe((newSchedule: Partial<HoraireService>) => {
       if (newSchedule) {
-        newSchedule.id = String(Date.now());
-        this.allSchedules.unshift(newSchedule);
-        this.applyFilters();
+        this.schedulesService.createSchedule(newSchedule).subscribe({
+          next: () => this.loadSchedules(),
+          error: (err) => console.error('Failed to create schedule', err)
+        });
       }
     });
+  }
+
+  onEditSchedule(schedule: HoraireService) {
+    this.dialogRef = this.dialogService.open(ServiceScheduleFormDialog, {
+      header: 'Edit Schedule',
+      width: '700px',
+      modal: true,
+      closable: true,
+      styleClass: 'user-dialog',
+      data: { schedule }
+    });
+
+    this.dialogRef!.onClose.subscribe((updatedSchedule: Partial<HoraireService>) => {
+      if (updatedSchedule && schedule.id) {
+        this.schedulesService.updateSchedule(schedule.id, updatedSchedule).subscribe({
+          next: () => this.loadSchedules(),
+          error: (err) => console.error('Failed to update schedule', err)
+        });
+      }
+    });
+  }
+
+  onDeleteSchedule(id: string) {
+    if (confirm('Are you sure you want to delete this schedule?')) {
+      this.schedulesService.deleteSchedule(id).subscribe({
+        next: () => this.loadSchedules(),
+        error: (err) => console.error('Failed to delete schedule', err)
+      });
+    }
   }
 
   private updateQueryParams() {
