@@ -7,7 +7,7 @@
             You can access all the electronic municipal services offered by the platform for various categories.
         </p>
 
-        <a routerLink="services">
+        <a routerLink="services" *ngIf="!isLoading && featuredServices.length > 0">
             <button 
                 class="absolute right-0 top-1/2 -translate-y-1/2
                 border border-[var(--primary-color)] bg-[var(--secondary-color)]
@@ -19,10 +19,26 @@
         </a>
     </div>
 
-    <div class="w-full p-3 block flex flex-row justify-center items-center gap-8">
-        <app-service-card
-            *ngFor="let service of featuredServices"
-            [service]="service">
-        </app-service-card>
+    <!-- Skeleton Loading State -->
+    <div class="w-full p-3 block flex flex-row justify-center items-center gap-8" *ngIf="isLoading">
+        <app-service-card-skeleton *ngFor="let i of [1,2,3,4]"></app-service-card-skeleton>
     </div>
+
+    <!-- Data State -->
+    <ng-container *ngIf="!isLoading">
+        <div class="w-full p-3 block flex flex-row justify-center items-center gap-8" *ngIf="featuredServices.length > 0; else noServices">
+            <app-service-card
+                *ngFor="let service of featuredServices"
+                [service]="service">
+            </app-service-card>
+        </div>
+    </ng-container>
+
+    <ng-template #noServices>
+        <div class="w-full py-12 flex flex-col items-center justify-center gap-4 text-[var(--secondary-text-color)]">
+            <i class="pi pi-info-circle text-4xl text-[var(--primary-color)]"></i>
+            <p class="text-xl font-medium">No services found</p>
+            <p class="text-sm text-center">Please check back later for available municipal services.</p>
+        </div>
+    </ng-template>
 </section>

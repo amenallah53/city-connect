@@ -1,42 +1,28 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { ServiceCard } from '../../cards/service-card/service-card';
 import { RouterLink } from '@angular/router';
 import { Service } from '../../../models/service.model';
 import { CommonModule } from '@angular/common';
-import { allServices } from 'src/app/shared/mock/services.mock';
+import { ServicesService } from 'src/app/core/services/services.service';
+import { ServiceCardSkeleton } from '../../cards/service-card-skeleton/service-card-skeleton';
 
 @Component({
   selector: 'app-key-services-section',
-  imports: [ServiceCard, RouterLink, CommonModule],
+  imports: [ServiceCard, RouterLink, CommonModule, ServiceCardSkeleton],
   templateUrl: './key-services-section.html',
   styleUrl: './key-services-section.css',
   standalone: true,
 })
-export class KeyServicesSection {
-  featuredServices: Service[] = [
-    {
-      id: 'building-permit',
-      name: 'Building Permit',
-      type: 'Urban Planning',
-      badges: ['Online', 'Not immediate']
-    },
-    {
-      id: 'garbage-collection',
-      name: 'Garbage Collection',
-      type: 'Sanitation',
-      badges: ['Scheduled', 'Public Service']
-    },
-    {
-      id: 'complaint',
-      name: 'Complaint Submission',
-      type: 'Citizen Service',
-      badges: ['Online', 'Immediate']
-    },
-    {
-      id: 'birth-certificate',
-      name: 'Birth Certificate',
-      type: 'Civil Status',
-      badges: ['Online', 'Official']
-    }
-  ];
+export class KeyServicesSection implements OnInit {
+  featuredServices: Service[] = [];
+  isLoading: boolean = true;
+
+  constructor(private servicesService: ServicesService) {}
+
+  ngOnInit(): void {
+    this.servicesService.getAllServices().subscribe((services) => {
+      this.featuredServices = services.slice(0, 4);
+      this.isLoading = false;
+    });
+  }
 }

@@ -3,7 +3,7 @@ import { AuthGuard } from '../core/guards/admin-guard-guard';
 import { noUserGuard } from '../core/guards/no-user-guard';
 
 export const routes: Routes = [
-  
+
   // =====================
   // PUBLIC
   // =====================  
@@ -79,9 +79,9 @@ export const routes: Routes = [
       },
       {
         path: 'faq',
-        loadComponent: () => import('./features/faq/faq').then(m => m.Faq)
+        loadComponent: () => import('./features/faq/faq').then(m => m.FaqComponent)
       }]
-    },
+  },
   {
     path: '**',
     redirectTo: ''
