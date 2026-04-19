@@ -2,10 +2,11 @@ const express = require('express');
 const cors = require('cors');
 const jwt = require('jsonwebtoken');
 const { Pool } = require('pg');
-require('dotenv').config({ path: __dirname + '/.env' });
+const path = require('path');
+require('dotenv').config({ path: path.join(__dirname, '..', '.env') });
 
 const app = express();
-const port = parseInt(process.env.PORT, 10) || 5005;
+const port = parseInt(process.env.PORT, 10) || 5014;
 
 if (!process.env.JWT_SECRET) throw new Error('JWT_SECRET must be set in .env');
 const jwtSecret = process.env.JWT_SECRET;
@@ -38,10 +39,67 @@ function authenticateToken(req, res, next) {
 }
 
 function authorizeAdmin(req, res, next) {
-  if (req.user.role !== 'admin') {
-    return res.status(403).json({ error: 'Access denied' });
+  const tokenRole = String(
+    req.user?.role ||
+    req.user?.userRole ||
+    req.user?.type ||
+    req.user?.user?.role ||
+    ''
+  ).toLowerCase();
+  const acceptedAdminRoles = new Set(['admin', 'administrator', 'administrateur']);
+  const isAdminClaim = acceptedAdminRoles.has(tokenRole) || req.user?.isAdmin === true || req.user?.admin === true;
+
+  if (isAdminClaim) {
+    return next();
   }
-  next();
+
+  const userId = req.user?.userId || req.user?.id;
+  const email = req.user?.email;
+  const cin = req.user?.cin;
+
+  const queryParts = [];
+  const params = [];
+
+  if (userId) {
+    params.push(userId);
+    queryParts.push(`id = $${params.length}`);
+  }
+  if (email) {
+    params.push(email);
+    queryParts.push(`LOWER(email) = LOWER($${params.length})`);
+  }
+  if (cin) {
+    params.push(cin);
+    queryParts.push(`cin = $${params.length}`);
+  }
+
+  if (queryParts.length === 0) {
+    return res.status(403).json({
+      error: 'Access denied',
+      message: 'Admin role required',
+      tokenRole: tokenRole || null
+    });
+  }
+
+  pool.query(
+    `SELECT role FROM users WHERE ${queryParts.join(' OR ')} LIMIT 1`,
+    params
+  ).then((result) => {
+    const dbRole = String(result.rows?.[0]?.role || '').toLowerCase();
+    if (acceptedAdminRoles.has(dbRole)) {
+      return next();
+    }
+
+    return res.status(403).json({
+      error: 'Access denied',
+      message: 'Admin role required',
+      tokenRole: tokenRole || null,
+      dbRole: dbRole || null
+    });
+  }).catch((err) => {
+    console.error('Admin role verification failed:', err);
+    return res.status(500).json({ error: 'Authorization verification failed' });
+  });
 }
 
 
@@ -138,7 +196,7 @@ app.put('/news/:id', authenticateToken, authorizeAdmin, async (req, res) => {
        WHERE id = $8
        RETURNING *`,
       [slug || null, author || null, badges || null, hero_img || null,
-       hero_title || null, hero_subtitle || null, municipalite_id || null, id]
+      hero_title || null, hero_subtitle || null, municipalite_id || null, id]
     );
 
     if (newsResult.rows.length === 0) {

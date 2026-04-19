@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 
 import { NewsSection } from './news-section';
 
@@ -8,7 +9,8 @@ describe('NewsSection', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [NewsSection]
+      imports: [NewsSection],
+      providers: [provideHttpClientTesting()]
     })
     .compileComponents();
 

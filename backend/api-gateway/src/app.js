@@ -30,8 +30,17 @@ app.use("/api/tickets", createProxyMiddleware({
 
 
 app.use("/api/news-service", createProxyMiddleware({
-  target: "http://localhost:5005",
-  changeOrigin: true
+  target: "http://localhost:5014",
+  changeOrigin: true,
+  pathRewrite: { "^/api/news-service": "" }
+}));
+
+app.use("/api/news", createProxyMiddleware({
+  target: "http://localhost:5013",
+  changeOrigin: true,
+  pathRewrite: {
+    "^(.*)$": "/api/news$1"
+  }
 }));
 
 app.use("/api/services", createProxyMiddleware({
@@ -92,6 +101,20 @@ app.use("/api/users-service-admin", createProxyMiddleware({
 
 app.use("/api/uploads", createProxyMiddleware({
   target: "http://localhost:5010",
+  changeOrigin: true,
+  xfwd: true,
+  pathRewrite: (path) => `/api/uploads${path === "/" ? "" : path}`
+}));
+
+// Backward compatibility for previously stored local-media URLs.
+app.use("/uploads", createProxyMiddleware({
+  target: "http://localhost:5010",
+  changeOrigin: true,
+  pathRewrite: (path) => `/uploads${path === "/" ? "" : path}`
+}));
+
+app.use("/api/schedules", createProxyMiddleware({
+  target: "http://localhost:5015",
   changeOrigin: true
 }));
 

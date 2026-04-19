@@ -1,9 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { News } from '../../shared/models/news.model';
-import { NEWS_LIST } from '../../shared/mock/news.data';
 import { HeroSection } from '../../shared/components/news/hero-section/hero-section';
 import { CommonModule } from '@angular/common';
+import { NewsService } from 'src/app/core/services/news.service';
+import { finalize, take } from 'rxjs/operators';
 
 @Component({
   selector: 'app-news-details',
@@ -14,21 +15,50 @@ import { CommonModule } from '@angular/common';
 })
 export class NewsDetails implements OnInit {
   news?: News;
+  isLoading = true;
+  errorMessage = '';
 
-  constructor(private route: ActivatedRoute, private router: Router) {}
+  constructor(
+    private route: ActivatedRoute,
+    private router: Router,
+    private newsService: NewsService,
+    private cdr: ChangeDetectorRef
+  ) {}
 
   ngOnInit(): void {
-    this.route.params.subscribe((params) => {
-      const newsId = params['newsId'];
+    const newsId = this.route.snapshot.paramMap.get('newsId');
+    if (!newsId) {
+      this.errorMessage = 'News item not found.';
+      this.isLoading = false;
+      this.cdr.detectChanges();
+      return;
+    }
 
-      const found = NEWS_LIST.find((n) => n.id === newsId);
+    this.isLoading = true;
+    this.errorMessage = '';
+    this.news = undefined;
 
-      if (!found) {
-        this.router.navigate(['/']); // fallback if not found
-        return;
+    this.newsService.getNewsById(newsId).pipe(
+      take(1),
+      finalize(() => {
+        this.isLoading = false;
+        // In zoneless mode, async callbacks do not always refresh the view.
+        this.cdr.detectChanges();
+      })
+    ).subscribe({
+      next: (found) => {
+        this.news = found;
+        this.cdr.detectChanges();
+      },
+      error: () => {
+        this.news = undefined;
+        this.errorMessage = 'Unable to load this news item.';
+        this.cdr.detectChanges();
       }
-
-      this.news = found;
     });
+  }
+
+  goBackHome(): void {
+    this.router.navigate(['/']);
   }
 }
