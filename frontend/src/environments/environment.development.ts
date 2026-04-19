@@ -5,5 +5,5 @@ export const environment = {
   uploadsUrl: 'http://localhost:5000/api/uploads',
   profileUrl: 'http://localhost:5008/api/myprofile',
   newsUrl: 'http://localhost:5000/api/news',
-  schedulesUrl: 'http://localhost:5000/api/schedules'
+  schedulesUrl: 'http://localhost:5015/api/schedules'
 };

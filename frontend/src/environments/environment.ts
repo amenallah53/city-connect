@@ -7,5 +7,5 @@ export const environment = {
     prestatairesUrl: 'http://localhost:5000/api/prestataires',
     offersUrl: 'http://localhost:5000/api/offers',
     newsUrl: 'http://localhost:5000/api/news',
-    schedulesUrl: 'http://localhost:5000/api/schedules'
+    schedulesUrl: 'http://localhost:5015/api/schedules'
 };

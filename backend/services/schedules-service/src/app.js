@@ -6,7 +6,7 @@ const cors = require('cors');
 const jwt = require('jsonwebtoken');
 
 const app = express();
-const port = process.env.PORT || 5013;
+const port = process.env.PORT || 5015;
 const JWT_SECRET = process.env.JWT_SECRET || 'city-connect-secure-secret-2024';
 
 const pool = new Pool({
