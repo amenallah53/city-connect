@@ -17,16 +17,12 @@ const pool = new Pool({
   password: process.env.DB_PASSWORD,
 });
 
-app.use(cors({
-  origin: 'http://localhost:4200',
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization']
-}));
+app.use(cors());
 
 app.use(express.json());
 
 function authenticateToken(req, res, next) {
-  
+
   if (req.method === 'OPTIONS') {
     return next();
   }
@@ -50,7 +46,7 @@ function authenticateToken(req, res, next) {
 }
 
 
-app.get('/unanswered',authenticateToken, async (req, res) => {
+app.get('/unanswered', authenticateToken, async (req, res) => {
   try {
     const result = await pool.query(
       'SELECT * FROM faqs WHERE answer IS NULL ORDER BY id DESC;'
@@ -62,7 +58,7 @@ app.get('/unanswered',authenticateToken, async (req, res) => {
   }
 });
 
-app.get('/answered',authenticateToken, async (req, res) => {
+app.get('/answered', authenticateToken, async (req, res) => {
   try {
     const result = await pool.query('SELECT * FROM faqs WHERE answer IS NOT NULL ORDER BY id DESC');
     res.status(200).json(result.rows);
@@ -73,9 +69,9 @@ app.get('/answered',authenticateToken, async (req, res) => {
 });
 
 
-app.post('/ask',authenticateToken, async (req, res) => {   
+app.post('/ask', authenticateToken, async (req, res) => {
   try {
-    const { question,answer } = req.body;
+    const { question, answer } = req.body;
     if (!question || question.trim() === '') {
       return res.status(400).json({ error: 'Question is required' });
     }
@@ -88,7 +84,7 @@ app.post('/ask',authenticateToken, async (req, res) => {
   }
 });
 
-app.put('/:id',authenticateToken, async (req, res) => {
+app.put('/:id', authenticateToken, async (req, res) => {
   try {
     const { id } = req.params;
     const { answer } = req.body;
@@ -96,12 +92,12 @@ app.put('/:id',authenticateToken, async (req, res) => {
       return res.status(400).json({ error: 'Answer is required' });
     }
     const query = 'UPDATE faqs SET answer = $1 WHERE id = $2 returning  *';
-    const result = await pool.query(query,[answer, id]);
+    const result = await pool.query(query, [answer, id]);
     if (result.rows.length === 0) {
       return res.status(404).json({ error: 'FAQ not found' });
     }
-    else{
-        res.json({ message: 'FAQ updated successfully', faq: result.rows[0] });
+    else {
+      res.json({ message: 'FAQ updated successfully', faq: result.rows[0] });
     }
   } catch (err) {
     console.error(err);
@@ -109,7 +105,7 @@ app.put('/:id',authenticateToken, async (req, res) => {
   }
 });
 
-app.delete('/:id',authenticateToken, async (req, res) => {
+app.delete('/:id', authenticateToken, async (req, res) => {
   try {
     const { id } = req.params;
     const result = await pool.query('DELETE FROM faqs WHERE id = $1 RETURNING *', [id]);
@@ -125,7 +121,7 @@ app.delete('/:id',authenticateToken, async (req, res) => {
 
 
 app.get('/', (req, res) => {
-    res.send('FAQ Service is running 🚀');
+  res.send('FAQ Service is running 🚀');
 });
 
 

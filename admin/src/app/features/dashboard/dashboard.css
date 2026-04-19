@@ -1,0 +1,8 @@
+:host {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+  background-color: var(--surface-hover, #f8f9fa); /* Keep standard subtle admin background */
+}
