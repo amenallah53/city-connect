@@ -1,15 +1,21 @@
 <p align="center">
     <img src="https://img.shields.io/badge/Made_with-Angular-red.svg">
     <img src="https://img.shields.io/badge/API-REST-blue.svg">
-    <img src="https://img.shields.io/badge/License-MIT-green.svg">
-    <img src="https://img.shields.io/badge/Groupe-IGL3-yellow.svg">
+    <img src="https://img.shields.io/badge/Backend-Node.js%2FExpress-green.svg">
+    <img src="https://img.shields.io/badge/Database-PostgreSQL-316192.svg?logo=postgresql&logoColor=white">
+    <img src="https://img.shields.io/badge/Automation-n8n-EA4B71.svg?logo=n8n&logoColor=white">
+    <img src="https://img.shields.io/badge/License-MIT-yellow.svg">
+    <img src="https://img.shields.io/badge/Groupe-IGL3-blue.svg">
 </p>
 
 <p align="center">
-    <a href="YOUR_DEMO_LINK_HERE">
-        <img src="https://img.shields.io/badge/🚀 Live Demo-Click Here-blueviolet.svg?style=for-the-badge" alt="Live Demo">
+    <a href="https://www.youtube.com/watch?v=-KEhpdYU2NU">
+        <img src="https://img.shields.io/badge/▶️ Live Demo-Watch on YouTube-FF0000.svg?style=for-the-badge&logo=youtube&logoColor=white" alt="Live Demo">
     </a>
 </p>
+
+## 🎬 Demo
+> Watch the full demo on YouTube: [https://www.youtube.com/watch?v=-KEhpdYU2NU](https://www.youtube.com/watch?v=-KEhpdYU2NU)
 
 ## Used technologies
 ### Frontend
@@ -20,16 +26,17 @@
 
 ### Backend & Services
 - **API Backend**: Node.js/Express (http://localhost:5000)
+- **Database**: PostgreSQL
 - **HTTP Client**: Angular HttpClient
 - **State Management**: RxJS avec BehaviorSubjects
+
+### Workflow Automation
+- **Tool**: [n8n](https://n8n.io/) — used to automate backend workflows and orchestrate data pipelines between services
 
 ### Build & Tools
 - **Build Tool**: Angular CLI avec esbuild
 - **Package Manager**: npm
 - **Node Version**: >=18.19.1
-
-## 🚀 Demo
-> **Live preview**: [Click here to view the demo]([YOUR_DEMO_LINK_HERE](https://www.youtube.com/watch?v=-KEhpdYU2NU))
 
 ## Quick start
 ```bash
@@ -47,8 +54,7 @@ ng s -o
 #4) Access the frontend app
 # http://localhost:4200
 
-#5) run the backend (in a seperate terminal)
-#open another terminal
+#5) Run the backend (in a separate terminal)
 cd ./city-connect/backend
 npm run start:dev
 ```
