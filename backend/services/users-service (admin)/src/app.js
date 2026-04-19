@@ -45,9 +45,24 @@ function authorizeAdmin(req, res, next) {
   next();
 }
 
-app.put('/:id', authenticateToken, authorizeAdmin, async (req, res) => {
+function authorizeAdminOrSelf(req, res, next) {
+  if (req.user.role === 'admin') {
+    return next();
+  }
+  const targetId = req.params.id;
+  if (targetId === 'me') {
+    return next();
+  }
+  const userId = req.user.userId || req.user.id;
+  if (targetId && userId && parseInt(targetId, 10) === parseInt(userId, 10)) {
+    return next();
+  }
+  return res.status(403).json({ error: 'Access denied' });
+}
+
+app.put('/:id', authenticateToken, authorizeAdminOrSelf, async (req, res) => {
   try {
-    const { first_name, last_name, email, cin, role, status } = req.body;
+    const { first_name, last_name, email, cin, role, status, newPassword, confirmPassword } = req.body;
 
     // build dynamic query — only update fields that were sent
     const fields = [];
@@ -55,18 +70,32 @@ app.put('/:id', authenticateToken, authorizeAdmin, async (req, res) => {
     let i = 1;
 
     if (first_name !== undefined) { fields.push(`first_name = $${i++}`); values.push(first_name); }
-    if (last_name !== undefined)  { fields.push(`last_name = $${i++}`);  values.push(last_name); }
-    if (email !== undefined)      { fields.push(`email = $${i++}`);      values.push(email); }
-    if (cin !== undefined)        { fields.push(`cin = $${i++}`);        values.push(cin); }
-    if (role !== undefined)       { fields.push(`role = $${i++}`);       values.push(role); }
-    if (status !== undefined)     { fields.push(`status = $${i++}`);     values.push(status); }
-    
+    if (last_name !== undefined) { fields.push(`last_name = $${i++}`); values.push(last_name); }
+    if (email !== undefined) { fields.push(`email = $${i++}`); values.push(email); }
+    if (cin !== undefined) { fields.push(`cin = $${i++}`); values.push(cin); }
+    if (role !== undefined) { fields.push(`role = $${i++}`); values.push(role); }
+    if (status !== undefined) { fields.push(`status = $${i++}`); values.push(status); }
+
+    if (newPassword) {
+      if (newPassword !== confirmPassword) {
+        return res.status(400).json({ error: 'Passwords do not match' });
+      }
+      const hashedPassword = await bcrypt.hash(newPassword, 10);
+      fields.push(`password = $${i++}`);
+      values.push(hashedPassword);
+    }
+
 
     if (fields.length === 0) {
       return res.status(400).json({ error: 'No fields to update' });
     }
 
-    values.push(req.params.id);
+    let targetId = req.params.id;
+    if (targetId === 'me') {
+      targetId = req.user.userId || req.user.id;
+    }
+
+    values.push(targetId);
     const result = await pool.query(
       `UPDATE users SET ${fields.join(', ')} WHERE id = $${i} RETURNING id, email, first_name as "firstName", last_name as "lastName", cin, role, status`,
       values
@@ -141,11 +170,16 @@ app.delete('/:id', authenticateToken, authorizeAdmin, async (req, res) => {
 });
 
 
-app.get('/:id', authenticateToken, authorizeAdmin, async (req, res) => {
+app.get('/:id', authenticateToken, authorizeAdminOrSelf, async (req, res) => {
   try {
+    let targetId = req.params.id;
+    if (targetId === 'me') {
+      targetId = req.user.userId || req.user.id;
+    }
+
     const result = await pool.query(
       'SELECT id, email, first_name as "firstName", last_name as "lastName", cin, role, status, created_at FROM users WHERE id = $1',
-      [req.params.id]
+      [targetId]
     );
     if (result.rows.length === 0) return res.status(404).json({ error: 'User not found' });
     res.json(result.rows[0]);

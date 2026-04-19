@@ -29,7 +29,7 @@ export class ProfileService {
 
   updateProfile(data: Partial<UserProfile & { newPassword?: string; confirmPassword?: string }>): Observable<any> {
     const token = localStorage.getItem('token');
-    return this.http.put(`${this.apiUrl}/edit-profile`, data, {
+    return this.http.put(`${this.apiUrl}/me`, data, {
       headers: {
         Authorization: `Bearer ${token}`
       }
