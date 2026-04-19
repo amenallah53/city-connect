@@ -1,5 +1,4 @@
-import { Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, OnInit, signal, computed, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Paginator, PaginatorState } from 'primeng/paginator';
 import { SelectModule } from 'primeng/select';
@@ -7,61 +6,68 @@ import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { FaqCard } from '../../shared/components/cards/faq-card/faq-card';
 import { FaqFormDialog } from '../../shared/components/dialogs/faq-form-dialog/faq-form-dialog';
 import { Faq } from '../../shared/models/faq.model';
-import { MOCK_FAQS } from '../../shared/mock/faq.mock';
-
-interface RoleFilter { name: string; code: string; }
+import { FaqServices } from '../../core/services/faq-services';
 
 @Component({
   selector: 'app-faq',
   standalone: true,
-  imports: [CommonModule, FormsModule, Paginator, SelectModule, FaqCard],
+  imports: [FormsModule, Paginator, SelectModule, FaqCard],
   providers: [DialogService],
   templateUrl: './faq.html',
   styleUrl: './faq.css'
 })
 export class FaqComponent implements OnInit {
-  roleFilters: RoleFilter[] = [];
-  selectedRoleFilter: RoleFilter = { name: 'Filter by role', code: 'all' };
 
-  searchQuery: string = '';
+  private dialogService = inject(DialogService);
+  private faqService = inject(FaqServices);
 
-  allFaqs: Faq[] = MOCK_FAQS;
-  filteredFaqs: Faq[] = [];
-  pagedFaqs: Faq[] = [];
+  searchQuery = signal('');
+  allFaqs = signal<Faq[]>([]);
+  first = signal(0);
+  rows = signal(4);
+  loading = signal(false);
+  error = signal<string | null>(null);
 
-  first: number = 0;
-  rows: number = 4;
+  filteredFaqs = computed(() => {
+    const q = this.searchQuery().toLowerCase().trim();
+    return !q
+      ? this.allFaqs()
+      : this.allFaqs().filter(faq => faq.question.toLowerCase().includes(q));
+  });
+
+  pagedFaqs = computed(() =>
+    this.filteredFaqs().slice(this.first(), this.first() + this.rows())
+  );
 
   private dialogRef: DynamicDialogRef | null = null;
 
-  constructor(private dialogService: DialogService) {}
-
   ngOnInit() {
-    this.roleFilters = [
-      { name: 'All Roles', code: 'all' },
-      { name: 'Citoyen', code: 'citoyen' },
-      { name: 'Prestataire', code: 'prestataire' }
-    ];
-    this.selectedRoleFilter = this.roleFilters[0];
-    this.applyFilters();
+    this.loadFaqs();
   }
 
-  onFilterChange() {
-    this.first = 0;
-    this.applyFilters();
+  loadFaqs() {
+    this.loading.set(true);
+    this.error.set(null);
+    this.faqService.getUnanswered().subscribe({
+      next: (data) => {
+        this.allFaqs.set(data);
+        this.loading.set(false);
+      },
+      error: () => {
+        this.error.set('Failed to load FAQs');
+        this.loading.set(false);
+      }
+    });
   }
 
-  onSearchKeydown(event: KeyboardEvent) {
-    if (event.key === 'Enter') {
-      this.first = 0;
-      this.applyFilters();
-    }
+  onSearchInput(event: Event) {
+    this.searchQuery.set((event.target as HTMLInputElement).value);
+    this.first.set(0);
   }
 
   onPageChange(event: PaginatorState) {
-    this.first = event.first ?? 0;
-    this.rows = event.rows ?? 4;
-    this.updatePagedFaqs();
+    this.first.set(event.first ?? 0);
+    this.rows.set(event.rows ?? 4);
   }
 
   callFormDialog() {
@@ -72,26 +78,6 @@ export class FaqComponent implements OnInit {
       closable: true,
       styleClass: 'faq-dialog',
     });
-  }
-
-  private applyFilters() {
-    const q = this.searchQuery.toLowerCase().trim();
-    this.filteredFaqs = this.allFaqs.filter(faq => {
-      const matchRole =
-        this.selectedRoleFilter.code === 'all' ||
-        faq.role === this.selectedRoleFilter.code;
-      const matchSearch =
-        !q ||
-        faq.question.toLowerCase().includes(q) ||
-        (faq.answer && faq.answer.toLowerCase().includes(q));
-      
-      return matchRole && matchSearch;
-    });
-    this.updatePagedFaqs();
-  }
-
-  private updatePagedFaqs() {
-    this.pagedFaqs = this.filteredFaqs.slice(this.first, this.first + this.rows);
+    this.dialogRef!.onClose.subscribe(() => this.loadFaqs());
   }
 }
-

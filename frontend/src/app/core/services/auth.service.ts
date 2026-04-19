@@ -22,7 +22,7 @@ export class UserAuthService {
   private USER_TOKEN_KEY = 'token';
   private API_URL = 'http://localhost:5000';
   private USER_DATA_KEY = 'userData';
-  private MYPROFILE_API_URL = 'http://localhost:5000/api/myprofile';
+  private MYPROFILE_API_URL = 'http://localhost:5000/api/users-service-admin';
 
   private currentUserSubject = new BehaviorSubject<User | null>(null);
   public currentUser$ = this.currentUserSubject.asObservable();
@@ -42,7 +42,7 @@ export class UserAuthService {
       this.currentUserSubject.next(null);
       return of(null);
     }
-
+  
     return this.http.get<any>(`${this.MYPROFILE_API_URL}/me`, {
       headers: this.getHeaders()
     }).pipe(
@@ -87,7 +87,10 @@ export class UserAuthService {
       })
     );
   }
-
+  getUserRole(): string | null {
+    const user = this.currentUserSubject.value;
+    return user ? user.role : null;
+  }
   getCurrentLoggedUser(): Observable<User | null> {
     if (this.currentUserSubject.value) {
       return of(this.currentUserSubject.value);
@@ -137,6 +140,8 @@ export class UserAuthService {
       return {
         id: data.userId || data.id,   // ✅ JWT uses userId
         cin: data.cin,
+        firstname: data.firstname,
+        lastname: data.lastname,
         name: (data.first_name || '') + ' ' + (data.last_name || ''),
         email: data.email,
         role: data.role,

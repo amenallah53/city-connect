@@ -1,10 +1,11 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input,inject } from '@angular/core';
 import { User } from '../../../models/user.model';
 import { NgClass } from '@angular/common';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { UserInfoDialog } from '../../dialogs/user-info-dialog/user-info-dialog';
 import { UserFormDialog } from '../../dialogs/user-form-dialog/user-form-dialog';
 import { UserDeleteDialog } from '../../dialogs/user-delete-dialog/user-delete-dialog';
+import { UsersServices } from '../../../../core/services/users-services';
 
 @Component({
   selector: 'app-user-card',
@@ -17,6 +18,7 @@ export class UserCard {
   @Input({ required: true }) user!: User;
 
   private dialogRef: DynamicDialogRef | null = null;
+  private usersService = inject(UsersServices);
 
   constructor(private dialogService: DialogService) {}
 
@@ -40,6 +42,9 @@ export class UserCard {
       closable: true,
       styleClass: 'user-dialog',
     });
+    this.dialogRef!.onClose.subscribe((success: boolean) => {
+    if (success) this.usersService.loadAll(); // ← reload after close
+    });
   }
 
   deleteUser() {
@@ -50,6 +55,9 @@ export class UserCard {
       modal: true,
       closable: true,
       styleClass: 'user-dialog',
+    });
+    this.dialogRef!.onClose.subscribe((success: boolean) => {
+      if (success) this.usersService.loadAll(); // ← reload after delete
     });
   }
 

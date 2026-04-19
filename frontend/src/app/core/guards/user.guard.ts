@@ -9,7 +9,7 @@ export class UserGuard implements CanMatch {
 
   canMatch(): boolean | UrlTree {
     console.log('UserGuard check:', this.auth.isLoggedIn());
-    return this.auth.isLoggedIn()
+    return this.auth.isLoggedIn() && (this.auth.getUserRole() === 'citoyen' || this.auth.getUserRole() === 'prestataire')
       ? true
       : this.router.parseUrl('/login');
   }
