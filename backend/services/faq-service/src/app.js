@@ -75,12 +75,12 @@ app.get('/answered',authenticateToken, async (req, res) => {
 
 app.post('/ask',authenticateToken, async (req, res) => {   
   try {
-    const { question } = req.body;
+    const { question,answer } = req.body;
     if (!question || question.trim() === '') {
       return res.status(400).json({ error: 'Question is required' });
     }
-    const query = 'INSERT INTO faqs (question) VALUES ($1)';
-    const result = await pool.query(query, [question]);
+    const query = 'INSERT INTO faqs (question, answer) VALUES ($1, $2)';
+    const result = await pool.query(query, [question, answer || null]);
     res.status(201).json({ message: 'FAQ added successfully' });
   } catch (err) {
     console.error(err);

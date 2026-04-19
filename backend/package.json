@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "concurrently \"npm:gateway\" \"npm:users\" \"npm:auth\" \"npm:admin\" \"npm:news\" \"npm:notifications\" \"npm:services\" \"npm:tickets\" \"npm:uploads\" \"npm:offers\" \"npm:prestataires\"",
+    "dev": "concurrently \"npm:gateway\" \"npm:users\" \"npm:auth\" \"npm:admin\" \"npm:news\" \"npm:notifications\" \"npm:services\" \"npm:tickets\" \"npm:uploads\" \"npm:offers\" \"npm:prestataires\" \"npm:faqs\"",
     "gateway": "cd api-gateway && npm run dev",
     "admin": "cd services/admin-service && npm run dev",
     "auth": "cd services/auth-service && npm run dev",
@@ -16,7 +16,8 @@
     "uploads": "cd services/upload-service && npm run dev",
     "users": "cd \"services/users-service (admin)\" && npm run dev",
     "offers": "cd services/offers-service && npm run dev",
-    "prestataires": "cd services/prestataire-service && npm run dev"
+    "prestataires": "cd services/prestataire-service && npm run dev",
+    "faqs": "cd services/faq-service && npm run dev"
   },
   "keywords": [],
   "author": "",
