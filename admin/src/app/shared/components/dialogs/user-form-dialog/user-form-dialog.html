@@ -1,62 +1,76 @@
 <div class="flex flex-col gap-6 font-[family-name:var(--font-lato)] p-2">
-    <!-- Header -->
     <div class="flex flex-row justify-between items-start">
         <div class="flex flex-col gap-1">
             <h2 class="text-[32px] font-bold text-[var(--primary-text-color)] m-0 leading-tight">
-                {{ isEditMode ? 'Edit user' : 'Add a new user' }}
+                {{ isEditMode() ? 'Edit user' : 'Add a new user' }}
             </h2>
             <p class="text-[16px] italic text-[var(--secondary-text-color)] m-0">
-                {{ isEditMode ? 'update the details below.' : 'fill in the details below to create a new user.' }}
+                {{ isEditMode() ? 'update the details below.' : 'fill in the details below to create a new user.' }}
             </p>
         </div>
-        <button (click)="save()"
+        <button (click)="save()" [disabled]="loading()"
                 class="border border-[var(--primary-color)] text-[14px] font-medium
                        py-2 px-6 rounded-[12px] shadow-[0px_2px_15px_0px_rgba(0,0,0,0.1)]
                        bg-[var(--primary-color)] text-[var(--secondary-color)]
-                       hover:bg-[#005E71] hover:cursor-pointer transition-colors duration-300">
-            Save user
+                       hover:bg-[#005E71] hover:cursor-pointer transition-colors duration-300
+                       disabled:opacity-50 disabled:cursor-not-allowed">
+            {{ loading() ? 'Saving...' : 'Save user' }}
         </button>
     </div>
 
-    <!-- Form Outline -->
+    @if (error()) {
+        <p class="text-red-500 text-[14px] m-0">{{ error() }}</p>
+    }
+
     <div class="border border-[var(--primary-color)] rounded-[8px] p-6 flex flex-col gap-5 mt-2">
         <h3 class="text-[20px] font-medium text-[var(--primary-text-color)] m-0">User main Information</h3>
 
         <div class="flex flex-col gap-4">
-            <!-- First Name -->
             <div class="flex flex-col gap-1">
                 <label class="text-[14px] text-[var(--primary-text-color)] font-medium">First Name</label>
-                <input type="text" [(ngModel)]="formData.firstName" placeholder="Add First Name"
+                <input type="text"
+                       [value]="formData().firstName ?? ''"
+                       (input)="setField('firstName', $any($event.target).value)"
+                       placeholder="Add First Name"
                        class="w-full h-[40px] px-3 bg-white border border-[var(--border-color)] rounded-[8px] text-[var(--primary-text-color)] font-[family-name:var(--font-lato)] outline-none focus:border-[var(--primary-color)] transition-colors">
             </div>
 
-            <!-- Last Name -->
             <div class="flex flex-col gap-1">
                 <label class="text-[14px] text-[var(--primary-text-color)] font-medium">Last Name</label>
-                <input type="text" [(ngModel)]="formData.lastName" placeholder="Add Last Name"
+                <input type="text"
+                       [value]="formData().lastName ?? ''"
+                       (input)="setField('lastName', $any($event.target).value)"
+                       placeholder="Add Last Name"
                        class="w-full h-[40px] px-3 bg-white border border-[var(--border-color)] rounded-[8px] text-[var(--primary-text-color)] font-[family-name:var(--font-lato)] outline-none focus:border-[var(--primary-color)] transition-colors">
             </div>
 
-            <!-- Email -->
             <div class="flex flex-col gap-1">
                 <label class="text-[14px] text-[var(--primary-text-color)] font-medium">Email</label>
-                <input type="email" [(ngModel)]="formData.email" placeholder="Add Email Address"
+                <input type="email"
+                       [value]="formData().email ?? ''"
+                       (input)="setField('email', $any($event.target).value)"
+                       placeholder="Add Email Address"
                        class="w-full h-[40px] px-3 bg-white border border-[var(--border-color)] rounded-[8px] text-[var(--primary-text-color)] font-[family-name:var(--font-lato)] outline-none focus:border-[var(--primary-color)] transition-colors">
             </div>
 
-            <!-- CIN -->
             <div class="flex flex-col gap-1">
                 <label class="text-[14px] text-[var(--primary-text-color)] font-medium">CIN</label>
-                <input type="text" [(ngModel)]="formData.cin" placeholder="Add CIN Number"
+                <input type="text"
+                       [disabled]="isEditMode()"
+                       [class.opacity-50]="isEditMode()"
+                       [class.cursor-not-allowed]="isEditMode()"
+                       [value]="formData().cin ?? ''"
+                       (input)="setField('cin', $any($event.target).value)"
+                       placeholder="Add CIN Number"
                        class="w-full h-[40px] px-3 bg-white border border-[var(--border-color)] rounded-[8px] text-[var(--primary-text-color)] font-[family-name:var(--font-lato)] outline-none focus:border-[var(--primary-color)] transition-colors">
             </div>
 
-            <!-- Row for Dropdowns -->
             <div class="grid grid-cols-2 gap-4">
-                <!-- Role -->
                 <div class="flex flex-col gap-1">
                     <label class="text-[14px] text-[var(--primary-text-color)] font-medium">Role</label>
-                    <select [(ngModel)]="formData.role"
+                    <select
+                            [value]="formData().role ?? 'citoyen'"
+                            (change)="setField('role', $any($event.target).value)"
                             class="w-full h-[40px] px-3 bg-white border border-[var(--border-color)] rounded-[8px] text-[var(--primary-text-color)] font-[family-name:var(--font-lato)] outline-none focus:border-[var(--primary-color)] transition-colors appearance-none cursor-pointer">
                         <option value="admin">Admin</option>
                         <option value="citoyen">Citoyen</option>
@@ -64,10 +78,11 @@
                     </select>
                 </div>
 
-                <!-- Status -->
                 <div class="flex flex-col gap-1">
                     <label class="text-[14px] text-[var(--primary-text-color)] font-medium">Status</label>
-                    <select [(ngModel)]="formData.status"
+                    <select
+                            [value]="formData().status ?? 'pending'"
+                            (change)="setField('status', $any($event.target).value)"
                             class="w-full h-[40px] px-3 bg-white border border-[var(--border-color)] rounded-[8px] text-[var(--primary-text-color)] font-[family-name:var(--font-lato)] outline-none focus:border-[var(--primary-color)] transition-colors appearance-none cursor-pointer">
                         <option value="accepted">Active</option>
                         <option value="pending">Pending</option>

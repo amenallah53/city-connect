@@ -19,8 +19,9 @@ app.use("/api/auth", createProxyMiddleware({
 }));
 
 app.use("/api/admin", createProxyMiddleware({
-  target: "http://localhost:5003",
-  changeOrigin: true
+  target: "http://localhost:5009",
+  changeOrigin: true,
+  pathRewrite: { "^/api/admin": "" }
 }));
 
 app.use("/api/tickets", createProxyMiddleware({
@@ -83,11 +84,6 @@ app.use("/api/myprofile", createProxyMiddleware({
   target: "http://localhost:5008",
   changeOrigin: true,
   pathRewrite: { "^/api/myprofile": "" }  // /api/myprofile/me → /me ✓
-}));
-
-app.use("/api/users-service-admin", createProxyMiddleware({
-  target: "http://localhost:5009",
-  changeOrigin: true
 }));
 
 
