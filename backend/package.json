@@ -5,11 +5,12 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "concurrently \"npm:gateway\" \"npm:users\" \"npm:myprofile\" \"npm:auth\" \"npm:admin\" \"npm:news\" \"npm:notifications\" \"npm:services\" \"npm:tickets\" \"npm:uploads\" \"npm:offers\" \"npm:prestataires\"",
+    "dev": "concurrently \"npm:gateway\" \"npm:users\" \"npm:myprofile\" \"npm:auth\" \"npm:admin\" \"npm:news\" \"npm:newsPublic\" \"npm:notifications\" \"npm:services\" \"npm:tickets\" \"npm:uploads\" \"npm:offers\" \"npm:prestataires\"",
     "gateway": "cd api-gateway && npm run dev",
     "admin": "cd services/admin-service && npm run dev",
     "auth": "cd services/auth-service && npm run dev",
     "news": "cd \"services/news-service (admin api)\" && npm run dev",
+    "newsPublic": "cd services/news-service && npm run dev",
     "notifications": "cd services/notifications-service && npm run dev",
     "services": "cd services/services-service && npm run dev",
     "tickets": "cd services/tickets-service && npm run dev",
