@@ -87,6 +87,11 @@ app.use("/api/uploads", createProxyMiddleware({
   changeOrigin: true
 }));
 
+app.use("/api/schedules", createProxyMiddleware({
+  target: "http://localhost:5015",
+  changeOrigin: true
+}));
+
 
 
 app.get("/", (req, res) => {

@@ -3,6 +3,7 @@ export const environment = {
     authUrl: 'http://localhost:5002/api/auth',
     ticketsUrl: 'http://localhost:5004/api/tickets',
     uploadsUrl: 'http://localhost:5010/api/uploads',
-    profileUrl: 'http://localhost:5008/api/myprofile'
+    profileUrl: 'http://localhost:5008/api/myprofile',
+    schedulesUrl: 'http://localhost:5015/api/schedules'
 
 };

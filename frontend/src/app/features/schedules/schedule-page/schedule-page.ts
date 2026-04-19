@@ -1,8 +1,8 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { HoraireService } from '../../../shared/models/horaire-service.model';
-import { allHoraires } from '../../../shared/mock/horaires.mock';
+import { SchedulesService } from '../../../core/services/schedules.service';
 
 @Component({
   selector: 'app-schedule-page',
@@ -12,21 +12,34 @@ import { allHoraires } from '../../../shared/mock/horaires.mock';
   styleUrl: './schedule-page.css',
 })
 
-export class SchedulePage {
+export class SchedulePage implements OnInit {
   readonly days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
 
   activeFilter = 'All';
+  allHoraires: HoraireService[] = [];
 
   get filters(): string[] {
-    return ['All', ...new Set(allHoraires.map((h) => h.type ?? 'Other'))];
+    return ['All', ...new Set(this.allHoraires.map((h) => h.type ?? 'Other'))];
   }
 
   get filtered(): HoraireService[] {
-    if (this.activeFilter === 'All') return allHoraires;
-    return allHoraires.filter((h) => h.type === this.activeFilter);
+    if (this.activeFilter === 'All') return this.allHoraires;
+    return this.allHoraires.filter((h) => h.type === this.activeFilter);
   }
 
-  constructor(private router: Router) {}
+  constructor(
+    private router: Router,
+    private schedulesService: SchedulesService
+  ) {}
+
+  ngOnInit(): void {
+    this.schedulesService.getSchedules().subscribe({
+      next: (data) => {
+        this.allHoraires = data;
+      },
+      error: (err) => console.error('Failed to load schedules', err)
+    });
+  }
 
   setFilter(f: string): void {
     this.activeFilter = f;

@@ -2,7 +2,7 @@ const express = require('express');
 const cors = require('cors');
 const jwt = require('jsonwebtoken');
 const { Pool } = require('pg');
-require('dotenv').config({ path: __dirname + '/.env' });
+require('dotenv').config();
 
 const app = express();
 const port = parseInt(process.env.PORT, 10) || 5005;
@@ -138,7 +138,7 @@ app.put('/news/:id', authenticateToken, authorizeAdmin, async (req, res) => {
        WHERE id = $8
        RETURNING *`,
       [slug || null, author || null, badges || null, hero_img || null,
-       hero_title || null, hero_subtitle || null, municipalite_id || null, id]
+      hero_title || null, hero_subtitle || null, municipalite_id || null, id]
     );
 
     if (newsResult.rows.length === 0) {

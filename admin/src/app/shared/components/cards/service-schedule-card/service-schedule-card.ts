@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HoraireService } from '../../../models/horaire-service.model';
 
@@ -11,10 +11,28 @@ import { HoraireService } from '../../../models/horaire-service.model';
 })
 export class ServiceScheduleCard {
   @Input() schedule!: HoraireService;
+  @Output() edit = new EventEmitter<HoraireService>();
+  @Output() delete = new EventEmitter<string>();
 
-  allDays = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+  allDays = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+  shortDaysMap: { [key: string]: string } = {
+    'Monday': 'Mon', 'Tuesday': 'Tue', 'Wednesday': 'Wed',
+    'Thursday': 'Thu', 'Friday': 'Fri', 'Saturday': 'Sat', 'Sunday': 'Sun'
+  };
 
   isDayActive(day: string): boolean {
-    return this.schedule.days?.includes(day) || false;
+    const fullDay = this.shortDaysMap[day] || day;
+    // Check both full name and short name for compatibility
+    return this.schedule.days?.some(d => d === day || d === fullDay) || false;
+  }
+
+  onEdit() {
+    this.edit.emit(this.schedule);
+  }
+
+  onDelete() {
+    if (this.schedule.id) {
+      this.delete.emit(this.schedule.id);
+    }
   }
 }
