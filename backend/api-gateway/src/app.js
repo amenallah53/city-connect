@@ -30,7 +30,8 @@ app.use("/api/tickets", createProxyMiddleware({
 
 app.use("/api/news-service", createProxyMiddleware({
   target: "http://localhost:5014",
-  changeOrigin: true
+  changeOrigin: true,
+  pathRewrite: { "^/api/news-service": "" }
 }));
 
 app.use("/api/news", createProxyMiddleware({
