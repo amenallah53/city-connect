@@ -210,31 +210,80 @@ app.post('/api/prestataires', async (req, res) => {
 
 		await client.query('BEGIN');
 
-		const userInsert = await client.query(
-			`
-				INSERT INTO users (cin, first_name, last_name, email, password, adresse, telephone, role, status, document, document_type)
-				VALUES ($1, $2, $3, $4, $5, $6, $7, 'prestataire', $8, $9, $10)
-				RETURNING id
-			`,
-			[cin || null, firstName, lastName, email, safePassword, addresse || null, telephone || null, finalStatus, document || null, documentType || null]
-		);
+		let userId;
+		const checkUser = await client.query('SELECT id FROM users WHERE LOWER(email) = LOWER($1)', [email]);
 
-		const userId = userInsert.rows[0]?.id;
+		if (checkUser.rows.length > 0) {
+			// Existing user — update profile and role
+			userId = checkUser.rows[0].id;
+			await client.query(
+				`
+					UPDATE users
+					SET
+						cin = COALESCE($1, cin),
+						first_name = COALESCE($2, first_name),
+						last_name = COALESCE($3, last_name),
+						adresse = COALESCE($4, adresse),
+						telephone = COALESCE($5, telephone),
+						role = 'prestataire',
+						status = $6
+					WHERE id = $7
+				`,
+				[cin || null, firstName, lastName, addresse || null, telephone || null, finalStatus, userId]
+			);
+		} else {
+			// New user
+			const userInsert = await client.query(
+				`
+					INSERT INTO users (cin, first_name, last_name, email, password, adresse, telephone, role, status, document, document_type)
+					VALUES ($1, $2, $3, $4, $5, $6, $7, 'prestataire', $8, $9, $10)
+					RETURNING id
+				`,
+				[cin || null, firstName, lastName, email, safePassword, addresse || null, telephone || null, finalStatus, document || null, documentType || null]
+			);
+			userId = userInsert.rows[0]?.id;
+		}
 
-		await client.query(
-			`
-				INSERT INTO prestataire (user_id, status, reach, description, social_links, specialty)
-				VALUES ($1, $2, $3, $4, $5, $6)
-			`,
-			[
-				userId,
-				finalStatus,
-				finalReach,
-				description || null,
-				Array.isArray(socialLinks) ? socialLinks : null,
-				specialty || null,
-			]
-		);
+		// Check if prestataire record already exists for this user
+		const checkPrestataire = await client.query('SELECT user_id FROM prestataire WHERE user_id = $1', [userId]);
+
+		if (checkPrestataire.rows.length > 0) {
+			await client.query(
+				`
+					UPDATE prestataire
+					SET
+						status = $1,
+						reach = $2,
+						description = COALESCE($3, description),
+						social_links = COALESCE($4, social_links),
+						specialty = COALESCE($5, specialty)
+					WHERE user_id = $6
+				`,
+				[
+					finalStatus,
+					finalReach,
+					description || null,
+					Array.isArray(socialLinks) ? socialLinks : null,
+					specialty || null,
+					userId,
+				]
+			);
+		} else {
+			await client.query(
+				`
+					INSERT INTO prestataire (user_id, status, reach, description, social_links, specialty)
+					VALUES ($1, $2, $3, $4, $5, $6)
+				`,
+				[
+					userId,
+					finalStatus,
+					finalReach,
+					description || null,
+					Array.isArray(socialLinks) ? socialLinks : null,
+					specialty || null,
+				]
+			);
+		}
 
 		const details = await client.query(
 			`

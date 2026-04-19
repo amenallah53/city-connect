@@ -44,7 +44,15 @@ function authenticateToken(req, res, next) {
 
 app.get('/me', authenticateToken, async (req, res) => {  //get profile info
   try {
-    const result = await pool.query('SELECT email, firstname, lastname, cin FROM users WHERE id = $1', [req.user.id]);
+    const userId = req.user.userId || req.user.id;
+    const result = await pool.query(
+      `SELECT 
+        id, email, first_name AS "firstName", last_name AS "lastName", cin, 
+        adresse AS addresse, telephone, role, status, date_naissance,
+        created_at AS "createdAt" 
+      FROM users WHERE id = $1`, 
+      [userId]
+    );
     const user = result.rows[0];
     if (!user) {
       return res.status(404).json({ error: 'User not found' });

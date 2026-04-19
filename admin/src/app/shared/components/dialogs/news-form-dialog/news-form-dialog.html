@@ -9,14 +9,18 @@
                 {{ isEditMode ? 'update the details below.' : 'fill in the details below to create a new article.' }}
             </p>
         </div>
-        <button (click)="save()"
+        <button (click)="save()" [disabled]="isSaving"
                 class="border border-[var(--primary-color)] text-[14px] font-medium
                        py-2 px-6 rounded-[12px] shadow-[0px_2px_15px_0px_rgba(0,0,0,0.1)]
                        bg-[var(--primary-color)] text-[var(--secondary-color)]
                        hover:bg-[#005E71] focus:outline-none hover:text-white
                        hover:cursor-pointer transition-colors duration-300">
-            Save article
+            {{ isSaving ? 'Uploading...' : 'Save article' }}
         </button>
+    </div>
+
+    <div *ngIf="formError" class="rounded-[10px] border border-[#f3caca] bg-[#fff4f4] px-4 py-3 text-[14px] text-[#9f2c2c]">
+        {{ formError }}
     </div>
 
     <!-- Hero Information -->
@@ -52,11 +56,13 @@
                     <div class="flex flex-col gap-2 w-full">
                         <span class="text-[14px] italic text-[var(--secondary-text-color)]">Please upload a file with a maximum size of 1MB</span>
                         <div class="flex items-center bg-[#FAFAFA] border border-[var(--border-color)] rounded-[8px] overflow-hidden w-full h-[40px]">
-                            <button class="bg-white border-r border-[var(--border-color)] px-4 h-full text-[14px] text-[var(--primary-color)] font-medium hover:bg-gray-50 flex items-center justify-center focus:outline-none">
+                            <label class="bg-white border-r border-[var(--border-color)] px-4 h-full text-[14px] text-[var(--primary-color)] font-medium hover:bg-gray-50 flex items-center justify-center focus:outline-none cursor-pointer" for="heroFileInput">
                                 Choose File
-                            </button>
-                            <span class="px-4 text-[14px] text-[var(--secondary-text-color)]">No File Chosen</span>
+                            </label>
+                            <input id="heroFileInput" type="file" accept="image/*" (change)="onHeroFileChange($event)" hidden>
+                            <span class="px-4 text-[14px] text-[var(--secondary-text-color)]">{{ heroFileName || 'No File Chosen' }}</span>
                         </div>
+                        <span *ngIf="heroUploadError" class="text-[12px] text-[#E50000]">{{ heroUploadError }}</span>
                     </div>
                 </div>
             </div>
@@ -119,11 +125,13 @@
                         <div class="flex flex-col gap-2 w-full">
                             <span class="text-[14px] italic text-[var(--secondary-text-color)]">Please upload a file with a maximum size of 1MB</span>
                             <div class="flex items-center bg-[#FAFAFA] border border-[var(--border-color)] rounded-[8px] overflow-hidden w-full h-[40px]">
-                                <button class="bg-white border-r border-[var(--border-color)] px-4 h-full text-[14px] text-[var(--primary-color)] font-medium hover:bg-gray-50 flex items-center justify-center focus:outline-none">
+                                <label class="bg-white border-r border-[var(--border-color)] px-4 h-full text-[14px] text-[var(--primary-color)] font-medium hover:bg-gray-50 flex items-center justify-center focus:outline-none cursor-pointer" [for]="'articleFileInput-' + i">
                                     Choose File
-                                </button>
-                                <span class="px-4 text-[14px] text-[var(--secondary-text-color)]">No File Chosen</span>
+                                </label>
+                                <input [id]="'articleFileInput-' + i" type="file" accept="image/*" (change)="onSubArticleFileChange($event, i)" hidden>
+                                <span class="px-4 text-[14px] text-[var(--secondary-text-color)]">{{ subArticleFileNames[i] || 'No File Chosen' }}</span>
                             </div>
+                            <span *ngIf="subArticleUploadErrors[i]" class="text-[12px] text-[#E50000]">{{ subArticleUploadErrors[i] }}</span>
                         </div>
                     </div>
                 </div>

@@ -1,5 +1,14 @@
 <section class="flex flex-col h-full overflow-y-auto">
 
+    <div *ngIf="isLoading" class="px-6 pt-4 text-[14px] text-[var(--secondary-text-color)]">
+        Loading news data...
+    </div>
+
+    <div *ngIf="!isLoading && errorMessage"
+        class="mx-6 mt-4 rounded-[10px] border border-[#f3caca] bg-[#fff4f4] px-4 py-3 text-[14px] text-[#9f2c2c]">
+        {{ errorMessage }}
+    </div>
+
     <!-- Header + Filter row -->
     <div class="px-6 pt-6 pb-2 flex flex-col gap-1">
         <h1 class="font-rubik text-[32px] font-medium text-[var(--primary-text-color)] m-0">

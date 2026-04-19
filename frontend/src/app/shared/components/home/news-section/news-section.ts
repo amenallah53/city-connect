@@ -1,10 +1,12 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { CarouselModule } from 'primeng/carousel';
+import { Observable, of } from 'rxjs';
+import { catchError, startWith } from 'rxjs/operators';
 
-import { NEWS_LIST } from '../../../mock/news.data';
 import { News } from '../../../models/news.model';
 import { NewsCard } from '../../cards/news-card/news-card';
+import { NewsService } from 'src/app/core/services/news.service';
 
 @Component({
   selector: 'app-news-section',
@@ -19,7 +21,17 @@ import { NewsCard } from '../../cards/news-card/news-card';
 })
 export class NewsSection {
 
-  featuredNews: News[] = NEWS_LIST;
+  readonly featuredNews$: Observable<News[]>;
+
+  constructor(private newsService: NewsService) {
+    this.featuredNews$ = this.newsService.getLatestNews(4).pipe(
+      catchError((error) => {
+        console.error('Failed to fetch latest news:', error);
+        return of([]);
+      }),
+      startWith([])
+    );
+  }
 
   responsiveOptions = [
     {

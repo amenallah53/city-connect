@@ -100,13 +100,18 @@ app.post('/api/uploads', authenticateToken, upload.single('image'), (req, res) =
   }
 
   const PORT = process.env.PORT || 5010;
+  const forwardedProto = req.headers['x-forwarded-proto'];
+  const forwardedHost = req.headers['x-forwarded-host'];
+  const requestProto = Array.isArray(forwardedProto) ? forwardedProto[0] : (forwardedProto || req.protocol);
+  const requestHost = Array.isArray(forwardedHost) ? forwardedHost[0] : (forwardedHost || req.get('host'));
+  const baseUrl = `${requestProto}://${requestHost || `localhost:${PORT}`}`;
   let fileUrl;
   if (useLocalStorage) {
-    // Generate a URL that points back to this service
-    fileUrl = `http://localhost:${PORT}/uploads/${req.file.filename}`;
+    // Always use proxy URL so media remains accessible behind API gateway.
+    fileUrl = `${baseUrl}/api/uploads/proxy?key=${encodeURIComponent(`uploads/${req.file.filename}`)}`;
   } else {
     // Construct proxy URL to bypass B2 private bucket restrictions
-    fileUrl = `http://localhost:${PORT}/api/uploads/proxy?key=${req.file.key}`;
+    fileUrl = `${baseUrl}/api/uploads/proxy?key=${encodeURIComponent(req.file.key)}`;
   }
 
   res.json({ url: fileUrl });
@@ -120,7 +125,23 @@ app.get('/api/uploads/proxy', async (req, res) => {
   if (!key) return res.status(400).send('Missing file key');
 
   if (useLocalStorage) {
-    return res.redirect(`/uploads/${key.replace('uploads/', '')}`);
+    const sanitizedKey = String(key).replace(/^\/+/, '');
+    if (!sanitizedKey.startsWith('uploads/')) {
+      return res.status(400).send('Invalid file key');
+    }
+
+    const relativeFile = sanitizedKey.replace('uploads/', '');
+    const resolvedPath = path.resolve(localUploadsDir, relativeFile);
+    const resolvedBase = path.resolve(localUploadsDir);
+    if (!resolvedPath.startsWith(resolvedBase + path.sep) && resolvedPath !== resolvedBase) {
+      return res.status(400).send('Invalid file path');
+    }
+
+    if (!fs.existsSync(resolvedPath)) {
+      return res.status(404).send('File not found');
+    }
+
+    return res.sendFile(resolvedPath);
   }
 
   try {

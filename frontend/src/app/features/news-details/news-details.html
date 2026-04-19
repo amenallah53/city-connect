@@ -1,4 +1,19 @@
-<div *ngIf="news as n" class="min-h-screen bg-gray-50">
+<div *ngIf="isLoading" class="min-h-screen bg-gray-50 flex items-center justify-center">
+  <p class="text-[18px] text-[var(--secondary-text-color)]">Loading news details...</p>
+</div>
+
+<div *ngIf="!isLoading && errorMessage" class="min-h-screen bg-gray-50 flex flex-col items-center justify-center gap-4 px-4">
+  <p class="text-[18px] text-[var(--secondary-text-color)] text-center">{{ errorMessage }}</p>
+  <button
+    (click)="goBackHome()"
+    class="border border-[var(--primary-color)] text-[16px] font-medium py-2 px-4 rounded-[12px]
+      bg-[var(--primary-color)] text-[var(--secondary-color)] hover:bg-[var(--secondary-color)]
+      hover:text-[var(--primary-color)] hover:cursor-pointer transition-colors duration-300">
+    Back To Home
+  </button>
+</div>
+
+<div *ngIf="!isLoading && !errorMessage && news as n" class="min-h-screen bg-gray-50">
 
   <!-- HERO -->
   <app-hero-section
@@ -32,7 +47,7 @@
     </div>
 
     <!-- Articles -->
-    <div class="space-y-10">
+    <div *ngIf="n.subArticles.length > 0; else noArticles" class="space-y-10">
       <div *ngFor="let article of n.subArticles">
 
         <h2 class="text-2xl font-bold mb-3 text-gray-800">
@@ -50,8 +65,19 @@
           class="w-full rounded-xl shadow-md"
         />
 
+        <video
+          *ngIf="article.mediaUrl && article.mediaType === 'video'"
+          [src]="article.mediaUrl"
+          controls
+          class="w-full rounded-xl shadow-md">
+        </video>
+
       </div>
     </div>
+
+    <ng-template #noArticles>
+      <p class="text-gray-600 leading-relaxed">No article content is available yet for this news item.</p>
+    </ng-template>
 
   </div>
 </div>
