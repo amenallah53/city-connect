@@ -5,6 +5,12 @@
     <img src="https://img.shields.io/badge/Groupe-IGL3-yellow.svg">
 </p>
 
+<p align="center">
+    <a href="YOUR_DEMO_LINK_HERE">
+        <img src="https://img.shields.io/badge/🚀 Live Demo-Click Here-blueviolet.svg?style=for-the-badge" alt="Live Demo">
+    </a>
+</p>
+
 ## Used technologies
 ### Frontend
 - **Framework**: Angular 21
@@ -22,9 +28,10 @@
 - **Package Manager**: npm
 - **Node Version**: >=18.19.1
 
+## 🚀 Demo
+> **Live preview**: [Click here to view the demo]([YOUR_DEMO_LINK_HERE](https://www.youtube.com/watch?v=-KEhpdYU2NU))
 
 ## Quick start
-
 ```bash
 #1) Clone the project
 git clone [repo-url]
