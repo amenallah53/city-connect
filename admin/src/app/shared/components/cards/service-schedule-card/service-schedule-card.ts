@@ -21,9 +21,9 @@ export class ServiceScheduleCard {
   };
 
   isDayActive(day: string): boolean {
-    const fullDay = this.shortDaysMap[day] || day;
+    const shortName = this.shortDaysMap[day];
     // Check both full name and short name for compatibility
-    return this.schedule.days?.some(d => d === day || d === fullDay) || false;
+    return this.schedule.days?.some(d => d === day || d === shortName) || false;
   }
 
   onEdit() {

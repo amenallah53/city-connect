@@ -33,13 +33,13 @@
   <div class="flex flex-row gap-2 flex-wrap">
     @for (day of allDays; track day) {
     <div
-      class="w-[45px] h-[30px] flex items-center justify-center rounded-[8px] text-[14px] font-semibold transition-colors font-[family-name:var(--font-lato)]"
+      class="w-[36px] h-[36px] flex items-center justify-center rounded-full text-[13px] font-semibold transition-colors font-[family-name:var(--font-lato)]"
       [ngClass]="{
         'bg-[var(--primary-color)] text-white': isDayActive(day),
         'bg-[#EFEFEF] text-[#8C8C8C]': !isDayActive(day)
       }"
     >
-      {{ day }}
+      {{ shortDaysMap[day] || day }}
     </div>
     }
   </div>
