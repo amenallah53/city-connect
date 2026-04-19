@@ -1,8 +1,8 @@
 import { Injectable, Inject, PLATFORM_ID } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
-import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
-import { tap } from 'rxjs/operators';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { Observable, of, BehaviorSubject } from 'rxjs';
+import { tap, map, catchError } from 'rxjs/operators';
 import { User } from 'src/app/shared/models/user.model';
 
 export interface UserData {
@@ -22,68 +22,93 @@ export class UserAuthService {
   private USER_TOKEN_KEY = 'token';
   private API_URL = 'http://localhost:5000';
   private USER_DATA_KEY = 'userData';
+  private MYPROFILE_API_URL = 'http://localhost:5000/api/myprofile';
+
+  private currentUserSubject = new BehaviorSubject<User | null>(null);
+  public currentUser$ = this.currentUserSubject.asObservable();
 
   constructor(
     @Inject(PLATFORM_ID) private platformId: Object,
     private http: HttpClient
-  ) { }
-
-  private isBrowser(): boolean {
-    return isPlatformBrowser(this.platformId);
-  }
-
-  private extractUserDataFromToken(token: string): UserData | null {
-    try {
-      const payload = token.split('.')[1];
-      const decoded = JSON.parse(atob(payload));
-      return {
-        id: decoded.userId,
-        role: decoded.role,
-        cin: decoded.cin ? Number(decoded.cin) : 0,
-        email: decoded.email,
-        name: decoded.name,
-        addresse: decoded.addresse || decoded.address,
-        telephone: decoded.telephone || decoded.phone,
-        date_naissance: decoded.date_naissance
-      };
-    } catch (err) {
-      console.error('Failed to extract user data from token:', err);
-      return null;
+  ) {
+    if (this.isBrowser()) {
+      this.refreshCurrentUser().subscribe();
     }
   }
-  getCurrentLoggedUser(): User {
-    const userData = this.getCurrentUser();
-    
-    // Split name into firstName and lastName if possible
-    const fullName = userData?.name || '';
-    const nameParts = fullName.trim().split(/\s+/);
-    const firstName = nameParts[0] || 'User';
-    const lastName = nameParts.slice(1).join(' ') || '';
 
-    return {
-      id: userData?.id || '',
-      cin: String(userData?.cin || ''),
-      firstName: firstName,
-      lastName: lastName,
-      email: userData?.email || '',
-      role: (userData?.role as 'citoyen' | 'prestataire' | 'admin') || 'citoyen',
-      addresse: userData?.addresse || '',
-      telephone: userData?.telephone || '',
-      date_naissance: userData?.date_naissance || '',
-      status: 'accepted',
-      createdAt: new Date()
-    };
+  refreshCurrentUser(): Observable<User | null> {
+    const token = this.getToken();
+    if (!token) {
+      this.currentUserSubject.next(null);
+      return of(null);
+    }
+  
+    return this.http.get<any>(`${this.MYPROFILE_API_URL}/me`, {
+      headers: this.getHeaders()
+    }).pipe(
+      map(user => {
+        const mappedUser: User = {
+          ...user,
+          role: user.role as 'citoyen' | 'prestataire' | 'admin',
+          status: user.status as 'pending' | 'accepted' | 'rejected',
+          createdAt: new Date(user.createdAt)
+        };
+        this.currentUserSubject.next(mappedUser);
+        return mappedUser;
+      }),
+      catchError(err => {
+        console.error('Error fetching current user:', err);
+        const userData = this.getCurrentUser();
+        if (!userData) {
+          this.currentUserSubject.next(null);
+          return of(null);
+        }
+
+        const fullName = userData?.name || '';
+        const nameParts = fullName.trim().split(/\s+/);
+        const firstName = nameParts[0] || 'User';
+        const lastName = nameParts.slice(1).join(' ') || '';
+
+        const fallbackUser: User = {
+          id: userData?.id || '',
+          cin: String(userData?.cin || ''),
+          firstName: firstName,
+          lastName: lastName,
+          email: userData?.email || '',
+          role: (userData?.role as 'citoyen' | 'prestataire' | 'admin') || 'citoyen',
+          addresse: userData?.addresse || '',
+          telephone: userData?.telephone || '',
+          date_naissance: userData?.date_naissance || '',
+          status: 'accepted',
+          createdAt: new Date()
+        };
+        this.currentUserSubject.next(fallbackUser);
+        return of(fallbackUser);
+      })
+    );
+  }
+  getUserRole(): string | null {
+    const user = this.currentUserSubject.value;
+    return user ? user.role : null;
+  }
+  getCurrentLoggedUser(): Observable<User | null> {
+    if (this.currentUserSubject.value) {
+      return of(this.currentUserSubject.value);
+    }
+    return this.refreshCurrentUser();
+  }
+
+  private getHeaders(): HttpHeaders {
+    const token = this.getToken();
+    return new HttpHeaders({
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${token}`
+    });
   }
 
   isLoggedUserPrestataire(): boolean {
     return this.getCurrentUser()?.role === "prestataire";
   }
-
-  /*isLoggedIn(): boolean {
-    if (!this.isBrowser()) {
-      return true;
-    }
-  }*/
 
   isLoggedIn(): boolean {
     if (!this.isBrowser()) return false;
@@ -95,14 +120,37 @@ export class UserAuthService {
       tap((response: any) => {
         if (response.token) {
           localStorage.setItem(this.USER_TOKEN_KEY, response.token);
-          // Extract user data from JWT token
           const userData = this.extractUserDataFromToken(response.token);
           if (userData) {
             this.setCurrentUser(userData);
+            this.refreshCurrentUser().subscribe();
           }
         }
       })
     );
+  }
+
+
+  // Fix 2: read userId correctly from JWT payload
+  private extractUserDataFromToken(token: string): any {
+    try {
+      const payload = token.split('.')[1];
+      const decodedPayload = atob(payload);
+      const data = JSON.parse(decodedPayload);
+      return {
+        id: data.userId || data.id,   // ✅ JWT uses userId
+        cin: data.cin,
+        name: (data.first_name || '') + ' ' + (data.last_name || ''),
+        email: data.email,
+        role: data.role,
+        addresse: data.adresse,
+        telephone: data.telephone,
+        date_naissance: data.date_naissance
+      };
+    } catch (e) {
+      console.error('Error extracting user data from token', e);
+      return null;
+    }
   }
 
   resetPassword(token: string, newPassword: string): Observable<any> {
@@ -111,7 +159,6 @@ export class UserAuthService {
 
   getCurrentUser(): UserData | null {
     if (!this.isBrowser()) return null;
-
     const userData = localStorage.getItem(this.USER_DATA_KEY);
     if (userData) {
       try {
@@ -132,7 +179,9 @@ export class UserAuthService {
     if (!this.isBrowser()) return;
     localStorage.removeItem(this.USER_TOKEN_KEY);
     localStorage.removeItem(this.USER_DATA_KEY);
+    this.currentUserSubject.next(null);
   }
+
   getToken(): string | null {
     return localStorage.getItem(this.USER_TOKEN_KEY);
   }
@@ -159,7 +208,6 @@ export class UserAuthService {
       tap((response: any) => {
         if (response.token) {
           localStorage.setItem(this.USER_TOKEN_KEY, response.token);
-          // Extract user data from JWT token
           const userData = this.extractUserDataFromToken(response.token);
           if (userData) {
             this.setCurrentUser(userData);
@@ -167,5 +215,9 @@ export class UserAuthService {
         }
       })
     );
+  }
+
+  private isBrowser(): boolean {
+    return isPlatformBrowser(this.platformId);
   }
 }

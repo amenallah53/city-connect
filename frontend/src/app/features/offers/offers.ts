@@ -1,13 +1,16 @@
 import { CommonModule, NgClass } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { SelectModule } from 'primeng/select';
 import { PaginatorModule, PaginatorState } from 'primeng/paginator';
 import { ActivatedRoute, Router } from '@angular/router';
 import { OfferCard } from '../../shared/components/cards/offer-card/offer-card';
 import { JobOffer } from 'src/app/shared/models/offer.model';
-import { allJobOffers } from 'src/app/shared/mock/offers.mock';
+// import { allJobOffers } from 'src/app/shared/mock/offers.mock';
 import { UserAuthService } from 'src/app/core/services/auth.service';
+import { HttpClient, HttpParams } from '@angular/common/http';
+import { environment } from 'src/environments/environment';
+import { filter, take } from 'rxjs/operators';
 
 
 interface OfferFilter {
@@ -26,8 +29,9 @@ export class Offers implements OnInit {
   filters: OfferFilter[] = [];
   selectedFilter: OfferFilter = { name: 'All', code: 'all' };
 
-  allOffersList: JobOffer[] = allJobOffers;
-  
+  allOffersList: JobOffer[] = [];
+  isLoading = false;
+
   filteredOffers: JobOffer[] = [];
   pagedOffers: JobOffer[] = [];
 
@@ -36,7 +40,13 @@ export class Offers implements OnInit {
 
   viewMode: 'grid' | 'list' = 'grid';
 
-  constructor(private router: Router, private route: ActivatedRoute, private auth: UserAuthService) {}
+  constructor(
+    private router: Router,
+    private route: ActivatedRoute,
+    private auth: UserAuthService,
+    private http: HttpClient,
+    private cdr: ChangeDetectorRef
+  ) { }
 
   setViewMode(mode: 'grid' | 'list') {
     this.viewMode = mode;
@@ -56,8 +66,66 @@ export class Offers implements OnInit {
       const filterCode = params['status'] || 'all';
       this.selectedFilter = this.filters.find(f => f.code === filterCode) ?? this.filters[0];
       this.first = 0;
-      this.applyFilters();
+      this.loadOffers();
     });
+  }
+
+  loadOffers() {
+    this.auth.currentUser$.pipe(
+      filter(user => !!user),
+      take(1)
+    ).subscribe(user => {
+      if (!user) return;
+
+      this.isLoading = true;
+      let params = new HttpParams().set('page', '1').set('limit', '1000');
+
+      if (user.role === 'prestataire') {
+        params = params.set('prestataireId', user.id);
+      } else {
+        params = params.set('offerorId', user.id);
+      }
+
+      this.http.get<any>(environment.offersUrl, { params }).subscribe({
+        next: (res) => {
+          this.allOffersList = (res.data || []).map((o: any) => this.mapApiOffer(o));
+          this.applyFilters();
+          this.isLoading = false;
+          this.cdr.markForCheck();
+        },
+        error: (err) => {
+          console.error('Failed to load offers:', err);
+          this.allOffersList = [];
+          this.applyFilters();
+          this.isLoading = false;
+          this.cdr.markForCheck();
+        }
+      });
+    });
+  }
+
+  private mapApiOffer(item: any): JobOffer {
+    return {
+      id: item.id,
+      status: item.status,
+      dateJobSuggestion: new Date(item.dateJobSuggestion),
+      dateCreation: new Date(item.dateCreation),
+      prestataireId: item.prestataireId,
+      offerorId: item.offerorId,
+      offeror: item.offeror
+        ? {
+          ...item.offeror,
+          createdAt: new Date(item.offeror.createdAt),
+        }
+        : undefined,
+      prestataire: item.prestataire
+        ? {
+          ...item.prestataire,
+          createdAt: new Date(item.prestataire.createdAt),
+          submissionDate: new Date(item.prestataire.submissionDate),
+        }
+        : undefined,
+    };
   }
 
   onFilterChange(): void {
@@ -72,13 +140,27 @@ export class Offers implements OnInit {
   }
 
   onAcceptOffer(offer: JobOffer): void {
-    console.log('Accepted offer:', offer.id);
-    // TODO: call service
+    console.log('Accepting offer:', offer.id);
+    this.updateOfferStatus(offer.id, 'approved');
   }
 
   onDeclineOffer(offer: JobOffer): void {
-    console.log('Declined offer:', offer.id);
-    // TODO: call service
+    console.log('Declining offer:', offer.id);
+    this.updateOfferStatus(offer.id, 'rejected');
+  }
+
+  private updateOfferStatus(offerId: string, status: string): void {
+    this.http.patch(`${environment.offersUrl}/${offerId}/status`, { status }).subscribe({
+      next: () => {
+        this.allOffersList = this.allOffersList.map(o => o.id === offerId ? { ...o, status: status as any } : o);
+        this.applyFilters();
+        this.cdr.markForCheck();
+      },
+      error: (err) => {
+        console.error('Failed to update offer status:', err);
+        this.cdr.markForCheck();
+      }
+    });
   }
 
   private updateQueryParams(): void {

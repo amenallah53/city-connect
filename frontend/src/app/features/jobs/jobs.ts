@@ -1,5 +1,5 @@
 import { CommonModule, NgClass } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { SelectModule } from 'primeng/select';
 import { PaginatorModule, PaginatorState } from 'primeng/paginator';
@@ -7,8 +7,10 @@ import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Prestataire } from '../../shared/models/prestataire.model';
 import { JobCard } from '../../shared/components/cards/job-card/job-card';
-import { allJobs } from '../../shared/mock/jobs.mock';
+// import { allJobs } from '../../shared/mock/jobs.mock';
 import { PrestataireFormDialog } from '../../shared/components/dialogs/prestataire-form-dialog/prestataire-form-dialog/prestataire-form-dialog';
+import { HttpClient, HttpParams } from '@angular/common/http';
+import { environment } from '../../../environments/environment';
 
 interface JobFilter { name: string; code: string; }
 interface JobCategory { name: string; code: string; }
@@ -28,9 +30,11 @@ export class Jobs implements OnInit {
   categories: JobCategory[] = [];
   selectedCategory: JobCategory = { name: 'All Jobs', code: 'all' };
 
-  allJobsList: Prestataire[] = allJobs;
+  allJobsList: Prestataire[] = [];
   filteredJobs: Prestataire[] = [];
   pagedJobs: Prestataire[] = [];
+
+  isLoading: boolean = false;
 
   first: number = 0;
   rows: number = 12;
@@ -42,6 +46,8 @@ export class Jobs implements OnInit {
     private router: Router,
     private route: ActivatedRoute,
     private dialogService: DialogService,
+    private http: HttpClient,
+    private cdr: ChangeDetectorRef
   ) {}
 
   setViewMode(mode: 'grid' | 'list') { this.viewMode = mode; }
@@ -67,8 +73,52 @@ export class Jobs implements OnInit {
       this.selectedCategory = this.categories.find(c => c.code === categoryCode) ?? this.categories[0];
       this.selectedFilter = this.filters.find(f => f.code === filterCode) ?? this.filters[0];
       this.first = 0;
-      this.applyFilters();
+      this.loadPrestataires();
     });
+  }
+
+  loadPrestataires() {
+    this.isLoading = true;
+    let params = new HttpParams().set('page', '1').set('limit', '1000').set('status', 'accepted'); // only accepted ones
+
+    this.http.get<any>(environment.prestatairesUrl, { params }).subscribe({
+      next: (res) => {
+        this.allJobsList = (res.data || []).map((item: any) => this.mapApiPrestataire(item));
+        this.applyFilters();
+        this.isLoading = false;
+        this.cdr.markForCheck();
+      },
+      error: (err) => {
+        console.error('Failed to load prestataires:', err);
+        this.allJobsList = [];
+        this.applyFilters();
+        this.isLoading = false;
+        this.cdr.markForCheck();
+      }
+    });
+  }
+
+  private mapApiPrestataire(item: any): Prestataire {
+    return {
+      id: item.id,
+      cin: item.cin,
+      firstName: item.firstName,
+      lastName: item.lastName,
+      email: item.email,
+      addresse: item.addresse,
+      telephone: item.telephone,
+      status: item.status,
+      role: item.role,
+      document: item.document,
+      documentType: item.documentType,
+      createdAt: new Date(item.createdAt),
+      specialty: item.specialty,
+      rating: item.rating,
+      description: item.description,
+      reach: item.reach,
+      socialLinks: item.socialLinks,
+      submissionDate: new Date(item.submissionDate),
+    };
   }
 
   selectCategory(category: JobCategory) {

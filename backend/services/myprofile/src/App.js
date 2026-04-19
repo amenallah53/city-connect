@@ -3,7 +3,7 @@ const cors = require('cors');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const { Pool } = require('pg');
-require('dotenv').config({ path: __dirname + '/.env' });
+require('dotenv').config({ path: __dirname + '/../.env' });
 
 const app = express();
 const port = parseInt(process.env.PORT, 10) || 5008;
@@ -44,7 +44,15 @@ function authenticateToken(req, res, next) {
 
 app.get('/me', authenticateToken, async (req, res) => {  //get profile info
   try {
-    const result = await pool.query('SELECT email, firstname, lastname, cin FROM users WHERE id = $1', [req.user.id]);
+    const userId = req.user.userId || req.user.id;
+    const result = await pool.query(
+      `SELECT 
+        id, email, first_name AS "firstName", last_name AS "lastName", cin, 
+        adresse AS addresse, telephone, role, status, date_naissance,
+        created_at AS "createdAt" 
+      FROM users WHERE id = $1`, 
+      [userId]
+    );
     const user = result.rows[0];
     if (!user) {
       return res.status(404).json({ error: 'User not found' });
@@ -104,8 +112,8 @@ app.put('/me', authenticateToken, async (req, res) => {   //update user informat
        RETURNING id, email, first_name, last_name`,
       [
         first_name || null,
-        last_name  || null,
-        email      || null,
+        last_name || null,
+        email || null,
         hashedPassword,
         req.user.userId,
       ]

@@ -8,7 +8,7 @@ export class NoUserGuard implements CanMatch {
   constructor(private auth: UserAuthService, private router: Router) {}
 
   canMatch(): boolean | UrlTree {
-    return this.auth.isLoggedIn()
+    return this.auth.isLoggedIn() && (this.auth.getUserRole() === 'citoyen' || this.auth.getUserRole() === 'prestataire')
       ? this.router.parseUrl('/')
       : true;
   }

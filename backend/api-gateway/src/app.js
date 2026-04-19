@@ -73,9 +73,16 @@ app.use("/api/faqs", createProxyMiddleware({
 }));
 
 
-app.use("/api/myprofile", createProxyMiddleware({
+/*app.use("/api/myprofile", createProxyMiddleware({
   target: "http://localhost:5008",
   changeOrigin: true
+}));*/
+
+// ✅ Strip /api/myprofile prefix before forwarding
+app.use("/api/myprofile", createProxyMiddleware({
+  target: "http://localhost:5008",
+  changeOrigin: true,
+  pathRewrite: { "^/api/myprofile": "" }  // /api/myprofile/me → /me ✓
 }));
 
 app.use("/api/users-service-admin", createProxyMiddleware({
