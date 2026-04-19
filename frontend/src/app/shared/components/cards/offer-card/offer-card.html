@@ -10,7 +10,7 @@
     </div>
     <div class="flex flex-col gap-0.5">
       <h3 class="text-[16px] font-semibold text-[var(--primary-text-color)]">
-        Mr. {{ offer.offerorId }}
+        {{ offer.offeror?.firstName }} {{ offer.offeror?.lastName }}
       </h3>
       <div class="flex flex-row items-center gap-1">
         <span class="text-[14px] font-medium text-[var(--primary-subtitle-color)]">

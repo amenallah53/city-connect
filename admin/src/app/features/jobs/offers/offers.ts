@@ -71,7 +71,7 @@ export class Offers implements OnInit {
       { name: 'Pending', code: 'pending' },
       { name: 'Rejected', code: 'rejected' },
     ];
-    
+
     this.route.queryParams.subscribe(params => {
       const statusCode = params['status'] || 'all';
       this.searchQuery = params['q'] || '';
@@ -141,17 +141,17 @@ export class Offers implements OnInit {
       offerorId: apiOffer.offerorId,
       offeror: apiOffer.offeror
         ? {
-            id: apiOffer.offeror.id,
-            cin: apiOffer.offeror.cin,
-            firstName: apiOffer.offeror.firstName,
-            lastName: apiOffer.offeror.lastName,
-            email: apiOffer.offeror.email,
-            addresse: apiOffer.offeror.addresse,
-            telephone: apiOffer.offeror.telephone,
-            status: apiOffer.offeror.status,
-            role: apiOffer.offeror.role,
-            createdAt: new Date(apiOffer.offeror.createdAt),
-          }
+          id: apiOffer.offeror.id,
+          cin: apiOffer.offeror.cin,
+          firstName: apiOffer.offeror.firstName,
+          lastName: apiOffer.offeror.lastName,
+          email: apiOffer.offeror.email,
+          addresse: apiOffer.offeror.addresse,
+          telephone: apiOffer.offeror.telephone,
+          status: apiOffer.offeror.status,
+          role: apiOffer.offeror.role,
+          createdAt: new Date(apiOffer.offeror.createdAt),
+        }
         : undefined,
     };
   }

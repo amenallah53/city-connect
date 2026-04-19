@@ -40,6 +40,13 @@ const mapOfferRow = (row) => ({
 		role: row.offeror_role || 'citoyen',
 		createdAt: row.offeror_created_at,
 	},
+	prestataire: {
+		id: row.prestataire_id,
+		firstName: row.prestataire_first_name || '',
+		lastName: row.prestataire_last_name || '',
+		email: row.prestataire_email || '',
+		telephone: row.prestataire_telephone || '',
+	},
 });
 
 app.get('/health', async (_req, res) => {
@@ -91,8 +98,8 @@ app.get('/api/offers', async (req, res) => {
 		const countQuery = `
 			SELECT COUNT(*) AS total
 			FROM job_offer jo
-			JOIN users u ON u.id = jo.offeror_id
-			${whereClause}
+			JOIN users u_off ON u_off.id = jo.offeror_id
+			${whereClause.replace(/u\./g, 'u_off.')}
 		`;
 
 		const dataQuery = `
@@ -103,18 +110,23 @@ app.get('/api/offers', async (req, res) => {
 				jo.date_creation,
 				jo.prestataire_id,
 				jo.offeror_id,
-				u.cin AS offeror_cin,
-				u.first_name AS offeror_first_name,
-				u.last_name AS offeror_last_name,
-				u.email AS offeror_email,
-				u.adresse AS offeror_addresse,
-				u.telephone AS offeror_telephone,
-				u.status AS offeror_status,
-				u.role AS offeror_role,
-				u.created_at AS offeror_created_at
+				u_off.cin AS offeror_cin,
+				u_off.first_name AS offeror_first_name,
+				u_off.last_name AS offeror_last_name,
+				u_off.email AS offeror_email,
+				u_off.adresse AS offeror_addresse,
+				u_off.telephone AS offeror_telephone,
+				u_off.status AS offeror_status,
+				u_off.role AS offeror_role,
+				u_off.created_at AS offeror_created_at,
+				u_pres.first_name AS prestataire_first_name,
+				u_pres.last_name AS prestataire_last_name,
+				u_pres.email AS prestataire_email,
+				u_pres.telephone AS prestataire_telephone
 			FROM job_offer jo
-			JOIN users u ON u.id = jo.offeror_id
-			${whereClause}
+			JOIN users u_off ON u_off.id = jo.offeror_id
+			JOIN users u_pres ON u_pres.id = jo.prestataire_id
+			${whereClause.replace(/u\./g, 'u_off.')}
 			ORDER BY jo.date_creation DESC
 			LIMIT $${values.length + 1}
 			OFFSET $${values.length + 2}
@@ -155,17 +167,22 @@ app.get('/api/offers/:id', async (req, res) => {
 					jo.date_creation,
 					jo.prestataire_id,
 					jo.offeror_id,
-					u.cin AS offeror_cin,
-					u.first_name AS offeror_first_name,
-					u.last_name AS offeror_last_name,
-					u.email AS offeror_email,
-					  u.adresse AS offeror_addresse,
-					u.telephone AS offeror_telephone,
-					u.status AS offeror_status,
-					u.role AS offeror_role,
-					u.created_at AS offeror_created_at
+					u_off.cin AS offeror_cin,
+					u_off.first_name AS offeror_first_name,
+					u_off.last_name AS offeror_last_name,
+					u_off.email AS offeror_email,
+					u_off.adresse AS offeror_addresse,
+					u_off.telephone AS offeror_telephone,
+					u_off.status AS offeror_status,
+					u_off.role AS offeror_role,
+					u_off.created_at AS offeror_created_at,
+					u_pres.first_name AS prestataire_first_name,
+					u_pres.last_name AS prestataire_last_name,
+					u_pres.email AS prestataire_email,
+					u_pres.telephone AS prestataire_telephone
 				FROM job_offer jo
-				JOIN users u ON u.id = jo.offeror_id
+				JOIN users u_off ON u_off.id = jo.offeror_id
+				JOIN users u_pres ON u_pres.id = jo.prestataire_id
 				WHERE jo.id = $1
 			`,
 			[req.params.id]
@@ -214,17 +231,22 @@ app.post('/api/offers', async (req, res) => {
 					jo.date_creation,
 					jo.prestataire_id,
 					jo.offeror_id,
-					u.cin AS offeror_cin,
-					u.first_name AS offeror_first_name,
-					u.last_name AS offeror_last_name,
-					u.email AS offeror_email,
-					  u.adresse AS offeror_addresse,
-					u.telephone AS offeror_telephone,
-					u.status AS offeror_status,
-					u.role AS offeror_role,
-					u.created_at AS offeror_created_at
+					u_off.cin AS offeror_cin,
+					u_off.first_name AS offeror_first_name,
+					u_off.last_name AS offeror_last_name,
+					u_off.email AS offeror_email,
+					u_off.adresse AS offeror_addresse,
+					u_off.telephone AS offeror_telephone,
+					u_off.status AS offeror_status,
+					u_off.role AS offeror_role,
+					u_off.created_at AS offeror_created_at,
+					u_pres.first_name AS prestataire_first_name,
+					u_pres.last_name AS prestataire_last_name,
+					u_pres.email AS prestataire_email,
+					u_pres.telephone AS prestataire_telephone
 				FROM job_offer jo
-				JOIN users u ON u.id = jo.offeror_id
+				JOIN users u_off ON u_off.id = jo.offeror_id
+				JOIN users u_pres ON u_pres.id = jo.prestataire_id
 				WHERE jo.id = $1
 			`,
 			[createdId]
