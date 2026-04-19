@@ -22,7 +22,7 @@ export class UserAuthService {
   private USER_TOKEN_KEY = 'token';
   private API_URL = 'http://localhost:5002';
   private USER_DATA_KEY = 'userData';
-  private MYPROFILE_API_URL = 'http://localhost:5000/api/myprofile';
+  private MYPROFILE_API_URL = 'http://localhost:5000/api/users-service-admin';
 
   private currentUserSubject = new BehaviorSubject<User | null>(null);
   public currentUser$ = this.currentUserSubject.asObservable();
@@ -137,6 +137,8 @@ export class UserAuthService {
       return {
         id: data.userId || data.id,   // ✅ JWT uses userId
         cin: data.cin,
+        firstname: data.firstname,
+        lastname: data.lastname,
         name: (data.first_name || '') + ' ' + (data.last_name || ''),
         email: data.email,
         role: data.role,

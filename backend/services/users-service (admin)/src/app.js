@@ -45,6 +45,22 @@ function authorizeAdmin(req, res, next) {
   next();
 }
 
+app.get('/me', authenticateToken, async (req, res) => {
+  try {
+    const result = await pool.query(
+      'SELECT id, email, first_name AS "firstName", last_name AS "lastName", cin FROM users WHERE id = $1',
+      [req.user.userId]
+    );
+    const user = result.rows[0];
+    if (!user) return res.status(404).json({ error: 'User not found' });
+
+    return res.status(200).json(user);
+  } catch (err) {
+    console.error('Get profile error:', err);
+    return res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
 app.put('/edit-profile', authenticateToken, async (req, res) => {
   try {
     const { first_name, last_name, email, newPassword, confirmPassword } = req.body;
@@ -85,7 +101,7 @@ app.put('/edit-profile', authenticateToken, async (req, res) => {
         email      = COALESCE($3, email),
         password   = COALESCE($4, password)
        WHERE id = $5
-       RETURNING id, email, first_name, last_name`,
+       RETURNING id, email, first_name AS "firstName", last_name AS "lastName"`,
       [first_name || null, last_name || null, email || null, hashedPassword, req.user.userId]
     );
 

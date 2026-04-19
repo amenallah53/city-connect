@@ -5,8 +5,8 @@ import { environment } from '../../../environments/environment';
 
 export interface UserProfile {
   email: string;
-  firstname: string;
-  lastname: string;
+  firstName: string;
+  lastName: string;
   cin: string;
 }
 
@@ -29,7 +29,7 @@ export class ProfileService {
 
   updateProfile(data: Partial<UserProfile & { newPassword?: string; confirmPassword?: string }>): Observable<any> {
     const token = localStorage.getItem('token');
-    return this.http.put(`${this.apiUrl}/me`, data, {
+    return this.http.put(`${this.apiUrl}/edit-profile`, data, {
       headers: {
         Authorization: `Bearer ${token}`
       }
